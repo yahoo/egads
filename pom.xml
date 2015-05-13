@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.yahoo.egads</groupId>
+  <artifactId>egads</artifactId>
+  <name>EGADS Anomaly Detection System</name>
+  <description>EGADS system, consumes time series and outputs anomalies.</description>
+  <version>0.1</version>
+  <packaging>jar</packaging>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>5.14.7</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+    <dependencies>
+        <!-- needed by egads -->
+        <dependency>
+          <groupId>org.testng</groupId>
+          <artifactId>testng</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>openforecast</groupId>
+          <artifactId>openforecast</artifactId>
+          <version>1.0.16</version>
+          <scope>system</scope>
+          <systemPath>${basedir}/lib/OpenForecast-0.5.0.jar</systemPath>
+        </dependency>
+        <dependency>
+          <groupId>jfree</groupId>
+          <artifactId>jfreechart</artifactId>
+          <version>1.0.13</version>
+        </dependency>
+        <dependency>
+          <groupId>jfree</groupId>
+          <artifactId>jcommon</artifactId>
+          <version>1.0.16</version>
+        </dependency>
+        <dependency>
+          <groupId>org.json</groupId>
+          <artifactId>json</artifactId>
+          <version>20140107</version>
+        </dependency>
+        <dependency>
+       	  <groupId>commons-lang</groupId>
+       	  <artifactId>commons-lang</artifactId>
+       	  <version>2.6</version>
+       	</dependency>
+        <dependency>
+	  <groupId>org.apache.commons</groupId>
+          <artifactId>commons-math3</artifactId>
+          <version>3.2</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>egads</finalName>
+
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <source>1.7</source>
+              <target>1.7</target>
+              <compilerArgument>-Xlint:unchecked</compilerArgument>
+            </configuration>
+          </plugin>
+
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+            </configuration>
+          </plugin>
+        </plugins>
+    </build>
+</project>
