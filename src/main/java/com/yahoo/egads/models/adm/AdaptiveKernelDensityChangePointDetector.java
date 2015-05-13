@@ -18,6 +18,28 @@ import com.yahoo.egads.data.Anomaly.IntervalSequence;
 import com.yahoo.egads.data.TimeSeries.DataSequence;
 import com.yahoo.egads.utilities.ListUtils;
 import com.yahoo.egads.utilities.Storage;
+/**
+ * AdaptiveKernelDensityChangePointDetector implements density-based algorithm for change point detection.
+ * 
+ * Input: 
+ *      1. the residual time-series = actual - expected
+ *      2. PRE_WINDOW_SIZE: the size of PRE_WINDOW
+ *      3. POST_WINDOW_SIZE: the size of POST_WINDOW
+ *      4. CONFIDENCE: the confidence level at which the threshold for the KL-Divergence score is computed.
+ *      
+ * Output: the time indices when the distribution of residual changes significantly
+ * 
+ * In particular, the algorithm slides two side-by-side windows (PRE_WINDOW and POST_WINDOW) and computes the KL-divergence between 
+ * the distribution of the residuals in two windows for each time index. The distribution of the residuals in each window is 
+ * computed non-parametrically using Kernel Density Estimation with Gaussian kernels with adaptive bandwidths.
+ * 
+ * Once the KL-divergence is computed for each time index, it is thresholded (where the threshold is directly proportional to 'CONFIDENCE'). 
+ * And finally for each continuous segment of the thresholded KL-divergence time-series, the index of the maximum value is reported as a 
+ * change point.
+ * 
+ * @author amizadeh
+ *
+ */
 
 public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAbstractModel {
 

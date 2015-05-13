@@ -16,6 +16,35 @@ import org.apache.commons.math3.linear.SingularValueDecomposition;
 
 import com.yahoo.egads.data.TimeSeries;
 
+/**
+ * SpectralMethods implements utility functions for:
+ *      1. Computing the Hankel matrix of a given time-series,
+ *      2. Converting the Hankel matrix representation of the time-series to the regular time-series,
+ *      3. Computing te Singular Value Decomposition (SVD) of the time-series' Hankel matrix for the purpose of 
+ *         filtering and smoothing the time-series.
+ *         
+ * The larger singular-values of the time-series' Hankel matrix correspond to the high-variance components of the time-series 
+ * (i.e. trend and seasonality), while the smaller singular-values correspond to the low-variance components (i.e noise components).
+ * 
+ * The filtering methods:
+ *      1. 'VARIANCE' keeps the 'methodParameter'% of the variance in the spectrum and filters out the rest. 
+ *         (Default 'methodParameter' = 0.99)
+ *      2. 'EXPLICIT' keeps the largest 'methodParameter' singular-values in the spectrum and filters out the rest.
+ *         (Default 'methodParameter' = 10)
+ *      3. 'K_GAP' first finds the smallest singular-value whose eigen-gap is among the 'methodParameter' largest eigen-gaps in the spectrum,
+ *         and then filters out all the singular-values smaller than that singular-value. (Default 'methodParameter' = 8)
+ *      4. 'SMOOTHNESS' keeps throwing away the lowest singular-values of the spectrum until the Smoothness value of the remainder
+ *         is higher than or equal to the desired 'methodParameter' level. Note: the Smoothness is computed via computeSmoothness().
+ *         (Default 'methodParameter' = 0.97)
+ *      5. 'EIGEN_RATIO' first finds the largest singular value whose ration to the largest (first) singular value is greter than or equal
+ *         'methodParameter' and then filters out all the singular-values smaller than that singular-value. (Default 'methodParameter' = 0.1)
+ *      6. 'GAP_RATIO' is similar to 'EIGEN_RATIO' except that the eigen gap to the largest (first) singular value ratio is used 
+ *          instead of the direct ratio of each singular value to the largest (first) singular value. (Default 'methodParameter' = 0.01)
+ *      
+ *        
+ * @author amizadeh
+ *
+ */
 public class SpectralMethods {
 
     public static RealMatrix createHankelMatrix(RealMatrix data, int windowSize) {

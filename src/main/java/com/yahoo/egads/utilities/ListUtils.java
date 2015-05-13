@@ -4,6 +4,8 @@
  * See the accompanying LICENSE file for terms.
  */
 
+// ListUtils provides some basic math operation on numerical lists
+
 package com.yahoo.egads.utilities;
 
 import java.util.Collections;

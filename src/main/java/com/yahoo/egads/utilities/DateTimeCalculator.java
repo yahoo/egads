@@ -4,6 +4,8 @@
  * See the accompanying LICENSE file for terms.
  */
 
+// Utility class for date/time formatting and conversion
+
 package com.yahoo.egads.utilities;
 
 import java.text.ParseException;

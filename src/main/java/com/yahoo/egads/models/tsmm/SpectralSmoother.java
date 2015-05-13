@@ -14,6 +14,23 @@ import com.yahoo.egads.data.TimeSeries.DataSequence;
 import com.yahoo.egads.utilities.SpectralMethods;
 import com.yahoo.egads.utilities.SpectralMethods.FilteringMethod;
 
+/**
+ * SpectralSmoother implements the smoothing technique based on the Singular Value Decomposition (SVD) of the input time-series' Hankel matrix.
+ * For further details on the methodology please refer to utilities/SpectralMethods.java documentation.
+ * 
+ * The input parameters:
+ *      1. 'WINDOW_SIZE' determines the size of the sliding window for spectral smoothing. Typically should be larger than the
+ *          largest seasonality present in the time-series.
+ *      2. 'FILTERING_METHOD' determines the filtering method to be used by spectral smoothing.
+ *          Possible values: K_GAP, VARIANCE, EXPLICIT, SMOOTHNESS, EIGEN_RATIO, GAP_RATIO
+ *          Refer to utilities/SpectralMethods.java documentation for more details.
+ *      3. 'FILTERING_PARAM' determines the tuning parameter for the specified filtering method.
+ *          Refer to utilities/SpectralMethods.java documentation for more details.  
+ *          
+ * @author amizadeh
+ *
+ */
+
 public class SpectralSmoother extends TimeSeriesAbstractModel {
 
     protected Hashtable<Long, Float> map = new Hashtable<Long, Float>();
