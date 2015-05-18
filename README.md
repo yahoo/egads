@@ -1,7 +1,7 @@
 EGADS Java Library
 ===========================================================
 
-EGADS (Extendible Generic Anomaly Detection System) is an open-source Java package to automatically detect anomalies in large scale time-series data.
+EGADS (Extensible Generic Anomaly Detection System) is an open-source Java package to automatically detect anomalies in large scale time-series data.
 EGADS is meant to be a library that contains a number of anomaly detection techniques applicable to many use-cases in a single package with the only dependency being Java. 
 EGADS works by first building a time-series model which is used to compute the expected value at time t. Then a number of errors E are computed by comparing the expected 
 value with the actual value at time t. EGADS automatically determines thresholds on E and outputs the most probable anomalies. EGADS library can be used in a wide 
