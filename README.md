@@ -235,6 +235,10 @@ fixing up the place. Or, you can add a model - a goal of this project
 is to have a robust, lightweight and dependency-free set of models to choose from that are ready to 
 be deployed in production.
 
+References
+============
+<a href="http://labs.yahoo.com/publication/generic-and-scalable-framework-for-automated-time-series-anomaly-detection/">Generic and Scalable Framework for Automated Time-series Anomaly Detection</a> by Nikolay Laptev, Saeed Amizadeh, Ian Flint , KDD 2015 (August 10, 2015)
+
 License
 =======
 
