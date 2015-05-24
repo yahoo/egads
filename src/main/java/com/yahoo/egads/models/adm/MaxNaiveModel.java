@@ -127,8 +127,8 @@ public class MaxNaiveModel extends AnomalyDetectionAbstractModel {
             output.add(new Interval(observedSeries.get(maxIndex).time,
                        error,
                        threshold,
-                       observedSeries.get(maxIndex).value,
-                       expectedSeries.get(maxIndex).value,
+                       maxNow,
+                       maxBefore,
                        isAnomaly(error, threshold)));
             return output;
         }
