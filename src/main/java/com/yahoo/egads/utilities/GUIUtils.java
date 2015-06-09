@@ -202,8 +202,5 @@ public class GUIUtils extends ApplicationFrame {
         GUIUtils gui = new GUIUtils("EGADS GUI", orig, predicted, anomalyList);
         gui.pack();
         gui.setVisible(true);
-        JFrame frame = new JFrame("JOptionPane showMessageDialog example");
-        JOptionPane.showMessageDialog(frame, "Click OK to continue");
-        gui.setVisible(false);
     }
 }

@@ -245,6 +245,17 @@ public class Anomaly implements JsonAble {
         return str.toString();
     }
     
+    public String toPlotString() {
+        StringBuffer str = new StringBuffer();
+        for (Interval i : intervals) {
+             str.append(i.utime + "," +
+                        i.actualVal + "," +
+                        i.expectedVal +
+                        printDebugIsAnomaly(i.isAnomaly) + "\n");
+        }
+        return str.toString();
+    }
+    
     // Prints anomaly is not null.
     public static String printDebugIsAnomaly(Boolean isAnom) {
         if (isAnom == null) {

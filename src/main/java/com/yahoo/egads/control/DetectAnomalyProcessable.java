@@ -54,6 +54,10 @@ public class DetectAnomalyProcessable implements ProcessableObject {
                 }
             } else if (Storage.outputSrc != null && Storage.outputSrc.equals("GUI")) { 
                 GUIUtils.plotResults(ma.metric.data, ds, anomalyList);
+            } else if (Storage.outputSrc != null && Storage.outputSrc.equals("PLOT")) { 
+                for (Anomaly anomaly : anomalyList) {
+                    System.out.print(anomaly.toPlotString());
+                }
             } else {
                 for (Anomaly anomaly : anomalyList) {
                     System.out.print(anomaly.toPerlString());
