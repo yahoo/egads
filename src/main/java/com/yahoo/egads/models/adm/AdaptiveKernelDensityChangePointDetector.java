@@ -157,7 +157,7 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
                         detectChangePoints(residuals, this.preWindowSize, this.postWindowSize, this.confidence);
 
         // Preparing the output
-        if (this.outputDest.equals("STDOUT_ALL")) {
+        if (this.outputDest.equals("STD_OUT_ALL")) {
             int j = 0;
             for (int i = 0; i < n; ++i) {
                 boolean isCP = false;
@@ -169,7 +169,8 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
                 if (isCP && j < (changePoints.size() - 1)) {
                     j++;
                 }
-                
+                logger.debug("TS:" + observedSeries.get(i).time + ",SC:" + String.join(":", arrayF2S(new Float[] {score[i]})) + ",LV:" + String.join(",", arrayF2S(new Float[] {level[i]})) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
+
                 result.add(new Interval(observedSeries.get(i).time, 
                                         new Float[] {score[i]},
                                         new Float[] {level[i]},

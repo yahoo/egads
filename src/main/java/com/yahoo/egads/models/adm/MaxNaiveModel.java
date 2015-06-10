@@ -11,6 +11,7 @@
 package com.yahoo.egads.models.adm;
 
 import java.util.Properties;
+
 import com.yahoo.egads.data.Anomaly.IntervalSequence;
 import com.yahoo.egads.data.Anomaly.Interval;
 import com.yahoo.egads.data.TimeSeries.DataSequence;
@@ -117,7 +118,7 @@ public class MaxNaiveModel extends AnomalyDetectionAbstractModel {
                     maxIndex = i;
                 }
             }
-            
+            logger.debug("TS:" + observedSeries.get(maxIndex).time + ",E:" + error + ",TH:" + threshold + ",OV:" + observedSeries.get(maxIndex).value + ",EV:" + expectedSeries.get(maxIndex).value);
             output.add(new Interval(observedSeries.get(maxIndex).time,
                        error,
                        threshold,

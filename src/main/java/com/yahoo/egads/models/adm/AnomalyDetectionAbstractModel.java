@@ -30,6 +30,14 @@ public abstract class AnomalyDetectionAbstractModel extends
     public void fromJson(JSONObject json_obj) throws Exception {
         JsonEncoder.fromJson(this, json_obj);
     }
+    
+    protected String[] arrayF2S (Float[] input) {
+    	String ret[] = new String[input.length];
+    	for (int ix = 0; ix < input.length; ix++) {
+    		ret[ix] = input[ix].toString();
+    	}
+    	return ret;
+    }
 
     // Force the user to define this constructor that acts as a
     // factory method.

@@ -136,26 +136,18 @@ public class ExtremeLowDensityModel extends AnomalyDetectionAbstractModel {
        
         for (int i = 0; i < n; i++) {
             Float[] errors = aes.computeErrorMetrics(expectedSeries.get(i).value, observedSeries.get(i).value);
-            if (this.outputDest.equals("STDOUT_ALL")) {
-                output.add(new Interval(observedSeries.get(i).time,
-                                        errors,
-                                        thresholdErrors,
-                                        observedSeries.get(i).value,
-                                        expectedSeries.get(i).value,
-                                        isAnomaly(errors, threshold)));
-            } else {
-                if (observedSeries.get(i).value != expectedSeries.get(i).value &&
-                    threshSum > (float) 0.0 &&
-                    isAnomaly(errors, threshold) == true &&
-                    ((((unixTime - observedSeries.get(i).time) / 3600) < maxHrsAgo) ||
-                    (maxHrsAgo == 0 && i == (n - 1)))) {
-                    output.add(new Interval(observedSeries.get(i).time,
-                                            errors,
-                                            thresholdErrors,
-                                            observedSeries.get(i).value,
-                                            expectedSeries.get(i).value));
-                }
-            }
+            logger.debug("TS:" + observedSeries.get(i).time + ",E:" + String.join(":", arrayF2S(errors)) + ",TE:" + String.join(",", arrayF2S(thresholdErrors)) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
+			if (observedSeries.get(i).value != expectedSeries.get(i).value &&
+						threshSum > (float) 0.0 &&
+						isAnomaly(errors, threshold) == true &&
+						((((unixTime - observedSeries.get(i).time) / 3600) < maxHrsAgo) ||
+						(maxHrsAgo == 0 && i == (n - 1)))) {
+				output.add(new Interval(observedSeries.get(i).time,
+                        errors,
+                        thresholdErrors,
+                        observedSeries.get(i).value,
+                        expectedSeries.get(i).value));
+			}
         }
         return output;
     }
