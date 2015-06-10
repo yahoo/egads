@@ -13,14 +13,22 @@ import org.json.JSONStringer;
 
 import com.yahoo.egads.data.JsonEncoder;
 
-public abstract class AnomalyDetectionAbstractModel extends
-        AnomalyDetectionModel {
+public abstract class AnomalyDetectionAbstractModel implements AnomalyDetectionModel {
 
 	protected org.apache.logging.log4j.Logger logger;
     protected float sDAutoSensitivity = 3;
     protected float amntAutoSensitivity = (float) 0.05;
     protected String outputDest = "";
+	protected String modelName;
 
+    public String getModelName() {
+		return modelName;
+	}
+
+	public String getModelType() {
+    	return "Anomaly";
+    }
+    
     @Override
     public void toJson(JSONStringer json_out) throws Exception {
         JsonEncoder.toJson(this, json_out);

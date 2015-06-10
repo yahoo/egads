@@ -10,16 +10,12 @@
 
 package com.yahoo.egads.data;
 
-public abstract class Model implements JsonAble {
-	protected String modelName;
+public interface Model extends JsonAble {
 	
     // resets the model.
-    public abstract void reset();
+    public void reset();
 
-    // Gets the model name
-    public String getModelName() {
-    	return modelName;
-    };
-    
-    public abstract String getModelType();
+    // Gets the model name and type
+    public String getModelName();    
+    public String getModelType();
 }

@@ -10,8 +10,6 @@ package com.yahoo.egads.control;
 
 import java.util.ArrayList;
 
-import org.json.JSONStringer;
-
 import com.yahoo.egads.data.Anomaly;
 import com.yahoo.egads.data.TimeSeries;
 import com.yahoo.egads.utilities.Storage;

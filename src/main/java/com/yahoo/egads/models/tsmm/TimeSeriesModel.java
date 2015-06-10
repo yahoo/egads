@@ -8,16 +8,12 @@
 
 package com.yahoo.egads.models.tsmm;
 
-import com.yahoo.egads.data.Model;
 import com.yahoo.egads.data.TimeSeries;
+import com.yahoo.egads.data.Model;
 
-public abstract class TimeSeriesModel extends Model {
+public interface TimeSeriesModel extends Model {
     // methods ////////////////////////////////////////////////
 
-    public String getModelType() {
-    	return "Forecast";
-    }
-    
     public abstract void train(TimeSeries.DataSequence data) throws Exception;
 
     public abstract void update(TimeSeries.DataSequence data) throws Exception;

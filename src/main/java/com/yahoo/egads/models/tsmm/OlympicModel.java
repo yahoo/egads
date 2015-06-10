@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.yahoo.egads.utilities.FileUtils;
-import com.yahoo.egads.utilities.Storage;
 
 public class OlympicModel extends TimeSeriesAbstractModel {
     // methods ////////////////////////////////////////////////

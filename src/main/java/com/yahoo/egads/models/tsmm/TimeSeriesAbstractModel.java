@@ -19,7 +19,7 @@ import net.sourceforge.openforecast.ForecastingModel;
 
 import com.yahoo.egads.data.JsonEncoder;
 
-public abstract class TimeSeriesAbstractModel extends TimeSeriesModel {
+public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
 
     // Accuracy stats for this model.
     private double bias;
@@ -27,12 +27,21 @@ public abstract class TimeSeriesAbstractModel extends TimeSeriesModel {
     private double mape;
     private double mse;
     private double sae;
+	protected String modelName;
 
     org.apache.logging.log4j.Logger logger;
 
     private boolean errorsInit = false;
     protected int dynamicParameters = 0;
 
+    public String getModelName() {
+		return modelName;
+	}
+
+    public String getModelType() {
+    	return "Forecast";
+    }
+    
     @Override
     public void toJson(JSONStringer json_out) throws Exception {
         JsonEncoder.toJson(this, json_out);
