@@ -11,11 +11,14 @@ package com.yahoo.egads.models.tsmm;
 
 import com.yahoo.egads.data.*;
 import com.yahoo.egads.data.TimeSeries.Entry;
+
 import org.json.JSONObject;
 import org.json.JSONStringer;
+
 import java.util.Properties;
 import java.util.ArrayList;
 import java.util.Collections;
+
 import com.yahoo.egads.utilities.FileUtils;
 import com.yahoo.egads.utilities.Storage;
 
@@ -62,7 +65,6 @@ public class OlympicModel extends TimeSeriesAbstractModel {
         this.numToDrop = new Integer(config.getProperty("NUM_TO_DROP"));
         this.timeShifts = FileUtils.splitInts(config.getProperty("TIME_SHIFTS"));
         this.baseWindows = FileUtils.splitInts(config.getProperty("BASE_WINDOWS"));
-        Storage.forecastModel = "OlympicModel";
         model = new ArrayList<Float>();
     }
 
@@ -120,15 +122,7 @@ public class OlympicModel extends TimeSeriesAbstractModel {
         
         initForecastErrors(model, data);
         
-        if (Storage.debug == 2) {
-            System.out.println(getBias() + "\t" +
-                               getMAD() + "\t" +
-                               getMAPE() + "\t" +
-                               getMSE() + "\t" +
-                               getSAE() + "\t" +
-                               0 + "\t" +
-                               0);
-        }
+        logger.debug(getBias() + "\t" + getMAD() + "\t" + getMAPE() + "\t" + getMSE() + "\t" + getSAE() + "\t" + 0 + "\t" + 0);
     }
 
     public void update(TimeSeries.DataSequence data) {
@@ -161,7 +155,7 @@ public class OlympicModel extends TimeSeriesAbstractModel {
             // If dynamic parameters are turned on,
             // then we check if our error improved from last time,
             // if not, then we stop and use the old result.
-            if (Storage.dynamicParameters == 1 && vals.size() > 0) {
+            if (dynamicParameters == 1 && vals.size() > 0) {
                 float withNewVal = (sum(vals) + lastWeeksVal) / (vals.size() + 1);
                 float withoutNewVal = (sum(vals)) / (vals.size());
                 if ((Math.abs(withNewVal - data.get(i).value) - Math.abs(withoutNewVal - data.get(i).value)) > precision) {
@@ -191,9 +185,7 @@ public class OlympicModel extends TimeSeriesAbstractModel {
         int n = data.size();
         for (int i = 0; i < n; i++) {
             sequence.set(i, (new Entry(data.get(i).time, model.get(i))));
-            if (Storage.debug == 1) {
-                System.out.println(data.get(i).time + "," + data.get(i).value + "," + model.get(i));
-            }
+            logger.info(data.get(i).time + "," + data.get(i).value + "," + model.get(i));
         }
     }
 

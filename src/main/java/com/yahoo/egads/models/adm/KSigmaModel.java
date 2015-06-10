@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import com.yahoo.egads.data.Anomaly.IntervalSequence;
 import com.yahoo.egads.data.Anomaly.Interval;
 import com.yahoo.egads.data.TimeSeries.DataSequence;
-import com.yahoo.egads.utilities.Storage;
 import com.yahoo.egads.utilities.AutoSensitivity;
 import com.yahoo.egads.data.AnomalyErrorStorage;
 
@@ -35,7 +34,6 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
     public KSigmaModel(Properties config) {
         super(config);
         
-        modelName = modelName + "-" + Storage.forecastModel;
         if (config.getProperty("MAX_ANOMALY_TIME_AGO") == null) {
             throw new IllegalArgumentException("MAX_ANOMALY_TIME_AGO is NULL");
         }
@@ -88,8 +86,6 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
     @Override
     public void tune(DataSequence observedSeries, DataSequence expectedSeries,
             IntervalSequence anomalySequence) throws Exception {
-        int n = observedSeries.size();
-        
         HashMap<String, ArrayList<Float>> allErrors = aes.initAnomalyErrors(observedSeries, expectedSeries);
 
         for (int i = 0; i < (aes.getIndexToError().keySet()).size(); i++) {
@@ -97,7 +93,7 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
             // defined by the user.
             if (!threshold.containsKey(aes.getIndexToError().get(i))) {
                 Float[] fArray = (allErrors.get(aes.getIndexToError().get(i))).toArray(new Float[(allErrors.get(aes.getIndexToError().get(i))).size()]);
-                threshold.put(aes.getIndexToError().get(i), AutoSensitivity.getKSigmaSensitivity(fArray));
+                threshold.put(aes.getIndexToError().get(i), AutoSensitivity.getKSigmaSensitivity(fArray, sDAutoSensitivity));
             }
         }
     }
@@ -138,7 +134,7 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
         
         for (int i = 0; i < n; i++) {
             Float[] errors = aes.computeErrorMetrics(expectedSeries.get(i).value, observedSeries.get(i).value);
-            if (Storage.debug == 3) {
+            if (this.outputDest.equals("STDOUT_ALL")) {
                 output.add(new Interval(observedSeries.get(i).time,
                                         errors,
                                         thresholdErrors,

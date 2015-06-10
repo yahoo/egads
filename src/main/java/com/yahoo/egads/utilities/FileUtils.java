@@ -116,7 +116,7 @@ public class FileUtils {
     // Checks if the string is numeric.
     public static boolean isNumeric(String str) {  
         try {  
-            double d = Double.parseDouble(str);  
+            Double.parseDouble(str);  
         } catch (NumberFormatException nfe) {  
             return false;  
         }  

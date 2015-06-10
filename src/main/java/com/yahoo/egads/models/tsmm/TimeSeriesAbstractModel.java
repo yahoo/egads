@@ -10,13 +10,16 @@ import java.util.Properties;
 
 import org.json.JSONObject;
 import org.json.JSONStringer;
+
 import com.yahoo.egads.data.*;
+
 import java.util.ArrayList;
+
 import net.sourceforge.openforecast.ForecastingModel;
 
 import com.yahoo.egads.data.JsonEncoder;
 
-public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
+public abstract class TimeSeriesAbstractModel extends TimeSeriesModel {
 
     // Accuracy stats for this model.
     private double bias;
@@ -25,7 +28,10 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     private double mse;
     private double sae;
 
+    org.apache.logging.log4j.Logger logger;
+
     private boolean errorsInit = false;
+    protected int dynamicParameters = 0;
 
     @Override
     public void toJson(JSONStringer json_out) throws Exception {
@@ -39,6 +45,11 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
 
     // Acts as a factory method.
     public TimeSeriesAbstractModel(Properties config) {
+    	logger = org.apache.logging.log4j.LogManager.getLogger(this.getClass().getName());
+        if (config.getProperty("DYNAMIC_PARAMETERS") != null) {
+            this.dynamicParameters = new Integer(config.getProperty("DYNAMIC_PARAMETERS"));
+        }
+
     }
 
     protected static boolean betterThan(TimeSeriesAbstractModel model1, TimeSeriesAbstractModel model2) {

@@ -19,8 +19,6 @@ import net.sourceforge.openforecast.ForecastingModel;
 import net.sourceforge.openforecast.DataPoint;
 import net.sourceforge.openforecast.Observation;
 import java.util.*;
-import com.yahoo.egads.models.adm.*;
-import com.yahoo.egads.utilities.Storage;
 
 // A naive forecasting model is a special case of the moving average forecasting model where the number of periods used for smoothing is 1.
 public class NaiveForecastingModel extends TimeSeriesAbstractModel {
@@ -29,16 +27,12 @@ public class NaiveForecastingModel extends TimeSeriesAbstractModel {
     // The model that will be used for forecasting.
     private ForecastingModel forecaster;
     
-    // Will be updated later based on the best model that we picked.
-    private String modelName;
-    
     // Stores the historical values.
     private TimeSeries.DataSequence data;
 
     public NaiveForecastingModel(Properties config) {
         super(config);
         modelName = "NaiveForecastingModel";
-        Storage.forecastModel = modelName;
     }
 
     public void reset() {
@@ -61,15 +55,7 @@ public class NaiveForecastingModel extends TimeSeriesAbstractModel {
         forecaster.init(observedData);
         initForecastErrors(forecaster, data);
         
-        if (Storage.debug == 2) {
-            System.out.println(getBias() + "\t" +
-                               getMAD() + "\t" +
-                               getMAPE() + "\t" +
-                               getMSE() + "\t" +
-                               getSAE() + "\t" +
-                               0 + "\t" +
-                               0);
-        }    
+        logger.debug(getBias() + "\t" + getMAD() + "\t" + getMAPE() + "\t" + getMSE() + "\t" + getSAE() + "\t" + 0 + "\t" + 0);
     }
 
     public void update(TimeSeries.DataSequence data) {
@@ -85,7 +71,6 @@ public class NaiveForecastingModel extends TimeSeriesAbstractModel {
           DataSet requiredDataPoints = new DataSet();
           DataPoint dp;
 
-          DataSet requiredDataPointsTmp = new DataSet();
           for (int count = 0; count < n; count++) {
               dp = new Observation(0.0);
               dp.setIndependentValue("x", count);
@@ -94,13 +79,11 @@ public class NaiveForecastingModel extends TimeSeriesAbstractModel {
           forecaster.forecast(requiredDataPoints);
 
           // Output the results
-          Iterator it = requiredDataPoints.iterator();
+          Iterator<DataPoint> it = requiredDataPoints.iterator();
           int i = 0;
           while (it.hasNext()) {
               DataPoint pnt = ((DataPoint) it.next());
-              if (Storage.debug == 1) {
-                  System.out.println(data.get(i).time + "," + data.get(i).value + "," + pnt.getDependentValue());
-              }
+              logger.info(data.get(i).time + "," + data.get(i).value + "," + pnt.getDependentValue());
               sequence.set(i, (new Entry(data.get(i).time, (float) pnt.getDependentValue())));
               i++;
           }

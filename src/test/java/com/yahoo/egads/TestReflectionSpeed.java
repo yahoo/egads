@@ -49,7 +49,7 @@ public class TestReflectionSpeed {
 
         // Set the assumed amount of anomaly in your data.
         if (p.getProperty("AUTO_SENSITIVITY_ANOMALY_PCNT") != null) {
-            Storage.amntAutoSensParameter = new Float(p.getProperty("AUTO_SENSITIVITY_ANOMALY_PCNT"));
+            Storage.amntAutoSensitivity = new Float(p.getProperty("AUTO_SENSITIVITY_ANOMALY_PCNT"));
         }
 
         // Parse the input timeseries.

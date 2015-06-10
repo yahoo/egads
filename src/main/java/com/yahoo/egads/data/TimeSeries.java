@@ -138,9 +138,6 @@ public class TimeSeries implements JsonAble {
                 return false;
             }
             DataSequence other = (DataSequence) other_obj;
-            if (serialVersionUID != other.serialVersionUID) {
-                return false;
-            }
             if (!super.equals(other)) {
                 return false;
             }

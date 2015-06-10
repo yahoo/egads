@@ -30,7 +30,7 @@ public class TestAutoSensitivity {
           randomNumbers.add(randomFloat);
         }
         Float[] fArray = randomNumbers.toArray(new Float[randomNumbers.size()]);
-        float threashold = AutoSensitivity.getKSigmaSensitivity(fArray);
+        float threashold = AutoSensitivity.getKSigmaSensitivity(fArray, 1);
         Assert.assertTrue(threashold <= 2);
         ArrayList<Float> sampleErrors = new ArrayList<Float>();
         BufferedReader reader = new BufferedReader(new FileReader("src/test/resources/sample_errors.csv"));
@@ -41,7 +41,7 @@ public class TestAutoSensitivity {
         }
         
         fArray = sampleErrors.toArray(new Float[sampleErrors.size()]);
-        threashold = AutoSensitivity.getLowDensitySensitivity(fArray);
+        threashold = AutoSensitivity.getLowDensitySensitivity(fArray, 1, 1);
         Assert.assertTrue(threashold > 5000000);
     }
 }

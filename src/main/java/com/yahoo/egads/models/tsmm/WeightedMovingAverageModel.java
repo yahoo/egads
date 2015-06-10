@@ -32,9 +32,6 @@ import net.sourceforge.openforecast.ForecastingModel;
 import net.sourceforge.openforecast.DataPoint;
 import net.sourceforge.openforecast.Observation;
 import java.util.*;
-import com.yahoo.egads.models.adm.*;
-import com.yahoo.egads.utilities.Storage;
-import com.yahoo.egads.utilities.*;
 
 // A weighted moving average forecast model is based on an artificially constructed time series in which the value
 // for a given time period is replaced by the weighted mean of that value and the values for some number of preceding time periods.
@@ -44,16 +41,12 @@ public class WeightedMovingAverageModel extends TimeSeriesAbstractModel {
     // The model that will be used for forecasting.
     private ForecastingModel forecaster;
     
-    // Will be updated later based on the best model that we picked.
-    private String modelName;
-    
     // Stores the historical values.
     private TimeSeries.DataSequence data;
 
     public WeightedMovingAverageModel(Properties config) {
         super(config);
         modelName = "WeightedMovingAverageModel";
-        Storage.forecastModel = modelName;
     }
 
     public void reset() {
@@ -78,15 +71,7 @@ public class WeightedMovingAverageModel extends TimeSeriesAbstractModel {
 
         initForecastErrors(forecaster, data);
         
-        if (Storage.debug == 2) {
-            System.out.println(getBias() + "\t" +
-                               getMAD() + "\t" +
-                               getMAPE() + "\t" +
-                               getMSE() + "\t" +
-                               getSAE() + "\t" +
-                               0 + "\t" +
-                               0);
-        }        
+        logger.debug(getBias() + "\t" + getMAD() + "\t" + getMAPE() + "\t" + getMSE() + "\t" + getSAE() + "\t" + 0 + "\t" + 0);
     }
 
     public void update(TimeSeries.DataSequence data) {
@@ -102,7 +87,6 @@ public class WeightedMovingAverageModel extends TimeSeriesAbstractModel {
           DataSet requiredDataPoints = new DataSet();
           DataPoint dp;
 
-          DataSet requiredDataPointsTmp = new DataSet();
           for (int count = 0; count < n; count++) {
               dp = new Observation(0.0);
               dp.setIndependentValue("x", count);
@@ -111,13 +95,11 @@ public class WeightedMovingAverageModel extends TimeSeriesAbstractModel {
           forecaster.forecast(requiredDataPoints);
 
           // Output the results
-          Iterator it = requiredDataPoints.iterator();
+          Iterator<DataPoint> it = requiredDataPoints.iterator();
           int i = 0;
           while (it.hasNext()) {
               DataPoint pnt = ((DataPoint) it.next());
-              if (Storage.debug == 1) {
-                  System.out.println(data.get(i).time + "," + data.get(i).value + "," + pnt.getDependentValue());
-              }
+              logger.info(data.get(i).time + "," + data.get(i).value + "," + pnt.getDependentValue());
               sequence.set(i, (new Entry(data.get(i).time, (float) pnt.getDependentValue())));
               i++;
           }

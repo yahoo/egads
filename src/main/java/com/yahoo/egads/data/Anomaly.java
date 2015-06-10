@@ -176,9 +176,6 @@ public class Anomaly implements JsonAble {
                 return false;
             }
             IntervalSequence other = (IntervalSequence) other_obj;
-            if (serialVersionUID != other.serialVersionUID) {
-                return false;
-            }
             if (!super.equals(other)) {
                 return false;
             }

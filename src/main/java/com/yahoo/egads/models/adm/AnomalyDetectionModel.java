@@ -12,25 +12,23 @@ import com.yahoo.egads.data.Anomaly;
 import com.yahoo.egads.data.TimeSeries;
 import com.yahoo.egads.data.Model;
 
-public interface AnomalyDetectionModel extends Model {
+public abstract class AnomalyDetectionModel extends Model {
     // methods ////////////////////////////////////////////////
 
     // returns the type of anomalies detected by the model
-    public String getType();
+    public abstract String getType();
+
+    public String getModelType() {
+    	return "Anomaly";
+    }
     
-    // Returns the name of the anomaly detection model.
-    public String getModelName();
-
-    // resets the model.
-    public void reset();
-
     // tune the anomaly detection parameters based on the training data.
-    public void tune(TimeSeries.DataSequence observedSeries,
+    public abstract void tune(TimeSeries.DataSequence observedSeries,
             TimeSeries.DataSequence expectedSeries,
             Anomaly.IntervalSequence anomalySequence) throws Exception;
 
     // detect anomalies.
-    public Anomaly.IntervalSequence detect(
+    public abstract Anomaly.IntervalSequence detect(
             TimeSeries.DataSequence observedSeries,
             TimeSeries.DataSequence expectedSeries) throws Exception;
 }

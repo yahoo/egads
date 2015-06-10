@@ -49,16 +49,13 @@ import java.util.ArrayList;
 import com.yahoo.egads.data.Anomaly.IntervalSequence;
 import com.yahoo.egads.data.Anomaly.Interval;
 import java.awt.Color;
-import java.util.Map;
 import java.util.HashMap;
-import javax.swing.JOptionPane;
-import javax.swing.JFrame;
 import com.yahoo.egads.data.AnomalyErrorStorage;
 
 // Draws the time-series.
 public class GUIUtils extends ApplicationFrame {
-    
-    // Denominator used in the MASE error metric.
+	private static final long serialVersionUID = 1L;
+	// Denominator used in the MASE error metric.
     float maseDenom = 0;
     private AnomalyErrorStorage aes = new AnomalyErrorStorage();
 
@@ -115,21 +112,19 @@ public class GUIUtils extends ApplicationFrame {
                               true);
     }
     
-    private Float sum(DataSequence d, int from, int to) {
-        Float sum = (float) 0.0;
-        
-        for (int i = from; i < to; i++) {
-            sum += d.get(i).value;
-        }
-        return sum;
-    }
+//    private Float sum(DataSequence d, int from, int to) {
+//        Float sum = (float) 0.0;
+//        
+//        for (int i = from; i < to; i++) {
+//            sum += d.get(i).value;
+//        }
+//        return sum;
+//    }
     
     /**
      * Compute the time-series of anomalies.
      */
     public void addAnomalyTS(CombinedDomainXYPlot plot, DataSequence observedSeries, DataSequence expectedSeries) {
-        int n = observedSeries.size();
-        Map<String, Float> threshold;
         // Compute the time-series of errors.
         HashMap<String, ArrayList<Float>> allErrors = aes.initAnomalyErrors(observedSeries, expectedSeries);
         
@@ -141,7 +136,7 @@ public class GUIUtils extends ApplicationFrame {
             NumberAxis rangeAxis1 = new NumberAxis(aes.getIndexToError().get(i));
             XYPlot subplot1 = new XYPlot(data1, null, rangeAxis1, renderer1);
             // Get threshold.
-            Float d = AutoSensitivity.getLowDensitySensitivity(fArray);
+            Float d = AutoSensitivity.getLowDensitySensitivity(fArray, Storage.sDAutoSensitivity, Storage.amntAutoSensitivity);
             subplot1.addRangeMarker(new ValueMarker(d));
             subplot1.setRangeAxisLocation(AxisLocation.BOTTOM_OR_LEFT);
             plot.add(subplot1, 1);
