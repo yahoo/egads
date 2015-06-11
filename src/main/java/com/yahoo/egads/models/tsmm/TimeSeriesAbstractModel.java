@@ -151,7 +151,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
      * 
      * @return the bias - mean of the errors - when the current model was applied to the initial data set.
      */
-    double getBias() {
+    public double getBias() {
         if (!errorsInit) {
             return -1;
         }
@@ -165,7 +165,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
      * 
      * @return the mean absolute deviation (MAD) when the current model was applied to the initial data set.
      */
-    double getMAD() {
+    public double getMAD() {
         if (!errorsInit) {
             return -1;
         }
@@ -180,7 +180,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
      * 
      * @return the mean absolute percentage error (MAPE) when the current model was applied to the initial data set.
      */
-    double getMAPE() {
+    public double getMAPE() {
         if (!errorsInit) {
             return -1;
         }
@@ -194,7 +194,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
      * 
      * @return the mean square of the errors (MSE) when the current model was applied to the initial data set.
      */
-    double getMSE() {
+    public double getMSE() {
         if (!errorsInit) {
             return -1;
         }
@@ -207,7 +207,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
      * 
      * @return the sum of absolute errors (SAE) obtained by applying this forecasting model to the initial data set.
      */
-    double getSAE() {
+    public double getSAE() {
         if (!errorsInit) {
             return -1;
         }

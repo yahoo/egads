@@ -103,7 +103,7 @@ public class ExtremeLowDensityModel extends AnomalyDetectionAbstractModel {
     }
     
     // Returns true this point is identified as a potential anomaly.
-    private boolean isAnomaly(Float[] errors, Map<String, Float> threshold) {
+    public boolean isAnomaly(Float[] errors, Map<String, Float> threshold) {
         // Cycle through all available thresholds and return
         // true if any of them matches.
         for (Map.Entry<String, Float> entry : threshold.entrySet()) {

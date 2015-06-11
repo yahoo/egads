@@ -220,7 +220,7 @@ public class TimeSeries implements JsonAble {
         return data.get(index).time;
     }
 
-    private float value(int index) {
+    public float value(int index) {
         return data.get(index).value;
     }
 

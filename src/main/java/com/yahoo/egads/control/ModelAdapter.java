@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import com.yahoo.egads.data.TimeSeries;
 import com.yahoo.egads.models.tsmm.TimeSeriesModel;
 
-class ModelAdapter { // Encapsulates a metric and the models operating on it
+public class ModelAdapter { // Encapsulates a metric and the models operating on it
 
     TimeSeries metric = null;
     private final ArrayList<TimeSeriesModel> models = new ArrayList<>();

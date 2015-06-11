@@ -101,7 +101,7 @@ public class SpectralMethods {
         K_GAP, VARIANCE, EXPLICIT, SMOOTHNESS, EIGEN_RATIO, GAP_RATIO
     }
 
-    private static double computeSmoothness(double[] variances) {
+    protected static double computeSmoothness(double[] variances) {
 
         double sum = 0;
         for (int i = 0; i < variances.length; ++i) {
@@ -117,7 +117,7 @@ public class SpectralMethods {
         return 2 * sumcumsum / variances.length - 1;
     }
 
-    private static RealMatrix mFilter(RealMatrix data, int windowSize, FilteringMethod method, double methodParameter) {
+    public static RealMatrix mFilter(RealMatrix data, int windowSize, FilteringMethod method, double methodParameter) {
 
         int n = data.getRowDimension();
         int m = data.getColumnDimension();

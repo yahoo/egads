@@ -12,7 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-class DateTimeCalculator {
+public class DateTimeCalculator {
     // Fields //////////////////////////////////////////////////////////////////////////////////
     private static final Calendar cal = Calendar.getInstance();
     private static final SimpleDateFormat[] formatters = new SimpleDateFormat[] {
@@ -30,7 +30,7 @@ class DateTimeCalculator {
     // Static Methods //////////////////////////////////////////////////////////////////////////
 
     // Time in string --> Date object
-    private static Date getDate(String time) {
+    public static Date getDate(String time) {
         Date date = null;
         for (int i = 0; i < formatters.length; ++i) {
             try {

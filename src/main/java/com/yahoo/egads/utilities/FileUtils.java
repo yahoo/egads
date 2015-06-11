@@ -108,7 +108,7 @@ public class FileUtils {
     }
         
     // Checks if the string is numeric.
-    private static boolean isNumeric(String str) {
+    public static boolean isNumeric(String str) {
         try {  
             Double.parseDouble(str);
         } catch (NumberFormatException nfe) {  

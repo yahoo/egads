@@ -44,7 +44,7 @@ import com.yahoo.egads.data.Anomaly.IntervalSequence;
 import com.yahoo.egads.data.TimeSeries;
 import com.yahoo.egads.models.adm.AnomalyDetectionModel;
 
-class AnomalyDetector {
+public class AnomalyDetector {
 
     TimeSeries metric = null;
     private final ArrayList<AnomalyDetectionModel> models = new ArrayList<>();

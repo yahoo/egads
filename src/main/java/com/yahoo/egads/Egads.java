@@ -22,7 +22,7 @@ import com.yahoo.egads.utilities.*;
  * 
  */
 
-class Egads {
+public class Egads {
     public static void main(String[] args) throws Exception {
 
         if (args.length == 0) {

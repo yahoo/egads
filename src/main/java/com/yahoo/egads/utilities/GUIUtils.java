@@ -127,7 +127,7 @@ public class GUIUtils extends ApplicationFrame {
     /**
      * Compute the time-series of anomalies.
      */
-    private void addAnomalyTS(CombinedDomainXYPlot plot, DataSequence observedSeries, DataSequence expectedSeries) {
+    public void addAnomalyTS(CombinedDomainXYPlot plot, DataSequence observedSeries, DataSequence expectedSeries) {
         int n = observedSeries.size();
         Map<String, Float> threshold;
         // Compute the time-series of errors.
@@ -154,7 +154,7 @@ public class GUIUtils extends ApplicationFrame {
     /**
      * Add anomalies to the plot.
      */
-    private void addAnomalies(XYPlot plot, ArrayList<Anomaly> anomalyList) {
+    public void addAnomalies(XYPlot plot, ArrayList<Anomaly> anomalyList) {
         for (Anomaly a : anomalyList) {
             IntervalSequence is = a.intervals;
             for (Interval i : is) {
@@ -168,7 +168,7 @@ public class GUIUtils extends ApplicationFrame {
     /**
      * Creates a float[] time-series
      */
-    private XYDataset createDataset(Float[] ds, String label) {
+    public XYDataset createDataset(Float[] ds, String label) {
          XYSeries observations = new XYSeries(label);
          int n = ds.length;
          for (int i = 0; i < n; i++) {
@@ -183,7 +183,7 @@ public class GUIUtils extends ApplicationFrame {
      * Creates a dataset.
      * @return the dataset.
      */
-    private XYDataset createDataset(DataSequence ds, String label) {
+    public XYDataset createDataset(DataSequence ds, String label) {
         XYSeries observations = new XYSeries(label);
         int n = ds.size();
         for (int i = 0; i < n; i++) {

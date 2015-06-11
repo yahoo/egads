@@ -97,7 +97,7 @@ public class DBSCANClusterer<T extends Clusterable> extends Clusterer<T> {
      * @param measure the distance measure to use
      * @throws NotPositiveException if {@code eps < 0.0} or {@code minPts < 0}
      */
-    private DBSCANClusterer(final double eps, final int minPts, final DistanceMeasure measure)
+    public DBSCANClusterer(final double eps, final int minPts, final DistanceMeasure measure)
         throws NotPositiveException {
         super(measure);
  
