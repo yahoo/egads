@@ -22,16 +22,16 @@ import com.yahoo.egads.data.JsonEncoder;
 public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
 
     // Accuracy stats for this model.
-    private double bias;
-    private double mad;
-    private double mape;
-    private double mse;
-    private double sae;
-	protected String modelName;
+    protected double bias;
+    protected double mad;
+    protected double mape;
+    protected double mse;
+    protected double sae;
+    protected String modelName;
 
     org.apache.logging.log4j.Logger logger;
 
-    private boolean errorsInit = false;
+    protected boolean errorsInit = false;
     protected int dynamicParameters = 0;
 
     public String getModelName() {

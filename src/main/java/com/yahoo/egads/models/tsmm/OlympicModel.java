@@ -12,9 +12,6 @@ package com.yahoo.egads.models.tsmm;
 import com.yahoo.egads.data.*;
 import com.yahoo.egads.data.TimeSeries.Entry;
 
-import org.json.JSONObject;
-import org.json.JSONStringer;
-
 import java.util.Properties;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,25 +21,47 @@ import com.yahoo.egads.utilities.FileUtils;
 public class OlympicModel extends TimeSeriesAbstractModel {
     // methods ////////////////////////////////////////////////
 
-    // Number of weeks to look back when computing the
+	private static final long serialVersionUID = 1L;
+
+	public int getNumWeeks() {
+		return numWeeks;
+	}
+
+	public int getNumToDrop() {
+		return numToDrop;
+	}
+
+	public int[] getTimeShifts() {
+		return timeShifts;
+	}
+
+	public int[] getBaseWindows() {
+		return baseWindows;
+	}
+
+	public ArrayList<Float> getModel() {
+		return model;
+	}
+
+	// Number of weeks to look back when computing the
     // estimate.
-    private int numWeeks;
+    protected int numWeeks;
     // Number of lowest and highest points to drop.
-    private int numToDrop;
+    protected int numToDrop;
     // Stores the historical values.
-    private TimeSeries.DataSequence data;
+    protected TimeSeries.DataSequence data;
     // Stores the possible time-shifts.
     // time-shifts are used to fix the time-series
     // that has been shifted due to day-light savings.
-    private int[] timeShifts;
+    protected int[] timeShifts;
     // Stores the possible base windows.
     // The default base window is 1 week, however
     // trying multiple possible windows seems to improve
     // performance.
-    private int[] baseWindows;
+    protected int[] baseWindows;
     
     // The actual model that stores the expectations.
-    private ArrayList<Float> model;
+    protected ArrayList<Float> model;
     
     public OlympicModel(Properties config) {
         super(config);
@@ -188,11 +207,4 @@ public class OlympicModel extends TimeSeriesAbstractModel {
         }
     }
 
-    public void toJson(JSONStringer json_out) {
-
-    }
-
-    public void fromJson(JSONObject json_obj) {
-
-    }
 }

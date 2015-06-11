@@ -10,7 +10,9 @@
 
 package com.yahoo.egads.data;
 
-public interface Model extends JsonAble {
+import java.io.Serializable;
+
+public interface Model extends JsonAble, Serializable {
 	
     // resets the model.
     public void reset();
