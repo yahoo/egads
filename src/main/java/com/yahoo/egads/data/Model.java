@@ -12,6 +12,6 @@ package com.yahoo.egads.data;
 
 public interface Model extends JsonAble {
 
-    public String getModelName();
+    String getModelName();
 
 }

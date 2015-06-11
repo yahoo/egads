@@ -6,16 +6,13 @@
 
 package com.yahoo.egads;
 
-import com.yahoo.egads.data.Model;
 import com.yahoo.egads.models.tsmm.OlympicModel;
-import com.yahoo.egads.utilities.*;
 import com.yahoo.egads.data.*;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import com.yahoo.egads.control.ProcessableObject;
-import com.yahoo.egads.control.ProcessableObjectFactory;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

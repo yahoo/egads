@@ -35,13 +35,13 @@ import java.util.ArrayList;
 import com.yahoo.egads.data.TimeSeries;
 import com.yahoo.egads.models.tsmm.TimeSeriesModel;
 
-public class ModelAdapter { // Encapsulates a metric and the models operating on it
+class ModelAdapter { // Encapsulates a metric and the models operating on it
 
-    protected TimeSeries metric = null;
-    protected ArrayList<TimeSeriesModel> models = new ArrayList<TimeSeriesModel>();
-    protected ArrayList<Boolean> isTrained = new ArrayList<Boolean>();
-    protected long firstTimeStamp = 0;
-    protected long period;
+    TimeSeries metric = null;
+    private final ArrayList<TimeSeriesModel> models = new ArrayList<>();
+    private final ArrayList<Boolean> isTrained = new ArrayList<>();
+    private long firstTimeStamp = 0;
+    private long period;
 
     // Construction ///////////////////////////////////////////////////////////
 
@@ -68,7 +68,7 @@ public class ModelAdapter { // Encapsulates a metric and the models operating on
         }
     }
 
-    public ModelAdapter(String theMetric, long period) throws Exception {
+    public ModelAdapter(String theMetric, long period) {
         this.period = period;
         // TODO:
         // 1 - load the models related to theMetric from ModelDB
@@ -187,7 +187,7 @@ public class ModelAdapter { // Encapsulates a metric and the models operating on
             }
         }
 
-        ArrayList<TimeSeries.DataSequence> result = new ArrayList<TimeSeries.DataSequence>();
+        ArrayList<TimeSeries.DataSequence> result = new ArrayList<>();
 
         for (TimeSeriesModel model : models) {
             TimeSeries.DataSequence sequence = new TimeSeries.DataSequence(from, to, period);

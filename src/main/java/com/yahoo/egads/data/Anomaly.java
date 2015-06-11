@@ -17,10 +17,10 @@ import org.json.JSONStringer;
 public class Anomaly implements JsonAble {
     // member data ////////////////////////////////////////////////
 
-    public String id;
+    private final String id;
     public String type = "";
     public String modelName = "";
-    public MetricMeta metricMetaData; // reference, not owner
+    private final MetricMeta metricMetaData; // reference, not owner
     public IntervalSequence intervals = new IntervalSequence();
 
     // Inner Classes ///////////////////////////////////////////////////////
@@ -33,12 +33,12 @@ public class Anomaly implements JsonAble {
         public float value = 0;
         
         // Not set to final so that the json encode tests pass.
-        public Float[] anomalyScore;
-        public Float[] thresholdScore;
-        public Float actualVal;
-        public Float expectedVal;
-        public Long utime; // point anomaly time.
-        public Boolean isAnomaly;
+        public final Float[] anomalyScore;
+        public final Float[] thresholdScore;
+        public final Float actualVal;
+        public final Float expectedVal;
+        public final Long utime; // point anomaly time.
+        public final Boolean isAnomaly;
 
         public Interval() {
             super();
@@ -112,7 +112,7 @@ public class Anomaly implements JsonAble {
 
             Date startDate = new Date(startTime * 1000);
             Date endDate = (endTime == null) ? null : new Date(
-                    endTime.longValue() * 1000);
+                    endTime * 1000);
             SimpleDateFormat dateFormat = new SimpleDateFormat(
                     "yyyy-MM-dd_hh:mm"); // Locale.UK);
             String startStr = dateFormat.format(startDate);
@@ -141,10 +141,7 @@ public class Anomaly implements JsonAble {
             if (logicalEndIndex != other.logicalEndIndex) {
                 return false;
             }
-            if (value != other.value) {
-                return false;
-            }
-            return true;
+            return value == other.value;
         }
     }
 
@@ -176,13 +173,7 @@ public class Anomaly implements JsonAble {
                 return false;
             }
             IntervalSequence other = (IntervalSequence) other_obj;
-            if (serialVersionUID != other.serialVersionUID) {
-                return false;
-            }
-            if (!super.equals(other)) {
-                return false;
-            }
-            return true;
+            return super.equals(other);
         }
     }
 
@@ -208,7 +199,7 @@ public class Anomaly implements JsonAble {
     public void addInterval(long start_time, long end_time, float value) {
         Interval interval = new Interval();
         interval.startTime = start_time;
-        interval.endTime = new Long(end_time);
+        interval.endTime = end_time;
         interval.value = value;
         intervals.add(interval);
     }
@@ -246,15 +237,15 @@ public class Anomaly implements JsonAble {
     }
     
     // Prints anomaly is not null.
-    public static String printDebugIsAnomaly(Boolean isAnom) {
+    private static String printDebugIsAnomaly(Boolean isAnom) {
         if (isAnom == null) {
             return "";
         }
-        return "," + ((isAnom == true) ? "1" : "0");
+        return "," + ((isAnom) ? "1" : "0");
     }
     
     // Print array and separate by commas.
-    public static String printArray(Float[] arr) {
+    private static String printArray(Float[] arr) {
         StringBuffer str = new StringBuffer();
         if (arr.length >= 1) {
             str.append(arr[0]);
@@ -292,10 +283,7 @@ public class Anomaly implements JsonAble {
         if (!MetricMeta.equals(metricMetaData, other.metricMetaData)) {
             return false;
         }
-        if (!MetricMeta.equals(intervals, other.intervals)) {
-            return false;
-        }
-        return true;
+        return MetricMeta.equals(intervals, other.intervals);
     }
 
     // public static void

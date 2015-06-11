@@ -14,8 +14,6 @@ import com.yahoo.egads.data.*;
 import java.util.ArrayList;
 import net.sourceforge.openforecast.ForecastingModel;
 
-import com.yahoo.egads.data.JsonEncoder;
-
 public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
 
     // Accuracy stats for this model.
@@ -38,10 +36,10 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     }
 
     // Acts as a factory method.
-    public TimeSeriesAbstractModel(Properties config) {
+    TimeSeriesAbstractModel(Properties config) {
     }
 
-    protected static boolean betterThan(TimeSeriesAbstractModel model1, TimeSeriesAbstractModel model2) {
+    static boolean betterThan(TimeSeriesAbstractModel model1, TimeSeriesAbstractModel model2) {
         // Special case. Any model is better than no model!
         if (model2 == null) {
             return true;
@@ -95,7 +93,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     /*
      * Forecasting model already has the errors defined.
      */
-    protected void initForecastErrors(TimeSeriesAbstractModel forecaster, TimeSeries.DataSequence data) {
+    void initForecastErrors(TimeSeriesAbstractModel forecaster, TimeSeries.DataSequence data) {
         this.bias = forecaster.getBias();
         this.mad = forecaster.getMAD();
         this.mape = forecaster.getMAPE();
@@ -107,7 +105,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     /*
      * Forecasting model already has the errors defined.
      */
-    protected void initForecastErrors(ForecastingModel forecaster, TimeSeries.DataSequence data) {
+    void initForecastErrors(ForecastingModel forecaster, TimeSeries.DataSequence data) {
         this.bias = forecaster.getBias();
         this.mad = forecaster.getMAD();
         this.mape = forecaster.getMAPE();
@@ -119,7 +117,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     /**
      * Initializes all errors given the model.
      */
-    protected void initForecastErrors(ArrayList<Float> model, TimeSeries.DataSequence data) {
+    void initForecastErrors(ArrayList<Float> model, TimeSeries.DataSequence data) {
         // Reset various helper summations
         double sumErr = 0.0;
         double sumAbsErr = 0.0;
@@ -153,8 +151,8 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
      * 
      * @return the bias - mean of the errors - when the current model was applied to the initial data set.
      */
-    public double getBias() {
-        if (errorsInit == false) {
+    double getBias() {
+        if (!errorsInit) {
             return -1;
         }
         return bias;
@@ -167,8 +165,8 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
      * 
      * @return the mean absolute deviation (MAD) when the current model was applied to the initial data set.
      */
-    public double getMAD() {
-        if (errorsInit == false) {
+    double getMAD() {
+        if (!errorsInit) {
             return -1;
         }
         return mad;
@@ -182,8 +180,8 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
      * 
      * @return the mean absolute percentage error (MAPE) when the current model was applied to the initial data set.
      */
-    public double getMAPE() {
-        if (errorsInit == false) {
+    double getMAPE() {
+        if (!errorsInit) {
             return -1;
         }
         return mape;
@@ -196,8 +194,8 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
      * 
      * @return the mean square of the errors (MSE) when the current model was applied to the initial data set.
      */
-    public double getMSE() {
-        if (errorsInit == false) {
+    double getMSE() {
+        if (!errorsInit) {
             return -1;
         }
         return mse;
@@ -209,8 +207,8 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
      * 
      * @return the sum of absolute errors (SAE) obtained by applying this forecasting model to the initial data set.
      */
-    public double getSAE() {
-        if (errorsInit == false) {
+    double getSAE() {
+        if (!errorsInit) {
             return -1;
         }
         return sae;

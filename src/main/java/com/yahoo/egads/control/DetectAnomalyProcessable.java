@@ -16,8 +16,8 @@ import com.yahoo.egads.utilities.Storage;
 import com.yahoo.egads.utilities.GUIUtils;
 
 public class DetectAnomalyProcessable implements ProcessableObject {
-    private ModelAdapter ma;
-    private AnomalyDetector ad;
+    private final ModelAdapter ma;
+    private final AnomalyDetector ad;
 
     DetectAnomalyProcessable(ModelAdapter ma, AnomalyDetector ad) {
         this.ma = ma;

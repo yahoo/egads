@@ -24,7 +24,7 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
 
     // The constructor takes a set of properties
     // needed for the simple model. This includes the sensitivity.
-    protected Float threshold;
+    private Float threshold;
     
     // Model name.
     private String modelName = "SimpleThresholdModel";
@@ -63,7 +63,7 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
 
     @Override
     public void tune(DataSequence observedSeries, DataSequence expectedSeries,
-            IntervalSequence anomalySequence) throws Exception {  
+            IntervalSequence anomalySequence) {
         
         if (threshold == null) {
         	threshold = AutoSensitivity.getKSigmaSensitivity(observedSeries.getValues());
@@ -72,7 +72,7 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
 
     @Override
     public IntervalSequence detect(DataSequence observedSeries,
-            DataSequence expectedSeries) throws Exception {
+            DataSequence expectedSeries) {
         IntervalSequence output = new IntervalSequence();
 
         for (TimeSeries.Entry entry : observedSeries) {

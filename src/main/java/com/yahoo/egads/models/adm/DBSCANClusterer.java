@@ -97,7 +97,7 @@ public class DBSCANClusterer<T extends Clusterable> extends Clusterer<T> {
      * @param measure the distance measure to use
      * @throws NotPositiveException if {@code eps < 0.0} or {@code minPts < 0}
      */
-    public DBSCANClusterer(final double eps, final int minPts, final DistanceMeasure measure)
+    private DBSCANClusterer(final double eps, final int minPts, final DistanceMeasure measure)
         throws NotPositiveException {
         super(measure);
  
@@ -139,8 +139,8 @@ public class DBSCANClusterer<T extends Clusterable> extends Clusterer<T> {
         // sanity checks
         MathUtils.checkNotNull(points);
  
-        final List<Cluster<T>> clusters = new ArrayList<Cluster<T>>();
-        final Map<Clusterable, PointStatus> visited = new HashMap<Clusterable, PointStatus>();
+        final List<Cluster<T>> clusters = new ArrayList<>();
+        final Map<Clusterable, PointStatus> visited = new HashMap<>();
  
         for (final T point : points) {
             if (visited.get(point) != null) {
@@ -149,7 +149,7 @@ public class DBSCANClusterer<T extends Clusterable> extends Clusterer<T> {
             final List<T> neighbors = getNeighbors(point, points);
             if (neighbors.size() >= minPts) {
                 // DBSCAN does not care about center points
-                final Cluster<T> cluster = new Cluster<T>();
+                final Cluster<T> cluster = new Cluster<>();
                 clusters.add(expandCluster(cluster, point, neighbors, points, visited));
             } else {
                 visited.put(point, PointStatus.NOISE);
@@ -177,7 +177,7 @@ public class DBSCANClusterer<T extends Clusterable> extends Clusterer<T> {
         cluster.addPoint(point);
         visited.put(point, PointStatus.PART_OF_CLUSTER);
  
-        List<T> seeds = new ArrayList<T>(neighbors);
+        List<T> seeds = new ArrayList<>(neighbors);
         int index = 0;
         while (index < seeds.size()) {
             final T current = seeds.get(index);
@@ -208,7 +208,7 @@ public class DBSCANClusterer<T extends Clusterable> extends Clusterer<T> {
      * @return the List of neighbors
      */
     private List<T> getNeighbors(final T point, final Collection<T> points) {
-        final List<T> neighbors = new ArrayList<T>();
+        final List<T> neighbors = new ArrayList<>();
         for (final T neighbor : points) {
             if (point != neighbor && distance(neighbor, point) <= eps) {
                 neighbors.add(neighbor);
@@ -225,7 +225,7 @@ public class DBSCANClusterer<T extends Clusterable> extends Clusterer<T> {
      * @return merged lists
      */
     private List<T> merge(final List<T> one, final List<T> two) {
-        final Set<T> oneSet = new HashSet<T>(one);
+        final Set<T> oneSet = new HashSet<>(one);
         for (T item : two) {
             if (!oneSet.contains(item)) {
                 one.add(item);

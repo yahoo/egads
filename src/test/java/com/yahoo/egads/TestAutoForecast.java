@@ -6,23 +6,15 @@
 
 package com.yahoo.egads;
 
-import com.yahoo.egads.data.Model;
 import com.yahoo.egads.models.tsmm.*;
-import com.yahoo.egads.utilities.*;
 import com.yahoo.egads.data.*;
-import java.util.ArrayList;
-import java.util.Properties;
+
 import java.io.FileInputStream;
 import java.io.InputStream;
-import com.yahoo.egads.control.ProcessableObject;
-import com.yahoo.egads.control.ProcessableObjectFactory;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import net.sourceforge.openforecast.Forecaster;
-import net.sourceforge.openforecast.ForecastingModel;
-import net.sourceforge.openforecast.DataSet;
-import net.sourceforge.openforecast.DataPoint;
-import net.sourceforge.openforecast.Observation;
+
 import java.util.*;
 
 // Tests the correct generation of the expected values for olympic
@@ -64,9 +56,6 @@ public class TestAutoForecast {
          }
          errorSum /= n;
 
-         if (errorSum <= 5152990) {
-        	 return true;
-         }
-         return false;
+        return errorSum <= 5152990;
     }
 }

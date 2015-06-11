@@ -34,7 +34,7 @@ public class StdinProcessor implements InputProcessor {
     // Format of the time-series: meta1\tmeta\2{(2014120205,0),(2014122207,1)}\t{(2014120205,0),(2014122207,0)}...
     // Creates a time-series from a file.
     private static ArrayList<TimeSeries> createTimeSeries(String s) throws Exception {
-        ArrayList<TimeSeries> output = new ArrayList<TimeSeries>();
+        ArrayList<TimeSeries> output = new ArrayList<>();
         String[] tokens = s.split("\t");
         String meta = "meta";
         
@@ -63,7 +63,7 @@ public class StdinProcessor implements InputProcessor {
          ts.meta.fileName = tokenNum;
          ts.meta.name = tokenNum;
          String[] tuples = s.split("\\),");
-         Long i = new Long(1);
+         Long i = (long) 1;
          for (String tuple : tuples) {
              tuple = tuple.replaceAll("[{}\\(\\)]", "");
              String[] vals = tuple.split(","); 

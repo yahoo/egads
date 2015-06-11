@@ -44,13 +44,13 @@ import com.yahoo.egads.data.Anomaly.IntervalSequence;
 import com.yahoo.egads.data.TimeSeries;
 import com.yahoo.egads.models.adm.AnomalyDetectionModel;
 
-public class AnomalyDetector {
+class AnomalyDetector {
 
-    protected TimeSeries metric = null;
-    protected ArrayList<AnomalyDetectionModel> models = new ArrayList<AnomalyDetectionModel>();
-    protected ArrayList<Boolean> isTuned = new ArrayList<Boolean>();
-    protected long firstTimeStamp = 0;
-    protected long period;
+    TimeSeries metric = null;
+    private final ArrayList<AnomalyDetectionModel> models = new ArrayList<>();
+    private final ArrayList<Boolean> isTuned = new ArrayList<>();
+    private long firstTimeStamp = 0;
+    private long period;
 
     // Construction ////////////////////////////////////////////////////////////////////////////////
 
@@ -78,7 +78,7 @@ public class AnomalyDetector {
         }
     }
 
-    public AnomalyDetector(String theMetric, long period) throws Exception {
+    public AnomalyDetector(String theMetric, long period) {
         this.period = period;
         // TODO:
         // 1 - load the models related to theMetric from ModelDB
@@ -171,7 +171,7 @@ public class AnomalyDetector {
             }
         }
 
-        ArrayList<Anomaly> result = new ArrayList<Anomaly>();
+        ArrayList<Anomaly> result = new ArrayList<>();
         observedSeries.data.setLogicalIndices(firstTimeStamp, period);
         expectedSeries.setLogicalIndices(firstTimeStamp, period);
 

@@ -60,7 +60,7 @@ public class GUIUtils extends ApplicationFrame {
     
     // Denominator used in the MASE error metric.
     float maseDenom = 0;
-    private AnomalyErrorStorage aes = new AnomalyErrorStorage();
+    private final AnomalyErrorStorage aes = new AnomalyErrorStorage();
 
     private GUIUtils(String title, DataSequence orig, DataSequence predicted, ArrayList<Anomaly> anomalyList) {
          super(title);
@@ -127,7 +127,7 @@ public class GUIUtils extends ApplicationFrame {
     /**
      * Compute the time-series of anomalies.
      */
-    public void addAnomalyTS(CombinedDomainXYPlot plot, DataSequence observedSeries, DataSequence expectedSeries) {
+    private void addAnomalyTS(CombinedDomainXYPlot plot, DataSequence observedSeries, DataSequence expectedSeries) {
         int n = observedSeries.size();
         Map<String, Float> threshold;
         // Compute the time-series of errors.
@@ -154,7 +154,7 @@ public class GUIUtils extends ApplicationFrame {
     /**
      * Add anomalies to the plot.
      */
-    public void addAnomalies(XYPlot plot, ArrayList<Anomaly> anomalyList) {
+    private void addAnomalies(XYPlot plot, ArrayList<Anomaly> anomalyList) {
         for (Anomaly a : anomalyList) {
             IntervalSequence is = a.intervals;
             for (Interval i : is) {
@@ -168,7 +168,7 @@ public class GUIUtils extends ApplicationFrame {
     /**
      * Creates a float[] time-series
      */
-    public XYDataset createDataset(Float[] ds, String label) {
+    private XYDataset createDataset(Float[] ds, String label) {
          XYSeries observations = new XYSeries(label);
          int n = ds.length;
          for (int i = 0; i < n; i++) {
@@ -183,7 +183,7 @@ public class GUIUtils extends ApplicationFrame {
      * Creates a dataset.
      * @return the dataset.
      */
-    public XYDataset createDataset(DataSequence ds, String label) {
+    private XYDataset createDataset(DataSequence ds, String label) {
         XYSeries observations = new XYSeries(label);
         int n = ds.size();
         for (int i = 0; i < n; i++) {
@@ -196,7 +196,6 @@ public class GUIUtils extends ApplicationFrame {
     
     /**
      * Starting point for the forecasting charting demo application.
-     * @param args ignored.
      */
     public static void plotResults(DataSequence orig, DataSequence predicted, ArrayList<Anomaly> anomalyList) {
         GUIUtils gui = new GUIUtils("EGADS GUI", orig, predicted, anomalyList);

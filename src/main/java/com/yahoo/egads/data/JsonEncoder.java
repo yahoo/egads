@@ -99,7 +99,6 @@ public class JsonEncoder {
 
             if (json_obj.isNull(key)) {
                 field.set(object, null);
-                continue;
                 // if variable is container... recurse
             } else if (member instanceof JsonAble) {
                 ((JsonAble) member).fromJson((JSONObject) value);

@@ -26,13 +26,12 @@ import com.yahoo.egads.data.*;
 import com.yahoo.egads.data.TimeSeries.Entry;
 import org.json.JSONObject;
 import org.json.JSONStringer;
-import java.util.Properties;
 import net.sourceforge.openforecast.DataSet;
 import net.sourceforge.openforecast.ForecastingModel;
 import net.sourceforge.openforecast.DataPoint;
 import net.sourceforge.openforecast.Observation;
 import java.util.*;
-import com.yahoo.egads.models.adm.*;
+
 import com.yahoo.egads.utilities.Storage;
 
 // Double exponential smoothing - also known as Holt exponential smoothing - is a refinement of the popular simple
@@ -44,7 +43,7 @@ public class DoubleExponentialSmoothingModel extends TimeSeriesAbstractModel {
     private ForecastingModel forecaster;
     
     // Will be updated later based on the best model that we picked.
-    private String modelName;
+    private final String modelName;
     
     // Stores the historical values.
     private TimeSeries.DataSequence data;
@@ -62,10 +61,9 @@ public class DoubleExponentialSmoothingModel extends TimeSeriesAbstractModel {
     public void train(TimeSeries.DataSequence data) {
         this.data = data;
         int n = data.size();
-        DataPoint dp = null;
         DataSet observedData = new DataSet();
         for (int i = 0; i < n; i++) {
-            dp = new Observation(data.get(i).value);
+            DataPoint dp = new Observation(data.get(i).value);
             dp.setIndependentValue("x", i);
             observedData.add(dp);
         }
@@ -98,11 +96,9 @@ public class DoubleExponentialSmoothingModel extends TimeSeriesAbstractModel {
     public void predict(TimeSeries.DataSequence sequence) throws Exception {
           int n = data.size();
           DataSet requiredDataPoints = new DataSet();
-          DataPoint dp;
 
-          DataSet requiredDataPointsTmp = new DataSet();
           for (int count = 0; count < n; count++) {
-              dp = new Observation(0.0);
+              DataPoint dp = new Observation(0.0);
               dp.setIndependentValue("x", count);
               requiredDataPoints.add(dp);
           }

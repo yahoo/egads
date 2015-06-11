@@ -26,6 +26,6 @@ public abstract class AnomalyDetectionAbstractModel implements
 
     // Force the user to define this constructor that acts as a
     // factory method.
-    public AnomalyDetectionAbstractModel(Properties config) {
+    AnomalyDetectionAbstractModel(Properties config) {
     }
 }

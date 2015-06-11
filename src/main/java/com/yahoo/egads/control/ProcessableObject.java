@@ -12,6 +12,6 @@ public interface ProcessableObject {
 
     // The process() method instantiates the appropriate objects
     // depending on the concrete class implementation.
-    public void process() throws Exception;
+    void process() throws Exception;
 
 }

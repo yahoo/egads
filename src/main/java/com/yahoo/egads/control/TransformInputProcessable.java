@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import com.yahoo.egads.data.TimeSeries;
 
 public class TransformInputProcessable implements ProcessableObject {
-    private ModelAdapter ma;
+    private final ModelAdapter ma;
 
     TransformInputProcessable(ModelAdapter ma) {
         this.ma = ma;

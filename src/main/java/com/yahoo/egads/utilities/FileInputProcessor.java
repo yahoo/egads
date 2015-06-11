@@ -24,8 +24,7 @@ public class FileInputProcessor implements InputProcessor {
     
     public void processInput(Properties p) throws Exception {
         // Parse the input timeseries.
-        ArrayList<TimeSeries> metrics = com.yahoo.egads.utilities.FileUtils
-                .createTimeSeries(this.file);
+        ArrayList<TimeSeries> metrics = FileUtils.createTimeSeries(file);
         for (TimeSeries ts : metrics) {
             ProcessableObject po = ProcessableObjectFactory.create(ts, p);
             po.process();

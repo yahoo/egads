@@ -29,8 +29,8 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
     private Map<String, Float> threshold;
     private int maxHrsAgo;
     // modelName.
-    public String modelName = "KSigmaModel";
-    public AnomalyErrorStorage aes = new AnomalyErrorStorage();
+    private String modelName = "KSigmaModel";
+    private final AnomalyErrorStorage aes = new AnomalyErrorStorage();
     
     public KSigmaModel(Properties config) {
         super(config);
@@ -43,7 +43,7 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
         
         this.threshold = parseMap(config.getProperty("THRESHOLD"));
             
-        if (config.getProperty("THRESHOLD") != null && this.threshold.isEmpty() == true) {
+        if (config.getProperty("THRESHOLD") != null && this.threshold.isEmpty()) {
             throw new IllegalArgumentException("THRESHOLD PARSE ERROR");
         } 
     }
@@ -51,10 +51,10 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
     // Parses the THRESHOLD config into a map.
     private Map<String, Float> parseMap(String s) {
         if (s == null) {
-            return new HashMap<String, Float>();
+            return new HashMap<>();
         }
         String[] pairs = s.split(",");
-        Map<String, Float> myMap = new HashMap<String, Float>();
+        Map<String, Float> myMap = new HashMap<>();
         for (int i = 0; i < pairs.length; i++) {
             String pair = pairs[i];
             String[] keyValue = pair.split(":");
@@ -87,7 +87,7 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
 
     @Override
     public void tune(DataSequence observedSeries, DataSequence expectedSeries,
-            IntervalSequence anomalySequence) throws Exception {
+            IntervalSequence anomalySequence) {
         int n = observedSeries.size();
         
         HashMap<String, ArrayList<Float>> allErrors = aes.initAnomalyErrors(observedSeries, expectedSeries);
@@ -103,12 +103,12 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
     }
     
     // Returns true this point is identified as a potential anomaly.
-    public boolean isAnomaly(Float[] errors, Map<String, Float> threshold) {
+    private boolean isAnomaly(Float[] errors, Map<String, Float> threshold) {
         // Cycle through all available thresholds and return
         // true if any of them matches.
         for (Map.Entry<String, Float> entry : threshold.entrySet()) {
             // disable mapee and mape.
-            if (aes.getErrorToIndex().containsKey(entry.getKey()) == true &&
+            if (aes.getErrorToIndex().containsKey(entry.getKey()) &&
                 Math.abs(errors[aes.getErrorToIndex().get(entry.getKey())]) >= Math.abs(entry.getValue())) {
                 return true;
             }
@@ -118,7 +118,7 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
 
     @Override
     public IntervalSequence detect(DataSequence observedSeries,
-            DataSequence expectedSeries) throws Exception {
+            DataSequence expectedSeries) {
         
         // At detection time, the anomaly thresholds shouldn't all be 0.
         Float threshSum = (float) 0.0;
@@ -148,7 +148,7 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
             } else {
                 if (observedSeries.get(i).value != expectedSeries.get(i).value &&
                     threshSum > (float) 0.0 &&
-                    isAnomaly(errors, threshold) == true &&
+                        isAnomaly(errors, threshold) &&
                     ((((unixTime - observedSeries.get(i).time) / 3600) < maxHrsAgo) ||
                     (maxHrsAgo == 0 && i == (n - 1)))) {
                     output.add(new Interval(observedSeries.get(i).time,

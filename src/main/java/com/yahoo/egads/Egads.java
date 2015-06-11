@@ -22,7 +22,7 @@ import com.yahoo.egads.utilities.*;
  * 
  */
 
-public class Egads {
+class Egads {
     public static void main(String[] args) throws Exception {
 
         if (args.length == 0) {
@@ -38,7 +38,7 @@ public class Egads {
         p.load(is);
         
         // Set the input type.
-        InputProcessor ip = null;
+        InputProcessor ip;
         if (p.getProperty("INPUT") == null || p.getProperty("INPUT").equals("CSV")) {
             ip = new FileInputProcessor(args[1]);
         } else {

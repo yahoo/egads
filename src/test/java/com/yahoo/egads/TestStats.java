@@ -15,14 +15,14 @@ import java.util.Random;
 // Tests the basic anoamly detection piece of EGADS.
 public class TestStats {
     
-    private Random fRandom = new Random();
+    private final Random fRandom = new Random();
 
     @Test
     public void testStats() throws Exception {
         // Generate a normal distribution.
-        ArrayList<Double> randomNumbers = new ArrayList<Double>();
+        ArrayList<Double> randomNumbers = new ArrayList<>();
         // Skewed distribution.
-        ArrayList<Double> skewedNumbers = new ArrayList<Double>();
+        ArrayList<Double> skewedNumbers = new ArrayList<>();
         
         double mean = 100.0f; 
         double variance = 5.0f;

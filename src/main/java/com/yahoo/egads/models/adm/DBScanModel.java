@@ -18,28 +18,22 @@ import com.yahoo.egads.data.Anomaly.Interval;
 import com.yahoo.egads.data.AnomalyErrorStorage;
 import com.yahoo.egads.data.TimeSeries.DataSequence;
 import com.yahoo.egads.utilities.Storage;
-import com.yahoo.egads.utilities.AutoSensitivity;
-import com.yahoo.egads.utilities.DBSCANClusterer;
 import org.apache.commons.math3.ml.clustering.Cluster;
-import com.yahoo.egads.utilities.DoublePoint;
+import com.yahoo.egads.utilities.IdentifiedDoublePoint;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
+import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
 public class DBScanModel extends AnomalyDetectionAbstractModel {
 
-    // The constructor takes a set of properties
-    // needed for the simple model. This includes the sensitivity.
-    private Map<String, Float> threshold;
     private int maxHrsAgo;
     // modelName.
-    public String modelName = "DBScanModel";
-    public AnomalyErrorStorage aes = new AnomalyErrorStorage();
-    private DBSCANClusterer dbscan = null;
-    private int minPoints = 2;
-    private double eps = 500;
-    
+    private String modelName = "DBScanModel";
+    private final AnomalyErrorStorage aes = new AnomalyErrorStorage();
+    private DBSCANClusterer<IdentifiedDoublePoint> dbscan = null;
+
     public DBScanModel(Properties config) {
         super(config);
        
@@ -48,10 +42,10 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
             throw new IllegalArgumentException("MAX_ANOMALY_TIME_AGO is NULL");
         }
         this.maxHrsAgo = new Integer(config.getProperty("MAX_ANOMALY_TIME_AGO"));
-        
-        this.threshold = parseMap(config.getProperty("THRESHOLD"));
+
+        Map<String, Float> threshold = parseMap(config.getProperty("THRESHOLD"));
             
-        if (config.getProperty("THRESHOLD") != null && this.threshold.isEmpty() == true) {
+        if (config.getProperty("THRESHOLD") != null && threshold.isEmpty()) {
             throw new IllegalArgumentException("THRESHOLD PARSE ERROR");
         } 
     }
@@ -59,10 +53,10 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
     // Parses the THRESHOLD config into a map.
     private Map<String, Float> parseMap(String s) {
         if (s == null) {
-            return new HashMap<String, Float>();
+            return new HashMap<>();
         }
         String[] pairs = s.split(",");
-        Map<String, Float> myMap = new HashMap<String, Float>();
+        Map<String, Float> myMap = new HashMap<>();
         for (int i = 0; i < pairs.length; i++) {
             String pair = pairs[i];
             String[] keyValue = pair.split(":");
@@ -96,10 +90,10 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
     @Override
     public void tune(DataSequence observedSeries,
                      DataSequence expectedSeries,
-                     IntervalSequence anomalySequence) throws Exception {
+                     IntervalSequence anomalySequence) {
         // Compute the time-series of errors.
         HashMap<String, ArrayList<Float>> allErrors = aes.initAnomalyErrors(observedSeries, expectedSeries);
-        List<DoublePoint> points = new ArrayList<DoublePoint>();
+        List<IdentifiedDoublePoint> points = new ArrayList<>();
         EuclideanDistance ed = new EuclideanDistance();
         int n = observedSeries.size();
         
@@ -109,7 +103,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
             for (int e = 0; e < (aes.getIndexToError().keySet()).size(); e++) {
                  d[e] = allErrors.get(aes.getIndexToError().get(e)).get(i);
             }
-            points.add(new DoublePoint(d, i));
+            points.add(new IdentifiedDoublePoint(d, i));
         }
         
         double sum = 0.0;
@@ -120,14 +114,14 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
                 count++;
             }
         }
-        eps = ((double) Storage.sDAutoSensParameter) * (sum / count);   
-        minPoints = ((int) Math.ceil(((double) Storage.amntAutoSensParameter) * ((double) n)));     
-        dbscan = new DBSCANClusterer(eps, minPoints);
+        double eps = ((double) Storage.sDAutoSensParameter) * (sum / count);
+        int minPoints = ((int) Math.ceil(((double) Storage.amntAutoSensParameter) * ((double) n)));
+        dbscan = new DBSCANClusterer<>(eps, minPoints);
     }
   
     @Override
     public IntervalSequence detect(DataSequence observedSeries,
-                                   DataSequence expectedSeries) throws Exception {
+                                   DataSequence expectedSeries) {
         
         IntervalSequence output = new IntervalSequence();
         int n = observedSeries.size();
@@ -138,7 +132,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
         
         // Compute the time-series of errors.
         HashMap<String, ArrayList<Float>> allErrors = aes.initAnomalyErrors(observedSeries, expectedSeries);
-        List<DoublePoint> points = new ArrayList<DoublePoint>();
+        List<IdentifiedDoublePoint> points = new ArrayList<>();
         
         for (int i = 0; i < n; i++) {
             double[] d = new double[(aes.getIndexToError().keySet()).size()];
@@ -146,13 +140,13 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
             for (int e = 0; e < (aes.getIndexToError().keySet()).size(); e++) {
                  d[e] = allErrors.get(aes.getIndexToError().get(e)).get(i);
             }
-            points.add(new DoublePoint(d, i));
+            points.add(new IdentifiedDoublePoint(d, i));
         }
         
-        List<Cluster<DoublePoint>> cluster = dbscan.cluster(points);
+        List<Cluster<IdentifiedDoublePoint>> cluster = dbscan.cluster(points);
 
-        for(Cluster<DoublePoint> c: cluster) {
-            for (DoublePoint p : c.getPoints()) {
+        for(Cluster<IdentifiedDoublePoint> c: cluster) {
+            for (IdentifiedDoublePoint p : c.getPoints()) {
                 Float[] errors = aes.computeErrorMetrics(expectedSeries.get(p.getId()).value, observedSeries.get(p.getId()).value);
                 if (Storage.debug == 3) {
                     output.add(new Interval(observedSeries.get(p.getId()).time,

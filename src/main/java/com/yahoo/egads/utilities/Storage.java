@@ -8,8 +8,6 @@
 
 package com.yahoo.egads.utilities;
 
-import com.yahoo.egads.data.Anomaly;
-
 public class Storage {
     public static String outputSrc = null;
     // Classes can use this boolean to print
@@ -28,10 +26,6 @@ public class Storage {
     // A parameter denoting the aggregation level.
     public static int aggr = 1;
 
-    protected Storage() {
-    }
-    
-    public static void batchStoreAnomaly(Anomaly anomaly) {
-        // adds this anomaly to the group of anomalies to upload
+    private Storage() {
     }
 }

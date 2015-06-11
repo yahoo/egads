@@ -63,7 +63,7 @@ public class OlympicModel extends TimeSeriesAbstractModel {
         this.timeShifts = FileUtils.splitInts(config.getProperty("TIME_SHIFTS"));
         this.baseWindows = FileUtils.splitInts(config.getProperty("BASE_WINDOWS"));
         Storage.forecastModel = "OlympicModel";
-        model = new ArrayList<Float>();
+        model = new ArrayList<>();
     }
 
     public void reset() {
@@ -148,7 +148,7 @@ public class OlympicModel extends TimeSeriesAbstractModel {
     }
     
     private float computeExpected(int i, int pl) {
-        ArrayList<Float> vals = new ArrayList<Float>();
+        ArrayList<Float> vals = new ArrayList<>();
         float precision = (float) 0.000001;
         
         int j = 1;
@@ -182,9 +182,8 @@ public class OlympicModel extends TimeSeriesAbstractModel {
                 j++;
             }
         }
-                
-        float baseVal = sum(vals) / vals.size();
-        return baseVal;
+
+        return sum(vals) / vals.size();
     }
     
     public void predict(TimeSeries.DataSequence sequence) throws Exception {
