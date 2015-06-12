@@ -21,8 +21,6 @@ public class Storage {
     public static Float sDAutoSensParameter = (float) 3.0;
     // Sets the assumed amount of anomalies in your data.
     public static Float amntAutoSensParameter = (float) 0.05;
-    // Stores the name of the current forecast model.
-    public static String forecastModel = "none";
     // A parameter denoting the aggregation level.
     public static int aggr = 1;
 

@@ -41,6 +41,8 @@ public class OlympicModel extends TimeSeriesAbstractModel {
     
     // The actual model that stores the expectations.
     private ArrayList<Float> model;
+
+    private static final String modelName = "OlympicModel";
     
     public OlympicModel(Properties config) {
         super(config);
@@ -62,7 +64,6 @@ public class OlympicModel extends TimeSeriesAbstractModel {
         this.numToDrop = new Integer(config.getProperty("NUM_TO_DROP"));
         this.timeShifts = FileUtils.splitInts(config.getProperty("TIME_SHIFTS"));
         this.baseWindows = FileUtils.splitInts(config.getProperty("BASE_WINDOWS"));
-        Storage.forecastModel = "OlympicModel";
         model = new ArrayList<>();
     }
 
@@ -136,7 +137,7 @@ public class OlympicModel extends TimeSeriesAbstractModel {
     }
 
     public String getModelName() {
-        return "OlympicModel";
+        return modelName;
     }
 
     private Float sum(ArrayList<Float> list) {

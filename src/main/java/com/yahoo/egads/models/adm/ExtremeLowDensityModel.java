@@ -29,13 +29,12 @@ public class ExtremeLowDensityModel extends AnomalyDetectionAbstractModel {
     private Map<String, Float> threshold;
     private int maxHrsAgo;
     // modelName.
-    private String modelName = "ExtremeLowDensityModel";
+    private static final String modelName = "ExtremeLowDensityModel";
     private final AnomalyErrorStorage aes = new AnomalyErrorStorage();
     
     public ExtremeLowDensityModel(Properties config) {
         super(config);
-        
-        modelName = modelName + "-" + Storage.forecastModel;
+
         if (config.getProperty("MAX_ANOMALY_TIME_AGO") == null) {
             throw new IllegalArgumentException("MAX_ANOMALY_TIME_AGO is NULL");
         }

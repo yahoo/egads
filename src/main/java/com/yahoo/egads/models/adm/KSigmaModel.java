@@ -29,13 +29,11 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
     private Map<String, Float> threshold;
     private int maxHrsAgo;
     // modelName.
-    private String modelName = "KSigmaModel";
+    private static String modelName = "KSigmaModel";
     private final AnomalyErrorStorage aes = new AnomalyErrorStorage();
     
     public KSigmaModel(Properties config) {
         super(config);
-        
-        modelName = modelName + "-" + Storage.forecastModel;
         if (config.getProperty("MAX_ANOMALY_TIME_AGO") == null) {
             throw new IllegalArgumentException("MAX_ANOMALY_TIME_AGO is NULL");
         }

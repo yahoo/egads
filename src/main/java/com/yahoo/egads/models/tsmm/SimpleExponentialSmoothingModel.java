@@ -29,15 +29,13 @@ public class SimpleExponentialSmoothingModel extends TimeSeriesAbstractModel {
     private ForecastingModel forecaster;
     
     // Will be updated later based on the best model that we picked.
-    private final String modelName;
+    private static final String modelName = "SimpleExponentialSmoothingModel";
     
     // Stores the historical values.
     private TimeSeries.DataSequence data;
 
     public SimpleExponentialSmoothingModel(Properties config) {
         super(config);
-        modelName = "SimpleExponentialSmoothingModel";
-        Storage.forecastModel = modelName;
     }
 
     public void reset() {

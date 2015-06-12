@@ -42,15 +42,13 @@ public class RegressionModel extends TimeSeriesAbstractModel {
     private ForecastingModel forecaster;
     
     // Will be updated later based on the best model that we picked.
-    private final String modelName;
+    private static final String modelName = "RegressionModel";;
     
     // Stores the historical values.
     private TimeSeries.DataSequence data;
 
     public RegressionModel(Properties config) {
         super(config);
-        modelName = "RegressionModel";
-        Storage.forecastModel = modelName;
     }
 
     public void reset() {

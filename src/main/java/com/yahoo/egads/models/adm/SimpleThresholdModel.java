@@ -27,12 +27,10 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
     private Float threshold;
     
     // Model name.
-    private String modelName = "SimpleThresholdModel";
+    private static String modelName = "SimpleThresholdModel";
 
     public SimpleThresholdModel(Properties config) {
         super(config);
-        
-        modelName = modelName + "-" + Storage.forecastModel;
         if (config.getProperty("THRESHOLD") == null) {
             this.threshold = null;
         } else {

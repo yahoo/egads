@@ -50,7 +50,7 @@ public class DetectAnomalyProcessable implements ProcessableObject {
             // Writing the anomalies to AnomalyDB
             if (Storage.outputSrc != null && Storage.outputSrc.equals("ANOMALY_DB")) {
                 for (Anomaly anomaly : anomalyList) {
-                    Storage.batchStoreAnomaly(anomaly);
+                    // TODO write to database.
                 }
             } else if (Storage.outputSrc != null && Storage.outputSrc.equals("GUI")) { 
                 GUIUtils.plotResults(ma.metric.data, ds, anomalyList);

@@ -9,7 +9,7 @@
  * AnomalyDetector provides concrete mechanisms to apply one or more abstract anomaly detection algorithms on 
  * a time-series at the execution time; in other words, application of a certain anomaly detection algorithm on 
  * a given time series should be carried out via an AnomalyDetector object. 
- * The direct application of models on time series is discouraged in EGADS unless for test purposes.
+ * The direct application of anomaly models on time series is discouraged in EGADS unless for test purposes.
  * 
  * Inputs:
  *      1. The 'metric' time series
@@ -28,7 +28,7 @@
  *      
  * Details:
  *      1. The time units for interfacing with an AnomalyDetector object is the standard UNIX timestamp; however, AnomalyDetector 
- *         automatically performs logical indexing conversion for the abstract algorithms so that the actual models can 
+ *         automatically performs logical indexing conversion for the abstract algorithms so that the actual models can
  *         conveniently work with the logical index instead of UNIX timestamps. The conversion is:
  *         
  *         logical_index = (UNIX_timestamp - firstTimeStamp) div period
@@ -47,7 +47,7 @@ import com.yahoo.egads.models.adm.AnomalyDetectionModel;
 public class AnomalyDetector {
 
     TimeSeries metric = null;
-    private final ArrayList<AnomalyDetectionModel> models = new ArrayList<>();
+    private final ArrayList<AnomalyDetectionModel> anomalyModels = new ArrayList<>();
     private final ArrayList<Boolean> isTuned = new ArrayList<>();
     private long firstTimeStamp = 0;
     private long period;
@@ -82,11 +82,11 @@ public class AnomalyDetector {
         this.period = period;
         // TODO:
         // 1 - load the models related to theMetric from ModelDB
-        // 2 - push the loaded models into 'models'
+        // 2 - push the loaded models into 'anomalyModels'
         // 3 - create a new TimeSeries for theMetric and set 'metric'
         // 4 - set 'firstTimeStamp'
 
-        int modelNum = models.size();
+        int modelNum = anomalyModels.size();
         for (int i = 0; i < modelNum; ++i) {
             isTuned.set(i, true);
         }
@@ -115,16 +115,16 @@ public class AnomalyDetector {
     public void setMetric(String theMetric, long period) {
         this.period = period;
         firstTimeStamp = 0;
-        models.clear();
+        anomalyModels.clear();
         isTuned.clear();
 
         // TODO:
         // 1 - load the models related to theMetric from ModelDB
-        // 2 - push the loaded models into 'models'
+        // 2 - push the loaded models into 'anomalyModels'
         // 3 - create a new TimeSeries for theMetric and set 'metric'
         // 4 - set 'firstTimeStamp'
 
-        int modelNum = models.size();
+        int modelNum = anomalyModels.size();
         for (int i = 0; i < modelNum; ++i) {
             isTuned.set(i, true);
         }
@@ -132,7 +132,7 @@ public class AnomalyDetector {
 
     public void addModel(AnomalyDetectionModel model) {
         model.reset();
-        models.add(model);
+        anomalyModels.add(model);
         isTuned.add(false);
     }
 
@@ -140,7 +140,7 @@ public class AnomalyDetector {
 
     public void reset() {
         int i = 0;
-        for (AnomalyDetectionModel model : models) {
+        for (AnomalyDetectionModel model : anomalyModels) {
             model.reset();
             isTuned.set(i, false);
             i++;
@@ -153,7 +153,7 @@ public class AnomalyDetector {
 
         metric.data.setLogicalIndices(firstTimeStamp, period);
 
-        for (AnomalyDetectionModel model : models) {
+        for (AnomalyDetectionModel model : anomalyModels) {
             if (!isTuned.get(i)) {
                 model.tune(metric.data, expectedValues, anomalySequence);
                 isTuned.set(i, true);
@@ -175,7 +175,7 @@ public class AnomalyDetector {
         observedSeries.data.setLogicalIndices(firstTimeStamp, period);
         expectedSeries.setLogicalIndices(firstTimeStamp, period);
 
-        for (AnomalyDetectionModel model : models) {
+        for (AnomalyDetectionModel model : anomalyModels) {
             Anomaly anomaly = new Anomaly(observedSeries.meta.name,
                     observedSeries.meta);
             anomaly.modelName = model.getModelName();

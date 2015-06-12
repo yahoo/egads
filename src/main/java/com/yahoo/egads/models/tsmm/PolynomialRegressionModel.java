@@ -42,15 +42,13 @@ public class PolynomialRegressionModel extends TimeSeriesAbstractModel {
     private ForecastingModel forecaster;
     
     // Will be updated later based on the best model that we picked.
-    private final String modelName;
+    private static final String modelName = "PolynomialRegressionModel";;
     
     // Stores the historical values.
     private TimeSeries.DataSequence data;
 
     public PolynomialRegressionModel(Properties config) {
         super(config);
-        modelName = "PolynomialRegressionModel";
-        Storage.forecastModel = modelName;
     }
 
     public void reset() {

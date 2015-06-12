@@ -29,15 +29,13 @@ public class NaiveForecastingModel extends TimeSeriesAbstractModel {
     private ForecastingModel forecaster;
     
     // Will be updated later based on the best model that we picked.
-    private final String modelName;
+    private static final String modelName = "NaiveForecastingModel";
     
     // Stores the historical values.
     private TimeSeries.DataSequence data;
 
     public NaiveForecastingModel(Properties config) {
         super(config);
-        modelName = "NaiveForecastingModel";
-        Storage.forecastModel = modelName;
     }
 
     public void reset() {

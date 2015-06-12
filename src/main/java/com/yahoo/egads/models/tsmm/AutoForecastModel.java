@@ -35,7 +35,7 @@ public class AutoForecastModel extends TimeSeriesAbstractModel {
     // methods ////////////////////////////////////////////////
     
     // Will be updated later based on the best model that we picked.
-    private final String modelName;
+    private static final String modelName = "AutoForecastModel";
     
     // Stores the historical values.
     private TimeSeries.DataSequence data;
@@ -48,7 +48,6 @@ public class AutoForecastModel extends TimeSeriesAbstractModel {
 
     public AutoForecastModel(Properties config) {
         super(config);
-        modelName = "AutoForecastModel";
         this.p = config;
     }
 
@@ -112,8 +111,7 @@ public class AutoForecastModel extends TimeSeriesAbstractModel {
         if (betterThan(doubleExp, myModel)) {
             myModel = olympModel;
         }
-        
-        Storage.forecastModel = myModel.getModelName();
+
         initForecastErrors(myModel, data);
        
         if (Storage.debug == 2) {

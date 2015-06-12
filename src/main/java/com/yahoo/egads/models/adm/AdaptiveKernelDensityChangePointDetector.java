@@ -76,7 +76,7 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
     public AdaptiveKernelDensityChangePointDetector(Properties config) {
         super(config);
 
-        modelName = modelName + "-" + Storage.forecastModel;
+        modelName = modelName;
         this.maxHrsAgo = new Integer(config.getProperty("MAX_ANOMALY_TIME_AGO"));
         if (config.getProperty("PRE_WINDOW_SIZE") == null) {
             throw new IllegalArgumentException("PRE_WINDOW_SIZE is NULL");

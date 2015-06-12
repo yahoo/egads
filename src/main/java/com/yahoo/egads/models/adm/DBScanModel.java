@@ -30,14 +30,12 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
 
     private int maxHrsAgo;
     // modelName.
-    private String modelName = "DBScanModel";
+    private static final String modelName = "DBScanModel";
     private final AnomalyErrorStorage aes = new AnomalyErrorStorage();
     private DBSCANClusterer<IdentifiedDoublePoint> dbscan = null;
 
     public DBScanModel(Properties config) {
         super(config);
-       
-        modelName = modelName + "-" + Storage.forecastModel;
         if (config.getProperty("MAX_ANOMALY_TIME_AGO") == null) {
             throw new IllegalArgumentException("MAX_ANOMALY_TIME_AGO is NULL");
         }

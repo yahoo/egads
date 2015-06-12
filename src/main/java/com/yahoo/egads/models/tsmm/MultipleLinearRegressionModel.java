@@ -43,15 +43,13 @@ public class MultipleLinearRegressionModel extends TimeSeriesAbstractModel {
     private ForecastingModel forecaster;
     
     // Will be updated later based on the best model that we picked.
-    private final String modelName;
+    private static final String modelName = "MultipleLinearRegressionModel";
     
     // Stores the historical values.
     private TimeSeries.DataSequence data;
 
     public MultipleLinearRegressionModel(Properties config) {
         super(config);
-        modelName = "MultipleLinearRegressionModel";
-        Storage.forecastModel = modelName;
     }
 
     public void reset() {
