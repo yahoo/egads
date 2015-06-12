@@ -29,7 +29,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     protected double sae;
     protected String modelName;
 
-    org.apache.logging.log4j.Logger logger;
+    static org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(TimeSeriesModel.class.getName());
 
     protected boolean errorsInit = false;
     protected int dynamicParameters = 0;
@@ -54,7 +54,6 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
 
     // Acts as a factory method.
     public TimeSeriesAbstractModel(Properties config) {
-    	logger = org.apache.logging.log4j.LogManager.getLogger(this.getClass().getName());
         if (config.getProperty("DYNAMIC_PARAMETERS") != null) {
             this.dynamicParameters = new Integer(config.getProperty("DYNAMIC_PARAMETERS"));
         }
