@@ -33,10 +33,10 @@ import com.yahoo.egads.utilities.SpectralMethods.FilteringMethod;
 
 public class SpectralSmoother extends TimeSeriesAbstractModel {
 
-    protected Hashtable<Long, Float> map = new Hashtable<Long, Float>();
-    protected int windowSize;
-    protected FilteringMethod method;
-    protected double methodParameter;
+    private final Hashtable<Long, Float> map = new Hashtable<>();
+    private int windowSize;
+    private FilteringMethod method;
+    private double methodParameter;
 
     public SpectralSmoother(Properties config) {
         super(config);
@@ -91,7 +91,7 @@ public class SpectralSmoother extends TimeSeriesAbstractModel {
     }
 
     @Override
-    public void train(DataSequence data) throws Exception {
+    public void train(DataSequence data) {
         this.reset();
         DataSequence smoothedData = SpectralMethods.mFilter(data, windowSize, method, methodParameter);
 
@@ -101,7 +101,7 @@ public class SpectralSmoother extends TimeSeriesAbstractModel {
     }
 
     @Override
-    public void update(DataSequence data) throws Exception {
+    public void update(DataSequence data) {
 
         DataSequence smoothedData = SpectralMethods.mFilter(data, windowSize, method, methodParameter);
 

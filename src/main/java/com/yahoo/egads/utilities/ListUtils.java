@@ -90,7 +90,7 @@ public class ListUtils {
     }
 
     public static LinkedList<Float> kernelQ(List<Float> Q, List<Float> mean, List<Float> sds) {
-        LinkedList<Float> res = new LinkedList<Float>();
+        LinkedList<Float> res = new LinkedList<>();
         float sd = 1;
         float m = 0;
         Iterator<Float> it1 = mean.iterator();
@@ -114,7 +114,7 @@ public class ListUtils {
     public static void addQ(LinkedList<Float> Q, List<Float> P) {
         Iterator<Float> it = P.iterator();
         float p = 0;
-        LinkedList<Float> temp = new LinkedList<Float>();
+        LinkedList<Float> temp = new LinkedList<>();
 
         for (float q : Q) {
             if (it.hasNext()) {
@@ -131,7 +131,7 @@ public class ListUtils {
     public static void subtractQ(LinkedList<Float> Q, List<Float> P) {
         Iterator<Float> it = P.iterator();
         float p = 0;
-        LinkedList<Float> temp = new LinkedList<Float>();
+        LinkedList<Float> temp = new LinkedList<>();
 
         for (float q : Q) {
             if (it.hasNext()) {
@@ -148,7 +148,7 @@ public class ListUtils {
     public static void multiplyQ(LinkedList<Float> Q, List<Float> P) {
         Iterator<Float> it = P.iterator();
         float p = 0;
-        LinkedList<Float> temp = new LinkedList<Float>();
+        LinkedList<Float> temp = new LinkedList<>();
 
         for (float q : Q) {
             if (it.hasNext()) {
@@ -163,7 +163,7 @@ public class ListUtils {
     }
 
     public static LinkedList<Float> maxQ(List<Float> Q, float m) {
-        LinkedList<Float> temp = new LinkedList<Float>();
+        LinkedList<Float> temp = new LinkedList<>();
 
         for (float q : Q) {
             temp.addLast(Math.max(q, m));
@@ -180,8 +180,7 @@ public class ListUtils {
         int lo = (int) Math.floor(index);
         int hi = (int) Math.ceil(index);
         float h = index - lo;
-        float qs = (1 - h) * Q.get(lo) + h * Q.get(hi);
 
-        return qs;
+        return (1 - h) * Q.get(lo) + h * Q.get(hi);
     }
 }

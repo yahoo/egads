@@ -25,9 +25,9 @@ package com.yahoo.egads.models.tsmm;
 import com.yahoo.egads.data.*;
 import org.json.JSONObject;
 import org.json.JSONStringer;
-import java.util.Properties;
+
 import java.util.*;
-import com.yahoo.egads.models.adm.*;
+
 import com.yahoo.egads.utilities.Storage;
 
 // Picks the best model from the available EGADS models.
@@ -35,20 +35,19 @@ public class AutoForecastModel extends TimeSeriesAbstractModel {
     // methods ////////////////////////////////////////////////
     
     // Will be updated later based on the best model that we picked.
-    private String modelName;
+    private static final String modelName = "AutoForecastModel";
     
     // Stores the historical values.
     private TimeSeries.DataSequence data;
     
     // Stores the properties file to init other models.
-    private Properties p;
+    private final Properties p;
     
     // Stores the model.
     private TimeSeriesAbstractModel myModel = null;
 
     public AutoForecastModel(Properties config) {
         super(config);
-        modelName = "AutoForecastModel";
         this.p = config;
     }
 
@@ -112,8 +111,7 @@ public class AutoForecastModel extends TimeSeriesAbstractModel {
         if (betterThan(doubleExp, myModel)) {
             myModel = olympModel;
         }
-        
-        Storage.forecastModel = myModel.getModelName();
+
         initForecastErrors(myModel, data);
        
         if (Storage.debug == 2) {

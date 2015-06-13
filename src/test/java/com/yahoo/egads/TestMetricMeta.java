@@ -7,7 +7,6 @@
 package com.yahoo.egads;
 
 import com.yahoo.egads.data.*;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class TestMetricMeta {

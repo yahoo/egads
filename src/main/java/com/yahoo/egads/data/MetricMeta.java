@@ -70,10 +70,7 @@ public class MetricMeta implements JsonAble {
         if (!equals(name, other.name)) {
             return false;
         }
-        if (!equals(source, other.source)) {
-            return false;
-        }
-        return true;
+        return equals(source, other.source);
     }
 
     public static boolean equals(Object o1, Object o2) {

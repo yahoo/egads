@@ -9,6 +9,11 @@
   <version>0.1</version>
   <packaging>jar</packaging>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -49,12 +54,12 @@
           <version>20140107</version>
         </dependency>
         <dependency>
-       	  <groupId>commons-lang</groupId>
-       	  <artifactId>commons-lang</artifactId>
-       	  <version>2.6</version>
-       	</dependency>
+          <groupId>commons-lang</groupId>
+          <artifactId>commons-lang</artifactId>
+          <version>2.6</version>
+        </dependency>
         <dependency>
-	  <groupId>org.apache.commons</groupId>
+          <groupId>org.apache.commons</groupId>
           <artifactId>commons-math3</artifactId>
           <version>3.2</version>
         </dependency>

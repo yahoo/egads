@@ -27,7 +27,7 @@ public class MaxNaiveModel extends AnomalyDetectionAbstractModel {
     private Float[] threshold;
     private int maxHrsAgo;
     // modelName.
-    public static String modelName = "MaxNaive-NA";
+    private static final String modelName = "MaxNaive-NA";
     private AnomalyErrorStorage aes = new AnomalyErrorStorage();
     
     public MaxNaiveModel(Properties config) {
@@ -78,19 +78,16 @@ public class MaxNaiveModel extends AnomalyDetectionAbstractModel {
     
     @Override
     public void tune(DataSequence observedSeries, DataSequence expectedSeries,
-            IntervalSequence anomalySequence) throws Exception {
+            IntervalSequence anomalySequence) {
     }
    
     private boolean isAnomaly(Float[] error, Float[] threshold) {
-        if (error[0] >= threshold[0]) {
-            return true;
-        }
-        return false;
+        return error[0] >= threshold[0];
     }
     
     @Override
     public IntervalSequence detect(DataSequence observedSeries,
-            DataSequence expectedSeries) throws Exception {
+            DataSequence expectedSeries) {
         
         IntervalSequence output = new IntervalSequence();
         int n = observedSeries.size();
@@ -107,15 +104,15 @@ public class MaxNaiveModel extends AnomalyDetectionAbstractModel {
         if ((maxNow + maxBefore) == 0) {
         	error[0] = (float) 0;
         } else {
-        	error[0] = buzzScore * ((float) Math.abs(buzzScore) / (maxNow + maxBefore));
+        	error[0] = buzzScore * (Math.abs(buzzScore) / (maxNow + maxBefore));
         }
         
         if (Storage.debug == 3) {
             System.out.println("MaxNaiveModel: CI " + cutIndex + " n " + n +
                                " maxNow " + maxNow + " maxBefore " + maxBefore + " Error " + error[0]);
         }
-        if (isAnomaly(error, threshold) == true) {
-            Float locMax = (float) Float.NEGATIVE_INFINITY;
+        if (isAnomaly(error, threshold)) {
+            Float locMax = Float.NEGATIVE_INFINITY;
             int maxIndex = -1;
             for (int i = cutIndex; i < n; i++) {
                 if (observedSeries.get(i).value > locMax) {

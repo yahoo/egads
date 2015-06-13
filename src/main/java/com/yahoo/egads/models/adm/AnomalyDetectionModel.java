@@ -16,21 +16,21 @@ public interface AnomalyDetectionModel extends Model {
     // methods ////////////////////////////////////////////////
 
     // returns the type of anomalies detected by the model
-    public String getType();
+    String getType();
     
     // Returns the name of the anomaly detection model.
-    public String getModelName();
+    String getModelName();
 
     // resets the model.
-    public void reset();
+    void reset();
 
     // tune the anomaly detection parameters based on the training data.
-    public void tune(TimeSeries.DataSequence observedSeries,
-            TimeSeries.DataSequence expectedSeries,
-            Anomaly.IntervalSequence anomalySequence) throws Exception;
+    void tune(TimeSeries.DataSequence observedSeries,
+              TimeSeries.DataSequence expectedSeries,
+              Anomaly.IntervalSequence anomalySequence);
 
     // detect anomalies.
-    public Anomaly.IntervalSequence detect(
+    Anomaly.IntervalSequence detect(
             TimeSeries.DataSequence observedSeries,
-            TimeSeries.DataSequence expectedSeries) throws Exception;
+            TimeSeries.DataSequence expectedSeries);
 }

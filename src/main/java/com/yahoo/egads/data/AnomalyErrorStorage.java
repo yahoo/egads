@@ -14,12 +14,12 @@ import java.util.ArrayList;
 public class AnomalyErrorStorage {
 
     // Denominator used in the MASE error metric.
-    protected float maseDenom;
+    private float maseDenom;
     // Maps error names to error indicies.
-    protected Map<String, Integer> errorToIndex;
+    private final Map<String, Integer> errorToIndex;
     // Maps error index to error names.
-    protected Map<Integer, String> indexToError;
-    boolean isInit = false;
+    private final Map<Integer, String> indexToError;
+    private boolean isInit = false;
 
     // Getter methods.
     public Map<String, Integer> getErrorToIndex() {
@@ -33,13 +33,13 @@ public class AnomalyErrorStorage {
     // factory method.
     public AnomalyErrorStorage() {
         // Init error indicies that are filled in computeErrorMetrics method.
-        errorToIndex = new HashMap<String, Integer>();
+        errorToIndex = new HashMap<>();
         errorToIndex.put("mapee", 0);
         errorToIndex.put("mae", 1);
         errorToIndex.put("smape", 2);
         errorToIndex.put("mape", 3);
         errorToIndex.put("mase", 4);
-        indexToError = new HashMap<Integer, String>();
+        indexToError = new HashMap<>();
         indexToError.put(0, "mapee");
         indexToError.put(1, "mae");
         indexToError.put(2, "smape");
@@ -56,7 +56,7 @@ public class AnomalyErrorStorage {
             maseDenom += Math.abs(observedSeries.get(i).value - observedSeries.get(i - 1).value);
         }
         maseDenom = maseDenom / (n - 1);
-        HashMap<String, ArrayList<Float>> allErrors = new HashMap<String, ArrayList<Float>>();
+        HashMap<String, ArrayList<Float>> allErrors = new HashMap<>();
         
         for (int i = 0; i < n; i++) {
             Float[] errors = computeErrorMetrics(expectedSeries.get(i).value, observedSeries.get(i).value);
@@ -83,9 +83,9 @@ public class AnomalyErrorStorage {
         // Mean Absolute Error.
         float mae = Math.abs(actual - expected);
         // Symmetric Mean Absolute Error.
-        float smape = (200 * Math.abs(actual - expected)) / ((Math.abs(actual) + Math.abs(expected)) == 0 ? (float) 1.0 : (float) (Math.abs(actual) + Math.abs(expected)));
+        float smape = (200 * Math.abs(actual - expected)) / ((Math.abs(actual) + Math.abs(expected)) == 0 ? (float) 1.0 : Math.abs(actual) + Math.abs(expected));
         // Mean Absolute Percentage Error.
-        float mape = Math.abs(actual) == 0 ? (float) 0.0 : ((100 * Math.abs(actual - expected)) / (float) Math.abs(actual));
+        float mape = Math.abs(actual) == 0 ? (float) 0.0 : ((100 * Math.abs(actual - expected)) / Math.abs(actual));
         // Mean Absolute Scaled Error.
         float mase = Math.abs(maseDenom) == 0.0 ? (float) 0.0 : Math.abs(actual - expected) / Math.abs(maseDenom);
         // Mean Absolute Percentage Error (scaled by the expected value).

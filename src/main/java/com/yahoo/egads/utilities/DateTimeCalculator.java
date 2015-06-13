@@ -14,8 +14,8 @@ import java.util.*;
 
 public class DateTimeCalculator {
     // Fields //////////////////////////////////////////////////////////////////////////////////
-    private static Calendar cal = Calendar.getInstance();
-    private static SimpleDateFormat[] formatters = new SimpleDateFormat[] {
+    private static final Calendar cal = Calendar.getInstance();
+    private static final SimpleDateFormat[] formatters = new SimpleDateFormat[] {
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"),
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS"),
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S"),
@@ -24,7 +24,7 @@ public class DateTimeCalculator {
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:S"),
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
             new SimpleDateFormat("yyyy-MM-dd") };
-    private static SimpleDateFormat outputFormatter = new SimpleDateFormat(
+    private static final SimpleDateFormat outputFormatter = new SimpleDateFormat(
             "yyyy-MM-dd HH:mm:ss");
 
     // Static Methods //////////////////////////////////////////////////////////////////////////

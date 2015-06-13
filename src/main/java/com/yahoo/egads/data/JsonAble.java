@@ -14,9 +14,9 @@ import org.json.JSONStringer;
 
 public interface JsonAble {
 
-    public void // modifies json_out
+    void // modifies json_out
     toJson(JSONStringer json_out) throws Exception;
 
-    public void fromJson(JSONObject json_obj) throws Exception;
+    void fromJson(JSONObject json_obj) throws Exception;
 
 }

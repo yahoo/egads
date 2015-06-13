@@ -26,14 +26,12 @@ import com.yahoo.egads.data.*;
 import com.yahoo.egads.data.TimeSeries.Entry;
 import org.json.JSONObject;
 import org.json.JSONStringer;
-import java.util.Properties;
 import net.sourceforge.openforecast.DataSet;
 import net.sourceforge.openforecast.ForecastingModel;
 import net.sourceforge.openforecast.DataPoint;
 import net.sourceforge.openforecast.Observation;
 import java.util.*;
-import com.yahoo.egads.models.adm.*;
-import com.yahoo.egads.utilities.Storage;
+
 import com.yahoo.egads.utilities.*;
 
 // A weighted moving average forecast model is based on an artificially constructed time series in which the value
@@ -45,15 +43,13 @@ public class WeightedMovingAverageModel extends TimeSeriesAbstractModel {
     private ForecastingModel forecaster;
     
     // Will be updated later based on the best model that we picked.
-    private String modelName;
+    private static final String modelName = "WeightedMovingAverageModel";
     
     // Stores the historical values.
     private TimeSeries.DataSequence data;
 
     public WeightedMovingAverageModel(Properties config) {
         super(config);
-        modelName = "WeightedMovingAverageModel";
-        Storage.forecastModel = modelName;
     }
 
     public void reset() {

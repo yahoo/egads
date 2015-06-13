@@ -44,20 +44,20 @@ import com.yahoo.egads.utilities.Storage;
 public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAbstractModel {
 
     // buffering the residuals
-    private LinkedList<Float> buffer = new LinkedList<Float>();
+    private final LinkedList<Float> buffer = new LinkedList<>();
     // buffering the standard deviations
-    private LinkedList<Float> sdBuffer = new LinkedList<Float>();
+    private final LinkedList<Float> sdBuffer = new LinkedList<>();
 
     // buffering pre-window kernel sums
-    private LinkedList<Float> preKernelSum = new LinkedList<Float>();
+    private final LinkedList<Float> preKernelSum = new LinkedList<>();
     // buffering post-window kernel sums
-    private LinkedList<Float> postKernelSum = new LinkedList<Float>();
+    private final LinkedList<Float> postKernelSum = new LinkedList<>();
 
     // sum of residuals in the buffer
     private float sumBuffer = 0;
     // sum of squared residuals in the buffer
     private float sqrSumBuffer = 0;
-    private int maxHrsAgo;
+    private final int maxHrsAgo;
 
     // KL score
     private float[] score = null;
@@ -65,18 +65,18 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
     private float[] level = null;
 
     // pre-window size (input argument)
-    protected int preWindowSize = 24;
+    private int preWindowSize = 24;
     // post-window size (input argument)
-    protected int postWindowSize = 48;
+    private int postWindowSize = 48;
     // confidence level
-    protected float confidence = 0.8F;
+    private float confidence = 0.8F;
     // Model name.
     private String modelName = "AdaptiveKernelDensityChangePointDetector";
 
     public AdaptiveKernelDensityChangePointDetector(Properties config) {
         super(config);
 
-        modelName = modelName + "-" + Storage.forecastModel;
+        modelName = modelName;
         this.maxHrsAgo = new Integer(config.getProperty("MAX_ANOMALY_TIME_AGO"));
         if (config.getProperty("PRE_WINDOW_SIZE") == null) {
             throw new IllegalArgumentException("PRE_WINDOW_SIZE is NULL");
@@ -132,16 +132,15 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
     }
 
     @Override
-    public void tune(DataSequence observedSeries, DataSequence expectedSeries, IntervalSequence anomalySequence)
-                    throws Exception {
+    public void tune(DataSequence observedSeries, DataSequence expectedSeries, IntervalSequence anomalySequence) {
 
     }
 
     @Override
-    public IntervalSequence detect(DataSequence observedSeries, DataSequence expectedSeries) throws Exception {
+    public IntervalSequence detect(DataSequence observedSeries, DataSequence expectedSeries) {
 
         if (observedSeries.size() != expectedSeries.size()) {
-            throw new Exception("The observed time-series must have the same length as the expected time-series.");
+            throw new IllegalArgumentException("The observed time-series must have the same length as the expected time-series.");
         }
         long unixTime = System.currentTimeMillis() / 1000L;
 
@@ -197,7 +196,7 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
         int n = residuals.length;
         score = new float[n];
         level = new float[n];
-        ArrayList<Integer> changePoints = new ArrayList<Integer>();
+        ArrayList<Integer> changePoints = new ArrayList<>();
 
         float maxScore = Float.NEGATIVE_INFINITY;
         int maxIndex = -1;
@@ -233,7 +232,7 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
         return changePoints;
     }
 
-    protected float[] computeKLScore(float residual, int preWindowSize, int postWindowSize, float confidence) {
+    private float[] computeKLScore(float residual, int preWindowSize, int postWindowSize, float confidence) {
         float dKL = 0;
         float levelThreshold = 0;
         int len = buffer.size();
@@ -267,10 +266,10 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
                                             Math.sqrt(2 * (n * sqrSumBuffer - sumBuffer * sumBuffer) / (n * (n - 1))));
             sdBuffer.addLast(temp);
 
-            LinkedList<Float> tempQ1 = new LinkedList<Float>();
+            LinkedList<Float> tempQ1 = new LinkedList<>();
             tempQ1.add(residual);
 
-            LinkedList<Float> tempQ2 = new LinkedList<Float>();
+            LinkedList<Float> tempQ2 = new LinkedList<>();
             tempQ2.add(temp);
 
             ListUtils.addQ(postKernelSum, ListUtils.kernelQ(buffer, tempQ1, tempQ2));
@@ -296,9 +295,9 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
                                             Math.sqrt(2 * (n * sqrSumBuffer - sumBuffer * sumBuffer) / (n * (n - 1))));
 
             // updating the post-stats
-            LinkedList<Float> tempQ1 = new LinkedList<Float>();
+            LinkedList<Float> tempQ1 = new LinkedList<>();
             tempQ1.add(residual);
-            LinkedList<Float> tempQ2 = new LinkedList<Float>();
+            LinkedList<Float> tempQ2 = new LinkedList<>();
             tempQ2.add(temp);
             ListUtils.subtractQ(postKernelSum, midExchangedValues);
             LinkedList<Float> postAddedValues = ListUtils.kernelQ(buffer, tempQ1, tempQ2);

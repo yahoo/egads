@@ -15,8 +15,8 @@ public class Variance {
     // member data ////////////////////////////////////////////////
 
     public int count = 0;
-    public float sum = 0;
-    public float sumSquares = 0;
+    private float sum = 0;
+    private float sumSquares = 0;
 
     // construction ////////////////////////////////////////////////
 

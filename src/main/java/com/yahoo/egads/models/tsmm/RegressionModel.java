@@ -26,13 +26,12 @@ import com.yahoo.egads.data.*;
 import com.yahoo.egads.data.TimeSeries.Entry;
 import org.json.JSONObject;
 import org.json.JSONStringer;
-import java.util.Properties;
 import net.sourceforge.openforecast.DataSet;
 import net.sourceforge.openforecast.ForecastingModel;
 import net.sourceforge.openforecast.DataPoint;
 import net.sourceforge.openforecast.Observation;
 import java.util.*;
-import com.yahoo.egads.models.adm.*;
+
 import com.yahoo.egads.utilities.Storage;
 
 // Implements a single variable linear regression model using the variable named in the constructor as the independent variable.
@@ -43,15 +42,13 @@ public class RegressionModel extends TimeSeriesAbstractModel {
     private ForecastingModel forecaster;
     
     // Will be updated later based on the best model that we picked.
-    private String modelName;
+    private static final String modelName = "RegressionModel";;
     
     // Stores the historical values.
     private TimeSeries.DataSequence data;
 
     public RegressionModel(Properties config) {
         super(config);
-        modelName = "RegressionModel";
-        Storage.forecastModel = modelName;
     }
 
     public void reset() {

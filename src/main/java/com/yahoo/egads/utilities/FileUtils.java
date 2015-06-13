@@ -19,20 +19,19 @@ import java.io.IOException;
 public class FileUtils {
     
     // Creates a time-series from a file.
-    public static ArrayList<TimeSeries> createTimeSeries(String csv_file) {
+    public static ArrayList<TimeSeries> createTimeSeries(String csvFileToParse) {
         // Input file which needs to be parsed
-        String fileToParse = csv_file;
         BufferedReader fileReader = null;
-        ArrayList<TimeSeries> output = new ArrayList<TimeSeries>();
+        ArrayList<TimeSeries> output = new ArrayList<>();
 
         // Delimiter used in CSV file
         final String delimiter = ",";
         Long interval = null;
         Long prev = null;
         try {
-            String line = "";
+            String line;
             // Create the file reader.
-            fileReader = new BufferedReader(new FileReader(fileToParse));
+            fileReader = new BufferedReader(new FileReader(csvFileToParse));
 
             // Read the file line by line
             boolean firstLine = true;
@@ -40,16 +39,16 @@ public class FileUtils {
                 // Get all tokens available in line.
                 String[] tokens = line.split(delimiter);
                 Long curTimestamp = null;
-                if (firstLine == false && tokens.length > 1) {
+                if (!firstLine && tokens.length > 1) {
                     curTimestamp = (new Double(tokens[0])).longValue();
                 }
                 for (int i = 1; i < tokens.length; i++) {
                     // Assume that the first line contains the column names.
                     if (firstLine) {
                         TimeSeries ts = new TimeSeries();
-                        ts.meta.fileName = csv_file;
+                        ts.meta.fileName = csvFileToParse;
                         output.add(ts);
-                        if (isNumeric(tokens[i]) == false) {
+                        if (!isNumeric(tokens[i])) {
                             ts.meta.name = tokens[i];
                         } else {
                             ts.meta.name = "metric_" + i;
@@ -75,14 +74,14 @@ public class FileUtils {
                         }
                         // Infer interval.
                         if (interval == null && prev != null) {
-                            interval = curTimestamp - new Long(prev);
+                            interval = curTimestamp - (long) prev;
                         }
                         
                         output.get(i - 1).append(curTimestamp,
                                 new Float(tokens[i]));
                     }
                 }
-                if (firstLine == false) {
+                if (!firstLine) {
                     prev = curTimestamp;
                 }
                 firstLine = false;
@@ -91,7 +90,9 @@ public class FileUtils {
             e.printStackTrace();
         } finally {
             try {
-                fileReader.close();
+                if(fileReader != null) {
+                    fileReader.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -107,9 +108,9 @@ public class FileUtils {
     }
         
     // Checks if the string is numeric.
-    public static boolean isNumeric(String str) {  
+    public static boolean isNumeric(String str) {
         try {  
-            double d = Double.parseDouble(str);  
+            Double.parseDouble(str);
         } catch (NumberFormatException nfe) {  
             return false;  
         }  

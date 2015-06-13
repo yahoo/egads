@@ -60,7 +60,7 @@ public class GUIUtils extends ApplicationFrame {
     
     // Denominator used in the MASE error metric.
     float maseDenom = 0;
-    private AnomalyErrorStorage aes = new AnomalyErrorStorage();
+    private final AnomalyErrorStorage aes = new AnomalyErrorStorage();
 
     private GUIUtils(String title, DataSequence orig, DataSequence predicted, ArrayList<Anomaly> anomalyList) {
          super(title);
@@ -196,7 +196,6 @@ public class GUIUtils extends ApplicationFrame {
     
     /**
      * Starting point for the forecasting charting demo application.
-     * @param args ignored.
      */
     public static void plotResults(DataSequence orig, DataSequence predicted, ArrayList<Anomaly> anomalyList) {
         GUIUtils gui = new GUIUtils("EGADS GUI", orig, predicted, anomalyList);

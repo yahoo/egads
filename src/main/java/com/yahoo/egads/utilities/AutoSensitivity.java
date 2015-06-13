@@ -19,56 +19,53 @@ public class AutoSensitivity {
     public static Float getLowDensitySensitivity(Float[] data) {
         Float toReturn = Float.POSITIVE_INFINITY;
         Arrays.sort(data, Collections.reverseOrder());
-        while (data.length > 0) {     
-            ArrayList<Float> fData = new ArrayList<Float>();
+        ArrayList<Float> fData = new ArrayList<>();
+        fData.add(data[0]);
+        data = ((Float[]) ArrayUtils.remove(data, 0));
+
+        Float centroid = fData.get(0);
+        Float maxDelta = (float) Storage.sDAutoSensParameter * StatsUtils.getSD(data, StatsUtils.getMean(data));
+
+        if (Storage.debug == 4) {
+            System.out.println("AutoSensitivity: Adding: " + fData.get(0) + " SD: " + maxDelta);
+        }
+
+        // Add points while it's in the same cluster or not part of the other cluster.
+        String localDebug = null;
+        while (data.length > 0 &&
+               (centroid - data[0]) <= maxDelta) {
+            if (Storage.debug == 4) {
+                localDebug = "AutoSensitivity: Adding: " + data[0] + " SD: " + maxDelta;
+            }
             fData.add(data[0]);
             data = ((Float[]) ArrayUtils.remove(data, 0));
-            
-            Float centroid = (float) fData.get(0);
-            Float maxDelta = (float) Storage.sDAutoSensParameter * StatsUtils.getSD(data, StatsUtils.getMean(data));
-            
-            if (Storage.debug == 4) {
-                System.out.println("AutoSensitivity: Adding: " + fData.get(0) + " SD: " + maxDelta);
-            }
-            
-            // Add points while it's in the same cluster or not part of the other cluster.
-            String localDebug = null;
-            while (data.length > 0 &&
-                   (centroid - data[0]) <= ((float) (maxDelta))) {
-                if (Storage.debug == 4) {
-                    localDebug = "AutoSensitivity: Adding: " + data[0] + " SD: " + maxDelta;
-                }
-                fData.add(data[0]);
-                data = ((Float[]) ArrayUtils.remove(data, 0));
-                Float[] tmp = new Float[fData.size()];
-                tmp = fData.toArray(tmp);
-                centroid = StatsUtils.getMean(tmp);
-                
-                if (data.length > 0) {
-                    Float sdOtherCluster = (float) StatsUtils.getSD(data, StatsUtils.getMean(data));
-                    maxDelta = Storage.sDAutoSensParameter * sdOtherCluster;
-                    if (Storage.debug == 4) {
-                        System.out.println(localDebug + " SD': " + maxDelta);
-                    }
-                }
-            }
-            if (data.length > 0 && Storage.debug == 4) {
-                System.out.println("AutoSensitivity: Next Point I would have added is " + data[0]);
-            }
-                        
-            if (((double) fData.size() / (double) data.length) > Storage.amntAutoSensParameter) {
-                // Cannot do anomaly detection.
-                if (Storage.debug == 4) {
-                    System.out.println("AutoSensitivity: Returning " + toReturn + " data size: " + data.length + " fData.size: " + fData.size());
-                }
-                return toReturn;
-            }
+            Float[] tmp = new Float[fData.size()];
+            tmp = fData.toArray(tmp);
+            centroid = StatsUtils.getMean(tmp);
 
-            toReturn = fData.get(fData.size() - 1);
+            if (data.length > 0) {
+                Float sdOtherCluster = StatsUtils.getSD(data, StatsUtils.getMean(data));
+                maxDelta = Storage.sDAutoSensParameter * sdOtherCluster;
+                if (Storage.debug == 4) {
+                    System.out.println(localDebug + " SD': " + maxDelta);
+                }
+            }
+        }
+        if (data.length > 0 && Storage.debug == 4) {
+            System.out.println("AutoSensitivity: Next Point I would have added is " + data[0]);
+        }
+
+        if (((double) fData.size() / (double) data.length) > Storage.amntAutoSensParameter) {
+            // Cannot do anomaly detection.
             if (Storage.debug == 4) {
-                System.out.println("AutoSensitivity: Updating toReturn:  " + toReturn + " SD: " + maxDelta);
+                System.out.println("AutoSensitivity: Returning " + toReturn + " data size: " + data.length + " fData.size: " + fData.size());
             }
             return toReturn;
+        }
+
+        toReturn = fData.get(fData.size() - 1);
+        if (Storage.debug == 4) {
+            System.out.println("AutoSensitivity: Updating toReturn:  " + toReturn + " SD: " + maxDelta);
         }
         return toReturn;
     }

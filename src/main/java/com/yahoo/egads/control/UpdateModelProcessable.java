@@ -12,8 +12,8 @@ import com.yahoo.egads.data.TimeSeries;
 
 public class UpdateModelProcessable implements ProcessableObject {
 
-    private ModelAdapter ma;
-    private TimeSeries.DataSequence newData;
+    private final ModelAdapter ma;
+    private final TimeSeries.DataSequence newData;
 
     UpdateModelProcessable(ModelAdapter ma, TimeSeries.DataSequence newData) {
         this.ma = ma;

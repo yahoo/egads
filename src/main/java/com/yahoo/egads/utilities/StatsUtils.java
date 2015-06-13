@@ -45,26 +45,23 @@ public class StatsUtils {
     // Alpha level above which we cannot reject the null
     // hypothesis that the resulting distribution is
     // normal.
-    private static double alpha = 0.01;
-    // Shannon normality test supports a vector of size 5000
-    // hence this limit of maxNumIterations.
-    private static int maxNumIterations = 10;
-    
+    private static final double alpha = 0.01;
+
     // Computes the box cox transform.
     private static double getBoxCoxNum(double y, double lambda) {
         if (lambda == 0.0) {
-            return ((double) (Math.log(y)));
+            return Math.log(y);
         } else {
-            return ((double) ((Math.pow(y, lambda) - 1.0) / lambda));
+            return (Math.pow(y, lambda) - 1.0) / lambda;
         }
     }
     
     // Computes the reverse of the box cox transform.
     private static double getBoxCoxReverseNum(double y, double lambda) {
         if (lambda == 0.0) {
-            return ((double) (Math.exp(y)));
+            return Math.exp(y);
         } else {
-            return ((double) (Math.pow((lambda * y) + 1, (1 / lambda))));
+            return Math.pow((lambda * y) + 1, (1 / lambda));
         }
     }
     
@@ -73,20 +70,20 @@ public class StatsUtils {
     // This assumes that we are looking for extreme points with low
     // density.
     private static Float getBoxCoxEstimate(Float[] data) {
-        ArrayList<Double> boxCoxData = new ArrayList<Double>();
-        ArrayList<Double> rawData = new ArrayList<Double>();
+        ArrayList<Double> boxCoxData = new ArrayList<>();
+        ArrayList<Double> rawData = new ArrayList<>();
         double[] resultBoxCox = null;
         double[] resultOriginal = null;
         for (double cut = 1.0; cut > 0; cut -= 0.1) {
             int ds = Math.max(3, (int) (cut * data.length));
             double lambda = -3.0;
             while (lambda <= 3.0) {
-                boxCoxData.removeAll(boxCoxData);
-                rawData.removeAll(rawData);
+                boxCoxData.clear();
+                rawData.clear();
                 for (int i = 0; i < ds; i++) {
                     Double dAdd = getBoxCoxNum(((double) data[i]), lambda);
                     rawData.add((double) data[i]);
-                    if (Double.isInfinite(dAdd) == false) {
+                    if (!Double.isInfinite(dAdd)) {
                         boxCoxData.add(dAdd);
                         // System.out.println("Original number " + data[i] + " trans " + dAdd + " back original " + getBoxCoxReverseNum(dAdd, lambda) + " lambda " + lambda);
                     }
@@ -97,7 +94,7 @@ public class StatsUtils {
                     if (resultBoxCox[1] > alpha) {
                         Float mean = getMean(data);
                         Float sd = getSD(data, mean);
-                        return (mean + ((float) (Storage.sDAutoSensParameter * (sd))));
+                        return (mean + Storage.sDAutoSensParameter * (sd));
                     }
                 }
                 lambda += 0.1;
@@ -123,19 +120,20 @@ public class StatsUtils {
         // Sample size % of the entire dataset.
         // Bootstrap theory tells us that the min subsample
         // should be n.
-        int sampleSize = (int) (dataSize);
+        int sampleSize = dataSize;
        
-        ArrayList<Double> distrMeans = new ArrayList<Double>();
-        ArrayList<Double> distrSd = new ArrayList<Double>();
+        ArrayList<Double> distrMeans = new ArrayList<>();
+        ArrayList<Double> distrSd = new ArrayList<>();
         
         Float sumMean = (float) 0.0;
         Float sumSd = (float) 0.0;
-        
+
+        int maxNumIterations = 10;
         while (((resultMean != null && resultMean[1] < alpha) &&
                 (resultSd != null && resultSd[1] < alpha)) &&
                 curNumIterations < maxNumIterations) {
-            distrMeans.removeAll(distrMeans);
-            distrSd.removeAll(distrSd);
+            distrMeans.clear();
+            distrSd.clear();
             Random random = new Random(System.currentTimeMillis());
             
             for (int i = 0; i < numIterations; i++) {
@@ -314,7 +312,7 @@ public class StatsUtils {
         if (data.isEmpty()) {
             return Collections.emptyList();
         }
-        List<Integer> ret = new ArrayList<Integer>(breaks);
+        List<Integer> ret = new ArrayList<>(breaks);
         for (int i = 0; i < breaks; i++) {
             ret.add(0);
         }
@@ -336,7 +334,7 @@ public class StatsUtils {
         if (data.isEmpty()) {
             return Collections.emptyList();
         }
-        List<Integer> ret = new ArrayList<Integer>(breaks);
+        List<Integer> ret = new ArrayList<>(breaks);
         for (int i = 0; i < breaks; i++) {
             ret.add(0);
         }
@@ -396,7 +394,7 @@ public class StatsUtils {
          * @return a Map object ready for bencoding.
          */
         public final Map<String, Object> getMap() {
-            Map<String, Object> ret = new HashMap<String, Object>();
+            Map<String, Object> ret = new HashMap<>();
             ret.put("ver", VERSION);
             ret.put("num", number);
             if (number < 2) { // too small for stats
@@ -419,14 +417,14 @@ public class StatsUtils {
             return ret;
         }
         
-        protected void addAnySpecifics(Map<String, Object> ret) { }
+        void addAnySpecifics(Map<String, Object> ret) { }
         
         /** 
          * @return subset of the information necessary to do 
          * a t-test  http://en.wikipedia.org/wiki/Student's_t-test 
          */
         public final Map<String, Object> getTTestMap() {
-            Map<String, Object> ret = new HashMap<String, Object>();
+            Map<String, Object> ret = new HashMap<>();
             ret.put("ver", VERSION);
             ret.put("num", number);
             if (number < 2) { // too small for stats
@@ -523,7 +521,7 @@ public class StatsUtils {
             writeBuffer[0] = (byte) (v >>> 24);
             writeBuffer[1] = (byte) (v >>> 16);
             writeBuffer[2] = (byte) (v >>>  8);
-            writeBuffer[3] = (byte) (v >>>  0);
+            writeBuffer[3] = (byte) v;
             return writeBuffer;
         }
         
@@ -555,7 +553,7 @@ public class StatsUtils {
         if (data.isEmpty()) {
             return Collections.emptyList();
         }
-        List<Double> ret = new ArrayList<Double>(data.size());
+        List<Double> ret = new ArrayList<>(data.size());
         if (data.size() == 1) {
             ret.add(1.0);
             return ret;

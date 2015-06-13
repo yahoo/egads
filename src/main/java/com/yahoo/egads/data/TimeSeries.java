@@ -53,10 +53,7 @@ public class TimeSeries implements JsonAble {
             if (value != other.value) {
                 return false;
             }
-            if (logicalIndex != other.logicalIndex) {
-                return false;
-            }
-            return true;
+            return logicalIndex == other.logicalIndex;
         }
     }
 
@@ -138,13 +135,7 @@ public class TimeSeries implements JsonAble {
                 return false;
             }
             DataSequence other = (DataSequence) other_obj;
-            if (serialVersionUID != other.serialVersionUID) {
-                return false;
-            }
-            if (!super.equals(other)) {
-                return false;
-            }
-            return true;
+            return super.equals(other);
         }
     }
 
@@ -191,7 +182,7 @@ public class TimeSeries implements JsonAble {
             Long time = data.get(i).time;
             int count = 0;
             for (int j = i; j < Math.min(data.size(), (i + frequency)); j++) {
-                aggr += (float) data.get(j).value;
+                aggr += data.get(j).value;
                 count++;
             }
             aggr = aggr / (float) count;
@@ -248,7 +239,7 @@ public class TimeSeries implements JsonAble {
         return minPeriod;
     }
 
-    protected class PeriodAndCount {
+    class PeriodAndCount {
         public long period = 0;
         public int count = 0;
 
@@ -263,7 +254,7 @@ public class TimeSeries implements JsonAble {
         if (size() < 2) {
             return 0;
         }
-        ArrayList<PeriodAndCount> periods = new ArrayList<PeriodAndCount>();
+        ArrayList<PeriodAndCount> periods = new ArrayList<>();
         // for each time...
         for (int i = 1; i < size(); ++i) {
             // increment period count
@@ -322,9 +313,6 @@ public class TimeSeries implements JsonAble {
         if (!MetricMeta.equals(data, other.data)) {
             return false;
         }
-        if (!MetricMeta.equals(meta, other.meta)) {
-            return false;
-        }
-        return true;
+        return MetricMeta.equals(meta, other.meta);
     }
 }
