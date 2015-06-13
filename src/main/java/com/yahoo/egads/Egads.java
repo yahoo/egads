@@ -39,7 +39,7 @@ public class Egads {
         
         // Set the input type.
         InputProcessor ip;
-        if (p.getProperty("INPUT") == null || p.getProperty("INPUT").equals("CSV")) {
+        if (p.getProperty("INPUT") != null && p.getProperty("INPUT").trim().equals("CSV")) {
             ip = new FileInputProcessor(args[1]);
         } else {
             ip = new StdinProcessor();
@@ -47,7 +47,7 @@ public class Egads {
         
         // Set output destination if available.
         if (p.getProperty("OUTPUT") != null) {
-            Storage.outputSrc = p.getProperty("OUTPUT");
+            Storage.outputSrc = p.getProperty("OUTPUT").trim();
         }
         
         // Set debug.
