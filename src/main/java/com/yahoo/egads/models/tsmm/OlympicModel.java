@@ -23,26 +23,6 @@ public class OlympicModel extends TimeSeriesAbstractModel {
 
 	private static final long serialVersionUID = 1L;
 
-	public int getNumWeeks() {
-		return numWeeks;
-	}
-
-	public int getNumToDrop() {
-		return numToDrop;
-	}
-
-	public int[] getTimeShifts() {
-		return timeShifts;
-	}
-
-	public int[] getBaseWindows() {
-		return baseWindows;
-	}
-
-	public ArrayList<Float> getModel() {
-		return model;
-	}
-
 	// Number of weeks to look back when computing the
     // estimate.
     protected int numWeeks;

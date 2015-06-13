@@ -8,6 +8,7 @@ import com.yahoo.egads.data.FileModelStore;
 import com.yahoo.egads.data.ModelStore;
 import com.yahoo.egads.data.TimeSeries;
 import com.yahoo.egads.models.tsmm.OlympicModel;
+import com.yahoo.egads.models.tsmm.StreamingOlympicModel;
 
 public class TrainForecastingModel {
 	public static void main(String[] args) {
@@ -42,7 +43,7 @@ public class TrainForecastingModel {
 		sc.close();
 		for (String series : inputs.keySet()) {
 			TimeSeries.DataSequence seq = inputs.get(series);
-			OlympicModel o = new OlympicModel(osProps);
+			StreamingOlympicModel o = new StreamingOlympicModel(osProps);
 			o.train(seq);
 			System.out.println (series + ":");
 			for (TimeSeries.Entry e : seq) {
