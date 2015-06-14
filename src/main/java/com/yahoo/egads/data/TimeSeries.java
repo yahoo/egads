@@ -8,14 +8,16 @@
 
 package com.yahoo.egads.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
-public class TimeSeries implements JsonAble {
+public class TimeSeries implements JsonAble, Serializable {
     // inner class ////////////////////////////////////////////////
 
-    public static class Entry implements JsonAble {
+    public static class Entry implements JsonAble, Serializable {
         public long time = 0;
         public float value = 0;
         public long logicalIndex = 0;
@@ -60,7 +62,7 @@ public class TimeSeries implements JsonAble {
         }
     }
 
-    public static class DataSequence extends ArrayList<Entry> {
+    public static class DataSequence extends ArrayList<Entry> implements Serializable {
         private static final long serialVersionUID = 1L;
 
         public DataSequence() {
@@ -138,9 +140,6 @@ public class TimeSeries implements JsonAble {
                 return false;
             }
             DataSequence other = (DataSequence) other_obj;
-            if (serialVersionUID != other.serialVersionUID) {
-                return false;
-            }
             if (!super.equals(other)) {
                 return false;
             }
@@ -248,7 +247,7 @@ public class TimeSeries implements JsonAble {
         return minPeriod;
     }
 
-    protected class PeriodAndCount {
+    protected class PeriodAndCount implements Serializable {
         public long period = 0;
         public int count = 0;
 

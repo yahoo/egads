@@ -40,6 +40,13 @@ public class FileUtils {
                 // Get all tokens available in line.
                 String[] tokens = line.split(delimiter);
                 Long curTimestamp = null;
+                
+                // Check for the case where there is more than one line preceding the data 
+                if (firstLine == true) {
+                    if (!isNumeric(tokens[0]) && tokens[0] != "timestamp") {
+                        continue;
+                    }
+                }
                 if (firstLine == false && tokens.length > 1) {
                     curTimestamp = (new Double(tokens[0])).longValue();
                 }
@@ -49,7 +56,7 @@ public class FileUtils {
                         TimeSeries ts = new TimeSeries();
                         ts.meta.fileName = csv_file;
                         output.add(ts);
-                        if (isNumeric(tokens[i]) == false) {
+                        if (isNumeric(tokens[0]) == false) { // Just in case there's a numeric column heading
                             ts.meta.name = tokens[i];
                         } else {
                             ts.meta.name = "metric_" + i;
@@ -109,7 +116,7 @@ public class FileUtils {
     // Checks if the string is numeric.
     public static boolean isNumeric(String str) {  
         try {  
-            double d = Double.parseDouble(str);  
+            Double.parseDouble(str);  
         } catch (NumberFormatException nfe) {  
             return false;  
         }  

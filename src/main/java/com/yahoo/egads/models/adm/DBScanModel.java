@@ -13,17 +13,18 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+
 import com.yahoo.egads.data.Anomaly.IntervalSequence;
 import com.yahoo.egads.data.Anomaly.Interval;
 import com.yahoo.egads.data.AnomalyErrorStorage;
 import com.yahoo.egads.data.TimeSeries.DataSequence;
-import com.yahoo.egads.utilities.Storage;
-import com.yahoo.egads.utilities.AutoSensitivity;
 import com.yahoo.egads.utilities.DBSCANClusterer;
-import org.apache.commons.math3.ml.clustering.Cluster;
-import com.yahoo.egads.utilities.DoublePoint;
-import org.apache.commons.math3.ml.distance.EuclideanDistance;
 
+import org.apache.commons.math3.ml.clustering.Cluster;
+
+import com.yahoo.egads.utilities.DoublePoint;
+
+import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
@@ -36,14 +37,13 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
     // modelName.
     public String modelName = "DBScanModel";
     public AnomalyErrorStorage aes = new AnomalyErrorStorage();
-    private DBSCANClusterer dbscan = null;
+    private DBSCANClusterer<DoublePoint> dbscan = null;
     private int minPoints = 2;
     private double eps = 500;
     
     public DBScanModel(Properties config) {
         super(config);
        
-        modelName = modelName + "-" + Storage.forecastModel;
         if (config.getProperty("MAX_ANOMALY_TIME_AGO") == null) {
             throw new IllegalArgumentException("MAX_ANOMALY_TIME_AGO is NULL");
         }
@@ -120,9 +120,9 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
                 count++;
             }
         }
-        eps = ((double) Storage.sDAutoSensParameter) * (sum / count);   
-        minPoints = ((int) Math.ceil(((double) Storage.amntAutoSensParameter) * ((double) n)));     
-        dbscan = new DBSCANClusterer(eps, minPoints);
+        eps = ((double) this.sDAutoSensitivity) * (sum / count);   
+        minPoints = ((int) Math.ceil(((double) this.amntAutoSensitivity) * ((double) n)));     
+        dbscan = new DBSCANClusterer<DoublePoint>(eps, minPoints);
     }
   
     @Override
@@ -153,25 +153,18 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
 
         for(Cluster<DoublePoint> c: cluster) {
             for (DoublePoint p : c.getPoints()) {
+            	int i = p.getId();
                 Float[] errors = aes.computeErrorMetrics(expectedSeries.get(p.getId()).value, observedSeries.get(p.getId()).value);
-                if (Storage.debug == 3) {
+                logger.debug("TS:" + observedSeries.get(i).time + ",E:" + String.join(":", arrayF2S(errors)) + ",TE:" + String.join(",", arrayF2S(thresholdErrors)) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
+                if (observedSeries.get(p.getId()).value != expectedSeries.get(p.getId()).value &&
+                    ((((unixTime - observedSeries.get(p.getId()).time) / 3600) < maxHrsAgo) ||
+                    (maxHrsAgo == 0 && p.getId() == (n - 1)))) {
                     output.add(new Interval(observedSeries.get(p.getId()).time,
                                             errors,
                                             thresholdErrors,
                                             observedSeries.get(p.getId()).value,
-                                            expectedSeries.get(p.getId()).value,
-                                            true));
-                } else {
-                    if (observedSeries.get(p.getId()).value != expectedSeries.get(p.getId()).value &&
-                        ((((unixTime - observedSeries.get(p.getId()).time) / 3600) < maxHrsAgo) ||
-                        (maxHrsAgo == 0 && p.getId() == (n - 1)))) {
-                        output.add(new Interval(observedSeries.get(p.getId()).time,
-                                                errors,
-                                                thresholdErrors,
-                                                observedSeries.get(p.getId()).value,
-                                                expectedSeries.get(p.getId()).value));
-                    }
-                }                
+                                            expectedSeries.get(p.getId()).value));
+                }
             }
         }
 

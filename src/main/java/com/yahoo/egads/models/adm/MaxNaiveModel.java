@@ -11,11 +11,10 @@
 package com.yahoo.egads.models.adm;
 
 import java.util.Properties;
+
 import com.yahoo.egads.data.Anomaly.IntervalSequence;
 import com.yahoo.egads.data.Anomaly.Interval;
 import com.yahoo.egads.data.TimeSeries.DataSequence;
-import com.yahoo.egads.utilities.Storage;
-import com.yahoo.egads.data.AnomalyErrorStorage;
 
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -28,8 +27,7 @@ public class MaxNaiveModel extends AnomalyDetectionAbstractModel {
     private int maxHrsAgo;
     // modelName.
     public static String modelName = "MaxNaive-NA";
-    private AnomalyErrorStorage aes = new AnomalyErrorStorage();
-    
+
     public MaxNaiveModel(Properties config) {
         super(config);
 
@@ -110,10 +108,7 @@ public class MaxNaiveModel extends AnomalyDetectionAbstractModel {
         	error[0] = buzzScore * ((float) Math.abs(buzzScore) / (maxNow + maxBefore));
         }
         
-        if (Storage.debug == 3) {
-            System.out.println("MaxNaiveModel: CI " + cutIndex + " n " + n +
-                               " maxNow " + maxNow + " maxBefore " + maxBefore + " Error " + error[0]);
-        }
+        logger.debug("MaxNaiveModel: CI " + cutIndex + " n " + n + " maxNow " + maxNow + " maxBefore " + maxBefore + " Error " + error[0]);
         if (isAnomaly(error, threshold) == true) {
             Float locMax = (float) Float.NEGATIVE_INFINITY;
             int maxIndex = -1;
@@ -123,7 +118,7 @@ public class MaxNaiveModel extends AnomalyDetectionAbstractModel {
                     maxIndex = i;
                 }
             }
-            
+            logger.debug("TS:" + observedSeries.get(maxIndex).time + ",E:" + error + ",TH:" + threshold + ",OV:" + observedSeries.get(maxIndex).value + ",EV:" + expectedSeries.get(maxIndex).value);
             output.add(new Interval(observedSeries.get(maxIndex).time,
                        error,
                        threshold,

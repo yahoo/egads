@@ -26,20 +26,9 @@ import com.yahoo.egads.data.*;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 import java.util.Properties;
-import java.util.*;
-import com.yahoo.egads.models.adm.*;
-import com.yahoo.egads.utilities.Storage;
 
 // Picks the best model from the available EGADS models.
 public class AutoForecastModel extends TimeSeriesAbstractModel {
-    // methods ////////////////////////////////////////////////
-    
-    // Will be updated later based on the best model that we picked.
-    private String modelName;
-    
-    // Stores the historical values.
-    private TimeSeries.DataSequence data;
-    
     // Stores the properties file to init other models.
     private Properties p;
     
@@ -113,18 +102,9 @@ public class AutoForecastModel extends TimeSeriesAbstractModel {
             myModel = olympModel;
         }
         
-        Storage.forecastModel = myModel.getModelName();
         initForecastErrors(myModel, data);
        
-        if (Storage.debug == 2) {
-            System.out.println(getBias() + "\t" +
-                               getMAD() + "\t" +
-                               getMAPE() + "\t" +
-                               getMSE() + "\t" +
-                               getSAE() + "\t" +
-                               0 + "\t" +
-                               0);
-        }
+        logger.debug(getBias() + "\t" + getMAD() + "\t" + getMAPE() + "\t" + getMSE() + "\t" + getSAE() + "\t" + 0 + "\t" + 0);
     }
 
     public void update(TimeSeries.DataSequence data) {

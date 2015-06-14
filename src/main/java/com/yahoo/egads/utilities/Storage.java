@@ -20,9 +20,9 @@ public class Storage {
     public static int dynamicParameters = 0;
     // Can potentially be used by the Stats library for Box-Cox
     // transformation.
-    public static Float sDAutoSensParameter = (float) 3.0;
+    public static Float sDAutoSensitivity = (float) 3.0;
     // Sets the assumed amount of anomalies in your data.
-    public static Float amntAutoSensParameter = (float) 0.05;
+    public static Float amntAutoSensitivity = (float) 0.05;
     // Stores the name of the current forecast model.
     public static String forecastModel = "none";
     // A parameter denoting the aggregation level.

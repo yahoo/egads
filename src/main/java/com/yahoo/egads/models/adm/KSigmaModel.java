@@ -12,10 +12,10 @@ import java.util.Properties;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
+
 import com.yahoo.egads.data.Anomaly.IntervalSequence;
 import com.yahoo.egads.data.Anomaly.Interval;
 import com.yahoo.egads.data.TimeSeries.DataSequence;
-import com.yahoo.egads.utilities.Storage;
 import com.yahoo.egads.utilities.AutoSensitivity;
 import com.yahoo.egads.data.AnomalyErrorStorage;
 
@@ -35,7 +35,6 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
     public KSigmaModel(Properties config) {
         super(config);
         
-        modelName = modelName + "-" + Storage.forecastModel;
         if (config.getProperty("MAX_ANOMALY_TIME_AGO") == null) {
             throw new IllegalArgumentException("MAX_ANOMALY_TIME_AGO is NULL");
         }
@@ -88,8 +87,6 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
     @Override
     public void tune(DataSequence observedSeries, DataSequence expectedSeries,
             IntervalSequence anomalySequence) throws Exception {
-        int n = observedSeries.size();
-        
         HashMap<String, ArrayList<Float>> allErrors = aes.initAnomalyErrors(observedSeries, expectedSeries);
 
         for (int i = 0; i < (aes.getIndexToError().keySet()).size(); i++) {
@@ -97,7 +94,7 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
             // defined by the user.
             if (!threshold.containsKey(aes.getIndexToError().get(i))) {
                 Float[] fArray = (allErrors.get(aes.getIndexToError().get(i))).toArray(new Float[(allErrors.get(aes.getIndexToError().get(i))).size()]);
-                threshold.put(aes.getIndexToError().get(i), AutoSensitivity.getKSigmaSensitivity(fArray));
+                threshold.put(aes.getIndexToError().get(i), AutoSensitivity.getKSigmaSensitivity(fArray, sDAutoSensitivity));
             }
         }
     }
@@ -138,25 +135,17 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
         
         for (int i = 0; i < n; i++) {
             Float[] errors = aes.computeErrorMetrics(expectedSeries.get(i).value, observedSeries.get(i).value);
-            if (Storage.debug == 3) {
+            logger.debug("TS:" + observedSeries.get(i).time + ",E:" + String.join(":", arrayF2S(errors)) + ",TE:" + String.join(",", arrayF2S(thresholdErrors)) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
+            if (observedSeries.get(i).value != expectedSeries.get(i).value &&
+                threshSum > (float) 0.0 &&
+                isAnomaly(errors, threshold) == true &&
+                ((((unixTime - observedSeries.get(i).time) / 3600) < maxHrsAgo) ||
+                (maxHrsAgo == 0 && i == (n - 1)))) {
                 output.add(new Interval(observedSeries.get(i).time,
                                         errors,
                                         thresholdErrors,
                                         observedSeries.get(i).value,
-                                        expectedSeries.get(i).value,
-                                        isAnomaly(errors, threshold)));
-            } else {
-                if (observedSeries.get(i).value != expectedSeries.get(i).value &&
-                    threshSum > (float) 0.0 &&
-                    isAnomaly(errors, threshold) == true &&
-                    ((((unixTime - observedSeries.get(i).time) / 3600) < maxHrsAgo) ||
-                    (maxHrsAgo == 0 && i == (n - 1)))) {
-                    output.add(new Interval(observedSeries.get(i).time,
-                                            errors,
-                                            thresholdErrors,
-                                            observedSeries.get(i).value,
-                                            expectedSeries.get(i).value));
-                }
+                                        expectedSeries.get(i).value));
             }
         }
         return output;

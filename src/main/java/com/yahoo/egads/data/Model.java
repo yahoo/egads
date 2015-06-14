@@ -10,8 +10,14 @@
 
 package com.yahoo.egads.data;
 
-public interface Model extends JsonAble {
+import java.io.Serializable;
 
-    public String getModelName();
+public interface Model extends JsonAble, Serializable {
+	
+    // resets the model.
+    public void reset();
 
+    // Gets the model name and type
+    public String getModelName();    
+    public String getModelType();
 }

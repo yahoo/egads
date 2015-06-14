@@ -41,7 +41,7 @@ public class TestChangePointDetectionAlgorithm {
         prp.setProperty("MAX_ANOMALY_TIME_AGO", "48");
 
         AdaptiveKernelDensityChangePointDetector cpd = new AdaptiveKernelDensityChangePointDetector(prp);
-        ArrayList<Integer> changePoints = cpd.detectChnagePoints(residuals, preWindowSize, postWindowSize, confidence);
+        ArrayList<Integer> changePoints = cpd.detectChangePoints(residuals, preWindowSize, postWindowSize, confidence);
         Assert.assertTrue(changePoints.size() == 1);
     }
 }

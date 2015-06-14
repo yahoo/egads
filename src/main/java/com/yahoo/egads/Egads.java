@@ -62,12 +62,12 @@ public class Egads {
         
         // Set the assumed amount of anomaly in your data.
         if (p.getProperty("AUTO_SENSITIVITY_ANOMALY_PCNT") != null) {
-            Storage.amntAutoSensParameter = new Float(p.getProperty("AUTO_SENSITIVITY_ANOMALY_PCNT"));
+            Storage.amntAutoSensitivity = new Float(p.getProperty("AUTO_SENSITIVITY_ANOMALY_PCNT"));
         }
         
         // Set the standard deviation for auto sensitivity.
         if (p.getProperty("AUTO_SENSITIVITY_SD") != null) {
-            Storage.sDAutoSensParameter = new Float(p.getProperty("AUTO_SENSITIVITY_SD"));
+            Storage.sDAutoSensitivity = new Float(p.getProperty("AUTO_SENSITIVITY_SD"));
         }
         
         // Aggregation level.
