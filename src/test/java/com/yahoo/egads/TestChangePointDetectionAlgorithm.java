@@ -12,16 +12,22 @@ import java.util.Properties;
 import org.testng.annotations.Test;
 import com.yahoo.egads.data.TimeSeries;
 import com.yahoo.egads.models.adm.AdaptiveKernelDensityChangePointDetector;
+import java.io.InputStream;
+import java.io.FileInputStream;
 
 public class TestChangePointDetectionAlgorithm {
     @Test
-    public void testChangePointDetectionAlgorithm() {
+    public void testChangePointDetectionAlgorithm() throws Exception {
+        String configFile = "src/test/resources/sample_config.ini";
+        InputStream is = new FileInputStream(configFile);
+        Properties p = new Properties();
+        p.load(is);
         TimeSeries observedTS =
                         com.yahoo.egads.utilities.FileUtils
-                                        .createTimeSeries("src/test/resources/cp-obs.csv").get(0);
+                                        .createTimeSeries("src/test/resources/cp-obs.csv", p).get(0);
         TimeSeries expectedTS =
                         com.yahoo.egads.utilities.FileUtils
-                                        .createTimeSeries("src/test/resources/cp-exp.csv").get(0);
+                                        .createTimeSeries("src/test/resources/cp-exp.csv", p).get(0);
 
         int n = observedTS.size();
         Integer preWindowSize = 2 * 24 * 4;
@@ -34,13 +40,12 @@ public class TestChangePointDetectionAlgorithm {
             residuals[i] = observedTS.data.get(i).value - expectedTS.data.get(i).value;
         }
 
-        Properties prp = new Properties();
-        prp.setProperty("PRE_WINDOW_SIZE", preWindowSize.toString());
-        prp.setProperty("POST_WINDOW_SIZE", postWindowSize.toString());
-        prp.setProperty("CONFIDENCE", confidence.toString());
-        prp.setProperty("MAX_ANOMALY_TIME_AGO", "48");
+        p.setProperty("PRE_WINDOW_SIZE", preWindowSize.toString());
+        p.setProperty("POST_WINDOW_SIZE", postWindowSize.toString());
+        p.setProperty("CONFIDENCE", confidence.toString());
+        p.setProperty("MAX_ANOMALY_TIME_AGO", "48");
 
-        AdaptiveKernelDensityChangePointDetector cpd = new AdaptiveKernelDensityChangePointDetector(prp);
+        AdaptiveKernelDensityChangePointDetector cpd = new AdaptiveKernelDensityChangePointDetector(p);
         ArrayList<Integer> changePoints = cpd.detectChangePoints(residuals, preWindowSize, postWindowSize, confidence);
         Assert.assertTrue(changePoints.size() == 1);
     }

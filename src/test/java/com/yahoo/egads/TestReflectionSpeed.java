@@ -7,7 +7,6 @@
 package com.yahoo.egads;
 
 import com.yahoo.egads.data.TimeSeries;
-import com.yahoo.egads.utilities.Storage;
 
 import java.util.ArrayList;
 import java.util.Properties;
@@ -32,28 +31,8 @@ public class TestReflectionSpeed {
         Properties p = new Properties();
         p.load(is);
 
-        // Set output destination if available.
-        if (p.getProperty("OUTPUT") != null) {
-            Storage.outputSrc = p.getProperty("OUTPUT");
-        }
-
-        // Set debug.
-        if (p.getProperty("DEBUG") != null) {
-            Storage.debug = new Integer(p.getProperty("DEBUG"));
-        }
-
-        // Set dynamic parameters.
-        if (p.getProperty("DYNAMIC_PARAMETERS") != null) {
-            Storage.dynamicParameters = new Integer(p.getProperty("DYNAMIC_PARAMETERS"));
-        }
-
-        // Set the assumed amount of anomaly in your data.
-        if (p.getProperty("AUTO_SENSITIVITY_ANOMALY_PCNT") != null) {
-            Storage.amntAutoSensitivity = new Float(p.getProperty("AUTO_SENSITIVITY_ANOMALY_PCNT"));
-        }
-
         // Parse the input timeseries.
-        ArrayList<TimeSeries> metrics = com.yahoo.egads.utilities.FileUtils.createTimeSeries(csv_file);
+        ArrayList<TimeSeries> metrics = com.yahoo.egads.utilities.FileUtils.createTimeSeries(csv_file, p);
         long start = System.currentTimeMillis();
         for (TimeSeries ts : metrics) {
             ProcessableObject po = ProcessableObjectFactory.create(ts, p);

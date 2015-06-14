@@ -51,6 +51,9 @@ import com.yahoo.egads.data.Anomaly.Interval;
 import java.awt.Color;
 import java.util.HashMap;
 import com.yahoo.egads.data.AnomalyErrorStorage;
+import java.util.Properties;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 // Draws the time-series.
 public class GUIUtils extends ApplicationFrame {
@@ -58,9 +61,11 @@ public class GUIUtils extends ApplicationFrame {
 	// Denominator used in the MASE error metric.
     float maseDenom = 0;
     private AnomalyErrorStorage aes = new AnomalyErrorStorage();
+    private Properties config;
 
-    private GUIUtils(String title, DataSequence orig, DataSequence predicted, ArrayList<Anomaly> anomalyList) {
+    private GUIUtils(String title, DataSequence orig, DataSequence predicted, ArrayList<Anomaly> anomalyList, Properties config) {
          super(title);
+         this.config = config;
          final JFreeChart chart = createCombinedChart(orig, predicted, anomalyList);
          final ChartPanel panel = new ChartPanel(chart, true, true, true, false, true);
          panel.setPreferredSize(new java.awt.Dimension(1440, 900));
@@ -112,22 +117,22 @@ public class GUIUtils extends ApplicationFrame {
                               true);
     }
     
-//    private Float sum(DataSequence d, int from, int to) {
-//        Float sum = (float) 0.0;
-//        
-//        for (int i = from; i < to; i++) {
-//            sum += d.get(i).value;
-//        }
-//        return sum;
-//    }
-    
     /**
      * Compute the time-series of anomalies.
      */
     public void addAnomalyTS(CombinedDomainXYPlot plot, DataSequence observedSeries, DataSequence expectedSeries) {
         // Compute the time-series of errors.
         HashMap<String, ArrayList<Float>> allErrors = aes.initAnomalyErrors(observedSeries, expectedSeries);
+        Float sDAutoSensitivity = (float) 0.0;
+        Float amntAutoSensitivity = (float) 0.0;
+        if (config.getProperty("AUTO_SENSITIVITY_ANOMALY_PCNT") != null) {
+          amntAutoSensitivity = new Float(config.getProperty("AUTO_SENSITIVITY_ANOMALY_PCNT"));
+        }
         
+        if (config.getProperty("AUTO_SENSITIVITY_SD") != null) {
+          sDAutoSensitivity = new Float(config.getProperty("AUTO_SENSITIVITY_SD"));
+        }
+
         String errorDebug = "";
         for (int i = 0; i < (aes.getIndexToError().keySet()).size(); i++) {
             Float[] fArray = (allErrors.get(aes.getIndexToError().get(i))).toArray(new Float[(allErrors.get(aes.getIndexToError().get(i))).size()]);
@@ -136,7 +141,7 @@ public class GUIUtils extends ApplicationFrame {
             NumberAxis rangeAxis1 = new NumberAxis(aes.getIndexToError().get(i));
             XYPlot subplot1 = new XYPlot(data1, null, rangeAxis1, renderer1);
             // Get threshold.
-            Float d = AutoSensitivity.getLowDensitySensitivity(fArray, Storage.sDAutoSensitivity, Storage.amntAutoSensitivity);
+            Float d = AutoSensitivity.getLowDensitySensitivity(fArray, sDAutoSensitivity, amntAutoSensitivity);
             subplot1.addRangeMarker(new ValueMarker(d));
             subplot1.setRangeAxisLocation(AxisLocation.BOTTOM_OR_LEFT);
             plot.add(subplot1, 1);
@@ -193,9 +198,12 @@ public class GUIUtils extends ApplicationFrame {
      * Starting point for the forecasting charting demo application.
      * @param args ignored.
      */
-    public static void plotResults(DataSequence orig, DataSequence predicted, ArrayList<Anomaly> anomalyList) {
-        GUIUtils gui = new GUIUtils("EGADS GUI", orig, predicted, anomalyList);
+    public static void plotResults(DataSequence orig, DataSequence predicted, ArrayList<Anomaly> anomalyList, Properties config) {
+        GUIUtils gui = new GUIUtils("EGADS GUI", orig, predicted, anomalyList, config);
         gui.pack();
         gui.setVisible(true);
+        JFrame frame = new JFrame("EGADS GUI");
+        JOptionPane.showMessageDialog(frame, "Click OK to continue");
+        gui.setVisible(false);
     }
 }

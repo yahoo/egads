@@ -30,20 +30,20 @@ public class TestOlympicModel {
         String[] refWindows = new String[]{"10", "5"};
         String[] drops = new String[]{"0", "1"};
         // Load the true expected values from a file.
+        String configFile = "src/test/resources/sample_config.ini";
+        InputStream is = new FileInputStream(configFile);
+        Properties p = new Properties();
+        p.load(is);
         ArrayList<TimeSeries> actual_metric = com.yahoo.egads.utilities.FileUtils
-                .createTimeSeries("src/test/resources/model_input.csv");
+                .createTimeSeries("src/test/resources/model_input.csv", p);
 
         for (int w = 0; w < refWindows.length; w++) {
             for (int d = 0; d < drops.length; d++) {
-                 String configFile = "src/test/resources/sample_config.ini";
-                 InputStream is = new FileInputStream(configFile);
-                 Properties p = new Properties();
-                 p.load(is);
                  p.setProperty("NUM_WEEKS", refWindows[w]);
                  p.setProperty("NUM_TO_DROP", drops[d]);
                  // Parse the input timeseries.
                  ArrayList<TimeSeries> metrics = com.yahoo.egads.utilities.FileUtils
-                            .createTimeSeries("src/test/resources/model_output_" + refWindows[w] + "_" + drops[d] + ".csv");
+                            .createTimeSeries("src/test/resources/model_output_" + refWindows[w] + "_" + drops[d] + ".csv", p);
                  OlympicModel model = new OlympicModel(p);
                  model.train(actual_metric.get(0).data);
                  TimeSeries.DataSequence sequence = new TimeSeries.DataSequence(metrics.get(0).startTime(),
