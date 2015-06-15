@@ -48,7 +48,7 @@ public class FileUtils {
                 
                 // Check for the case where there is more than one line preceding the data 
                 if (firstLine == true) {
-                    if (!isNumeric(tokens[0]) && tokens[0] != "timestamp") {
+                    if (!isNumeric(tokens[0]) && tokens[0].equals("timestamp") == false) {
                         continue;
                     }
                 }
@@ -61,7 +61,7 @@ public class FileUtils {
                         TimeSeries ts = new TimeSeries();
                         ts.meta.fileName = csv_file;
                         output.add(ts);
-                        if (isNumeric(tokens[0]) == false) { // Just in case there's a numeric column heading
+                        if (isNumeric(tokens[i]) == false) { // Just in case there's a numeric column heading
                             ts.meta.name = tokens[i];
                         } else {
                             ts.meta.name = "metric_" + i;
