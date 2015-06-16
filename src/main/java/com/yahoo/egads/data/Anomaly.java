@@ -176,9 +176,6 @@ public class Anomaly implements JsonAble {
                 return false;
             }
             IntervalSequence other = (IntervalSequence) other_obj;
-            if (serialVersionUID != other.serialVersionUID) {
-                return false;
-            }
             if (!super.equals(other)) {
                 return false;
             }
@@ -241,6 +238,17 @@ public class Anomaly implements JsonAble {
                         i.actualVal + "," +
                         printArray(i.anomalyScore) + "," +
                         printArray(i.thresholdScore) + printDebugIsAnomaly(i.isAnomaly) + "\n");
+        }
+        return str.toString();
+    }
+    
+    public String toPlotString() {
+        StringBuffer str = new StringBuffer();
+        for (Interval i : intervals) {
+             str.append(i.utime + "," +
+                        i.actualVal + "," +
+                        i.expectedVal +
+                        printDebugIsAnomaly(i.isAnomaly) + "\n");
         }
         return str.toString();
     }

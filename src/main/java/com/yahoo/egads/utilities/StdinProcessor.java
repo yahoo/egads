@@ -20,9 +20,13 @@ public class StdinProcessor implements InputProcessor {
     public void processInput(Properties p) throws Exception {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String s;
+        Integer aggr = 1;
+        if (p.getProperty("AGGREGATION") != null) {
+          aggr = new Integer(p.getProperty("AGGREGATION"));
+        }
         while ((s = in.readLine()) != null && s.length() != 0) {
             // Parse the time-series.
-            ArrayList<TimeSeries> metrics = createTimeSeries(s);
+            ArrayList<TimeSeries> metrics = createTimeSeries(s, aggr);
             for (TimeSeries ts : metrics) {
                 ProcessableObject po = ProcessableObjectFactory.create(ts, p);
                 po.process();
@@ -33,7 +37,7 @@ public class StdinProcessor implements InputProcessor {
     
     // Format of the time-series: meta1\tmeta\2{(2014120205,0),(2014122207,1)}\t{(2014120205,0),(2014122207,0)}...
     // Creates a time-series from a file.
-    private static ArrayList<TimeSeries> createTimeSeries(String s) throws Exception {
+    private static ArrayList<TimeSeries> createTimeSeries(String s, Integer aggr) throws Exception {
         ArrayList<TimeSeries> output = new ArrayList<TimeSeries>();
         String[] tokens = s.split("\t");
         String meta = "meta";
@@ -49,10 +53,10 @@ public class StdinProcessor implements InputProcessor {
         }
 
         // Handle aggregation.
-        if (Storage.aggr > 1) {
+        if (aggr > 1) {
             for (TimeSeries t : output) {
-                t.data = t.aggregate(Storage.aggr);
-                t.meta.name += "_aggr_" + Storage.aggr;
+                t.data = t.aggregate(aggr);
+                t.meta.name += "_aggr_" + aggr;
             }
         }
         return output;

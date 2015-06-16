@@ -16,7 +16,6 @@ import com.yahoo.egads.data.Anomaly.IntervalSequence;
 import com.yahoo.egads.data.Anomaly.Interval;
 import com.yahoo.egads.data.AnomalyErrorStorage;
 import com.yahoo.egads.data.TimeSeries.DataSequence;
-import com.yahoo.egads.utilities.Storage;
 import com.yahoo.egads.utilities.AutoSensitivity;
 
 import org.json.JSONObject;
@@ -35,7 +34,6 @@ public class ExtremeLowDensityModel extends AnomalyDetectionAbstractModel {
     public ExtremeLowDensityModel(Properties config) {
         super(config);
         
-        modelName = modelName + "-" + Storage.forecastModel;
         if (config.getProperty("MAX_ANOMALY_TIME_AGO") == null) {
             throw new IllegalArgumentException("MAX_ANOMALY_TIME_AGO is NULL");
         }
@@ -89,8 +87,6 @@ public class ExtremeLowDensityModel extends AnomalyDetectionAbstractModel {
     public void tune(DataSequence observedSeries,
                      DataSequence expectedSeries,
                      IntervalSequence anomalySequence) throws Exception {
-        int n = observedSeries.size();
-        
         // Compute the time-series of errors.
         HashMap<String, ArrayList<Float>> allErrors = aes.initAnomalyErrors(observedSeries, expectedSeries);
         
@@ -99,7 +95,7 @@ public class ExtremeLowDensityModel extends AnomalyDetectionAbstractModel {
             // defined by the user.
             if (!threshold.containsKey(aes.getIndexToError().get(i))) {
                 Float[] fArray = (allErrors.get(aes.getIndexToError().get(i))).toArray(new Float[(allErrors.get(aes.getIndexToError().get(i))).size()]);
-                threshold.put(aes.getIndexToError().get(i), AutoSensitivity.getLowDensitySensitivity(fArray));
+                threshold.put(aes.getIndexToError().get(i), AutoSensitivity.getLowDensitySensitivity(fArray, sDAutoSensitivity, amntAutoSensitivity));
             }
         }
     }
@@ -121,7 +117,7 @@ public class ExtremeLowDensityModel extends AnomalyDetectionAbstractModel {
     @Override
     public IntervalSequence detect(DataSequence observedSeries,
                                    DataSequence expectedSeries) throws Exception {
-        
+
         // At detection time, the anomaly thresholds shouldn't all be 0.
         Float threshSum = (float) 0.0;
         for (Map.Entry<String, Float> entry : this.threshold.entrySet()) {
@@ -139,27 +135,19 @@ public class ExtremeLowDensityModel extends AnomalyDetectionAbstractModel {
         long unixTime = System.currentTimeMillis() / 1000L;
        
         for (int i = 0; i < n; i++) {
-            Float[] errors = aes.computeErrorMetrics(expectedSeries.get(i).value, observedSeries.get(i).value);
-            if (Storage.debug == 3) {
-                output.add(new Interval(observedSeries.get(i).time,
-                                        errors,
-                                        thresholdErrors,
-                                        observedSeries.get(i).value,
-                                        expectedSeries.get(i).value,
-                                        isAnomaly(errors, threshold)));
-            } else {
-                if (observedSeries.get(i).value != expectedSeries.get(i).value &&
-                    threshSum > (float) 0.0 &&
-                    isAnomaly(errors, threshold) == true &&
-                    ((((unixTime - observedSeries.get(i).time) / 3600) < maxHrsAgo) ||
-                    (maxHrsAgo == 0 && i == (n - 1)))) {
-                    output.add(new Interval(observedSeries.get(i).time,
-                                            errors,
-                                            thresholdErrors,
-                                            observedSeries.get(i).value,
-                                            expectedSeries.get(i).value));
-                }
-            }
+            		Float[] errors = aes.computeErrorMetrics(expectedSeries.get(i).value, observedSeries.get(i).value);
+            		logger.debug("TS:" + observedSeries.get(i).time + ",E:" + String.join(":", arrayF2S(errors)) + ",TE:" + String.join(",", arrayF2S(thresholdErrors)) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
+			if (observedSeries.get(i).value != expectedSeries.get(i).value &&
+						threshSum > (float) 0.0 &&
+						isAnomaly(errors, threshold) == true &&
+						((((unixTime - observedSeries.get(i).time) / 3600) < maxHrsAgo) ||
+						(maxHrsAgo == 0 && i == (n - 1)))) {
+				output.add(new Interval(observedSeries.get(i).time,
+                        errors,
+                        thresholdErrors,
+                        observedSeries.get(i).value,
+                        expectedSeries.get(i).value));
+			}
         }
         return output;
     }

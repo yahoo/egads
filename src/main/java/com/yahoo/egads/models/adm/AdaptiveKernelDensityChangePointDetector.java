@@ -17,7 +17,6 @@ import com.yahoo.egads.data.Anomaly.Interval;
 import com.yahoo.egads.data.Anomaly.IntervalSequence;
 import com.yahoo.egads.data.TimeSeries.DataSequence;
 import com.yahoo.egads.utilities.ListUtils;
-import com.yahoo.egads.utilities.Storage;
 /**
  * AdaptiveKernelDensityChangePointDetector implements density-based algorithm for change point detection.
  * 
@@ -76,7 +75,6 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
     public AdaptiveKernelDensityChangePointDetector(Properties config) {
         super(config);
 
-        modelName = modelName + "-" + Storage.forecastModel;
         this.maxHrsAgo = new Integer(config.getProperty("MAX_ANOMALY_TIME_AGO"));
         if (config.getProperty("PRE_WINDOW_SIZE") == null) {
             throw new IllegalArgumentException("PRE_WINDOW_SIZE is NULL");
@@ -156,10 +154,10 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
 
         // Detecting change points
         ArrayList<Integer> changePoints =
-                        detectChnagePoints(residuals, this.preWindowSize, this.postWindowSize, this.confidence);
+                        detectChangePoints(residuals, this.preWindowSize, this.postWindowSize, this.confidence);
 
         // Preparing the output
-        if (Storage.debug == 3) {
+        if (this.outputDest.equals("STD_OUT_ALL")) {
             int j = 0;
             for (int i = 0; i < n; ++i) {
                 boolean isCP = false;
@@ -171,7 +169,8 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
                 if (isCP && j < (changePoints.size() - 1)) {
                     j++;
                 }
-                
+                logger.debug("TS:" + observedSeries.get(i).time + ",SC:" + String.join(":", arrayF2S(new Float[] {score[i]})) + ",LV:" + String.join(",", arrayF2S(new Float[] {level[i]})) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
+
                 result.add(new Interval(observedSeries.get(i).time, 
                                         new Float[] {score[i]},
                                         new Float[] {level[i]},
@@ -192,7 +191,7 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
         return result;
     }
 
-    public ArrayList<Integer> detectChnagePoints(float[] residuals, int preWindowSize, int postWindowSize,
+    public ArrayList<Integer> detectChangePoints(float[] residuals, int preWindowSize, int postWindowSize,
                     float confidence) {
         int n = residuals.length;
         score = new float[n];

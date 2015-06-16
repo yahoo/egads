@@ -12,16 +12,18 @@ import java.util.ArrayList;
 
 import com.yahoo.egads.data.Anomaly;
 import com.yahoo.egads.data.TimeSeries;
-import com.yahoo.egads.utilities.Storage;
 import com.yahoo.egads.utilities.GUIUtils;
+import java.util.Properties;
 
 public class DetectAnomalyProcessable implements ProcessableObject {
     private ModelAdapter ma;
     private AnomalyDetector ad;
+    private Properties config;
 
-    DetectAnomalyProcessable(ModelAdapter ma, AnomalyDetector ad) {
+    DetectAnomalyProcessable(ModelAdapter ma, AnomalyDetector ad, Properties config) {
         this.ma = ma;
         this.ad = ad;
+        this.config = config;
     }
 
     public void process() throws Exception {
@@ -48,12 +50,16 @@ public class DetectAnomalyProcessable implements ProcessableObject {
             ArrayList<Anomaly> anomalyList = ad.detect(ad.metric, ds);
             
             // Writing the anomalies to AnomalyDB
-            if (Storage.outputSrc != null && Storage.outputSrc.equals("ANOMALY_DB")) {
+            if (config.getProperty("OUTPUT") != null && config.getProperty("OUTPUT").equals("ANOMALY_DB")) {
                 for (Anomaly anomaly : anomalyList) {
-                    Storage.batchStoreAnomaly(anomaly);
+                    // TODO: Batch Anoamly Process.
                 }
-            } else if (Storage.outputSrc != null && Storage.outputSrc.equals("GUI")) { 
-                GUIUtils.plotResults(ma.metric.data, ds, anomalyList);
+            } else if (config.getProperty("OUTPUT") != null && config.getProperty("OUTPUT").equals("GUI")) { 
+                GUIUtils.plotResults(ma.metric.data, ds, anomalyList, config);
+            } else if (config.getProperty("OUTPUT") != null && config.getProperty("OUTPUT").equals("PLOT")) { 
+                for (Anomaly anomaly : anomalyList) {
+                    System.out.print(anomaly.toPlotString());
+                }
             } else {
                 for (Anomaly anomaly : anomalyList) {
                     System.out.print(anomaly.toPerlString());

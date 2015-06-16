@@ -15,11 +15,12 @@ import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Properties;
 
 public class FileUtils {
     
     // Creates a time-series from a file.
-    public static ArrayList<TimeSeries> createTimeSeries(String csv_file) {
+    public static ArrayList<TimeSeries> createTimeSeries(String csv_file, Properties config) {
         // Input file which needs to be parsed
         String fileToParse = csv_file;
         BufferedReader fileReader = null;
@@ -29,6 +30,10 @@ public class FileUtils {
         final String delimiter = ",";
         Long interval = null;
         Long prev = null;
+        Integer aggr = 1;
+        if (config.getProperty("AGGREGATION") != null) {
+            aggr = new Integer(config.getProperty("AGGREGATION"));
+        }
         try {
             String line = "";
             // Create the file reader.
@@ -40,6 +45,13 @@ public class FileUtils {
                 // Get all tokens available in line.
                 String[] tokens = line.split(delimiter);
                 Long curTimestamp = null;
+                
+                // Check for the case where there is more than one line preceding the data 
+                if (firstLine == true) {
+                    if (!isNumeric(tokens[0]) && tokens[0].equals("timestamp") == false) {
+                        continue;
+                    }
+                }
                 if (firstLine == false && tokens.length > 1) {
                     curTimestamp = (new Double(tokens[0])).longValue();
                 }
@@ -49,7 +61,7 @@ public class FileUtils {
                         TimeSeries ts = new TimeSeries();
                         ts.meta.fileName = csv_file;
                         output.add(ts);
-                        if (isNumeric(tokens[i]) == false) {
+                        if (isNumeric(tokens[i]) == false) { // Just in case there's a numeric column heading
                             ts.meta.name = tokens[i];
                         } else {
                             ts.meta.name = "metric_" + i;
@@ -97,10 +109,10 @@ public class FileUtils {
             }
         }
         // Handle aggregation.
-        if (Storage.aggr > 1) {
+        if (aggr > 1) {
             for (TimeSeries t : output) {
-                t.data = t.aggregate(Storage.aggr);
-                t.meta.name += "_aggr_" + Storage.aggr;
+                t.data = t.aggregate(aggr);
+                t.meta.name += "_aggr_" + aggr;
             }
         }
         return output;
@@ -109,7 +121,7 @@ public class FileUtils {
     // Checks if the string is numeric.
     public static boolean isNumeric(String str) {  
         try {  
-            double d = Double.parseDouble(str);  
+            Double.parseDouble(str);  
         } catch (NumberFormatException nfe) {  
             return false;  
         }  

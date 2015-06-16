@@ -13,14 +13,21 @@ import com.yahoo.egads.data.TimeSeries;
 import java.util.ArrayList;
 import org.testng.annotations.Test;
 import org.testng.Assert;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.util.Properties;
 
 public class TestMissingData {
 
     @Test
     public void testMissingData() throws Exception {
         String csv_file = "src/test/resources/sample_missing_input.csv";
+        String configFile = "src/test/resources/sample_config.ini";
+        InputStream is = new FileInputStream(configFile);
+        Properties p = new Properties();
+        p.load(is);
         ArrayList<TimeSeries> metrics = com.yahoo.egads.utilities.FileUtils
-                 .createTimeSeries(csv_file);
+                 .createTimeSeries(csv_file, p);
         Assert.assertEquals(metrics.get(0).data.size(), 1433);
     }
 }

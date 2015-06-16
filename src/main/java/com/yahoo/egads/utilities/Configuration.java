@@ -15,11 +15,11 @@ public class Configuration {
 
     public boolean useAnomalyDb = false;
     public boolean useModelDb = false;
-    public String anomalyDbUrl = "http://zown1.yms.bf1.yahoo.com:4080/AnomalyDB-webapp/anomaly";
-    public String modelDbUrl = "http://zown1.yms.bf1.yahoo.com:4080/AnomalyDB-webapp/model";
+    public String anomalyDbUrl = "http://anomalydb";
+    public String modelDbUrl = "http://modeldb";
     public String hdfsDirectory = "egads_storage";
     public String localFileDirectory = "egads_storage";
-    public String localMetricsFilepath = "membership_2014072409.gz";
+    public String localMetricsFilepath = "egads_metrics";
 
     // construction ////////////////////////////////////////////////
 

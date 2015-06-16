@@ -10,7 +10,6 @@ package com.yahoo.egads.models.adm;
 
 import java.util.Properties;
 
-import com.yahoo.egads.utilities.Storage;
 import com.yahoo.egads.data.Anomaly.IntervalSequence;
 import com.yahoo.egads.data.Anomaly.Interval;
 import com.yahoo.egads.data.TimeSeries;
@@ -32,7 +31,6 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
     public SimpleThresholdModel(Properties config) {
         super(config);
         
-        modelName = modelName + "-" + Storage.forecastModel;
         if (config.getProperty("THRESHOLD") == null) {
             this.threshold = null;
         } else {
@@ -66,7 +64,7 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
             IntervalSequence anomalySequence) throws Exception {  
         
         if (threshold == null) {
-        	threshold = AutoSensitivity.getKSigmaSensitivity(observedSeries.getValues());
+        	threshold = AutoSensitivity.getKSigmaSensitivity(observedSeries.getValues(), sDAutoSensitivity);
         }
     }
 
