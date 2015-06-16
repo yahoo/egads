@@ -31,13 +31,13 @@ public class TestAutoForecast {
 
     @Test
     public void testAutoForecast() throws Exception {
-        ArrayList<TimeSeries> metrics = com.yahoo.egads.utilities.FileUtils
-                .createTimeSeries("src/test/resources/sample_input.csv");
         
         String configFile = "src/test/resources/sample_config.ini";
         InputStream is = new FileInputStream(configFile);
         Properties p = new Properties();
         p.load(is);
+        ArrayList<TimeSeries> metrics = com.yahoo.egads.utilities.FileUtils
+                .createTimeSeries("src/test/resources/sample_input.csv", p);
         AutoForecastModel model = new AutoForecastModel(p);
         model.train(metrics.get(0).data);
         TimeSeries.DataSequence sequence = new TimeSeries.DataSequence(metrics.get(0).startTime(),
