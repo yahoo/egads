@@ -18,11 +18,11 @@ import com.yahoo.egads.data.Anomaly.IntervalSequence;
 import com.yahoo.egads.data.Anomaly.Interval;
 import com.yahoo.egads.data.AnomalyErrorStorage;
 import com.yahoo.egads.data.TimeSeries.DataSequence;
-import com.yahoo.egads.utilities.DBSCANClusterer;
+import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 
-import com.yahoo.egads.utilities.DoublePoint;
+import com.yahoo.egads.utilities.IdentifiedDoublePoint;
 
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.json.JSONObject;
@@ -37,7 +37,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
     // modelName.
     public String modelName = "DBScanModel";
     public AnomalyErrorStorage aes = new AnomalyErrorStorage();
-    private DBSCANClusterer<DoublePoint> dbscan = null;
+    private DBSCANClusterer<IdentifiedDoublePoint> dbscan = null;
     private int minPoints = 2;
     private double eps = 500;
     
@@ -99,7 +99,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
                      IntervalSequence anomalySequence) throws Exception {
         // Compute the time-series of errors.
         HashMap<String, ArrayList<Float>> allErrors = aes.initAnomalyErrors(observedSeries, expectedSeries);
-        List<DoublePoint> points = new ArrayList<DoublePoint>();
+        List<IdentifiedDoublePoint> points = new ArrayList<IdentifiedDoublePoint>();
         EuclideanDistance ed = new EuclideanDistance();
         int n = observedSeries.size();
         
@@ -109,7 +109,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
             for (int e = 0; e < (aes.getIndexToError().keySet()).size(); e++) {
                  d[e] = allErrors.get(aes.getIndexToError().get(e)).get(i);
             }
-            points.add(new DoublePoint(d, i));
+            points.add(new IdentifiedDoublePoint(d, i));
         }
         
         double sum = 0.0;
@@ -122,7 +122,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
         }
         eps = ((double) this.sDAutoSensitivity) * (sum / count);   
         minPoints = ((int) Math.ceil(((double) this.amntAutoSensitivity) * ((double) n)));     
-        dbscan = new DBSCANClusterer<DoublePoint>(eps, minPoints);
+        dbscan = new DBSCANClusterer<IdentifiedDoublePoint>(eps, minPoints);
     }
   
     @Override
@@ -138,7 +138,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
         
         // Compute the time-series of errors.
         HashMap<String, ArrayList<Float>> allErrors = aes.initAnomalyErrors(observedSeries, expectedSeries);
-        List<DoublePoint> points = new ArrayList<DoublePoint>();
+        List<IdentifiedDoublePoint> points = new ArrayList<IdentifiedDoublePoint>();
         
         for (int i = 0; i < n; i++) {
             double[] d = new double[(aes.getIndexToError().keySet()).size()];
@@ -146,13 +146,13 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
             for (int e = 0; e < (aes.getIndexToError().keySet()).size(); e++) {
                  d[e] = allErrors.get(aes.getIndexToError().get(e)).get(i);
             }
-            points.add(new DoublePoint(d, i));
+            points.add(new IdentifiedDoublePoint(d, i));
         }
         
-        List<Cluster<DoublePoint>> cluster = dbscan.cluster(points);
+        List<Cluster<IdentifiedDoublePoint>> cluster = dbscan.cluster(points);
 
-        for(Cluster<DoublePoint> c: cluster) {
-            for (DoublePoint p : c.getPoints()) {
+        for(Cluster<IdentifiedDoublePoint> c: cluster) {
+            for (IdentifiedDoublePoint p : c.getPoints()) {
             	int i = p.getId();
                 Float[] errors = aes.computeErrorMetrics(expectedSeries.get(p.getId()).value, observedSeries.get(p.getId()).value);
                 logger.debug("TS:" + observedSeries.get(i).time + ",E:" + String.join(":", arrayF2S(errors)) + ",TE:" + String.join(",", arrayF2S(thresholdErrors)) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);

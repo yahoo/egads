@@ -17,22 +17,16 @@
 
 package com.yahoo.egads.utilities;
 
-import java.io.Serializable;
-import java.util.Arrays;
 import org.apache.commons.math3.ml.clustering.Clusterable;
+import org.apache.commons.math3.ml.clustering.DoublePoint;
 
 /**
- * A simple implementation of {@link Clusterable} for points with double coordinates.
+ * A simple implementation of {@link Clusterable} for points with double coordinates, with an added id.
  * @version $Id$
  * @since 3.2
  */
-public class DoublePoint implements Clusterable, Serializable {
+public class IdentifiedDoublePoint extends DoublePoint {
 
-    /** Serializable version identifier. */
-    private static final long serialVersionUID = 3946024775784901369L;
-
-    /** Point coordinates. */
-    private final double[] point;
     private final int id;
 
     /**
@@ -42,8 +36,8 @@ public class DoublePoint implements Clusterable, Serializable {
      *
      * @param point the n-dimensional point in double space
      */
-    public DoublePoint(final double[] point, int id) {
-        this.point = point;
+    public IdentifiedDoublePoint(final double[] point, int id) {
+        super(point);
         this.id = id;
     }
 
@@ -54,43 +48,13 @@ public class DoublePoint implements Clusterable, Serializable {
      *
      * @param point the n-dimensional point in integer space
      */
-    public DoublePoint(final int[] point, int id) {
-        this.point = new double[point.length];
-        for ( int i = 0; i < point.length; i++) {
-            this.point[i] = point[i];
-        }
+    public IdentifiedDoublePoint(final int[] point, int id) {
+        super(point);
         this.id = id;
     }
 
-    /** {@inheritDoc} */
-    public double[] getPoint() {
-        return point;
-    }
-    
-    /** {@inheritDoc} */
     public int getId() {
        return id;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals(final Object other) {
-        if (!(other instanceof DoublePoint)) {
-            return false;
-        }
-        return Arrays.equals(point, ((DoublePoint) other).point);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(point);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        return Arrays.toString(point);
     }
 
 }
