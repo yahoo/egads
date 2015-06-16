@@ -1,5 +1,7 @@
 package com.yahoo.egads.batch;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.HashMap;
@@ -11,9 +13,9 @@ import com.yahoo.egads.models.tsmm.OlympicModel;
 import com.yahoo.egads.models.tsmm.StreamingOlympicModel;
 
 public class TrainForecastingModel {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
 		HashMap<String, TimeSeries.DataSequence> inputs = new HashMap<String, TimeSeries.DataSequence>();
-		Scanner sc = new Scanner(System.in);
+		Scanner sc = new Scanner(new File (args[0]));
 		ModelStore m = new FileModelStore ("models");
 		Properties osProps = new Properties();
 		osProps.setProperty("TIME_SHIFTS", "0,1");

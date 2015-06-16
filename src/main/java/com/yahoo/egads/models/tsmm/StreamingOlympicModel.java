@@ -38,6 +38,7 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     public void reset() {
         model = new HashMap<Long, Double>();
     }
+    
     private long timeToModelTime (long time) {
     	return time % period;
     }
@@ -108,51 +109,11 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     }
     
     private float computeExpected(int i, int pl) {
-        ArrayList<Float> vals = new ArrayList<Float>();
-        float precision = (float) 0.000001;
-        
-        int j = 1;
-
-        if ((i - pl * j) < 0) {
-            return Float.POSITIVE_INFINITY;
-        }
-        while (j <= this.numWeeks && (i - pl * j) >= 0) {
-            float lastWeeksVal = data.get(i - pl * j).value;
-            // If dynamic parameters are turned on,
-            // then we check if our error improved from last time,
-            // if not, then we stop and use the old result.
-            if (dynamicParameters == 1 && vals.size() > 0) {
-                float withNewVal = (sum(vals) + lastWeeksVal) / (vals.size() + 1);
-                float withoutNewVal = (sum(vals)) / (vals.size());
-                if ((Math.abs(withNewVal - data.get(i).value) - Math.abs(withoutNewVal - data.get(i).value)) > precision) {
-                    break;
-                }
-            }
-            vals.add(lastWeeksVal);
-            j++;
-        }
-
-        Collections.sort(vals);
-        j = 0;
-
-        if (vals.size() > (2 * this.numToDrop)) {
-            while (j < this.numToDrop) {
-                vals.remove(vals.size() - 1);
-                vals.remove(0);
-                j++;
-            }
-        }
-                
-        float baseVal = sum(vals) / vals.size();
-        return baseVal;
+        return (float)0.0;
     }
     
     public void predict(TimeSeries.DataSequence sequence) throws Exception {
-        int n = data.size();
-        for (int i = 0; i < n; i++) {
-            sequence.set(i, (new Entry(data.get(i).time, model.get(i))));
-            logger.info(data.get(i).time + "," + data.get(i).value + "," + model.get(i));
-        }
+    	return;
     }
 
 }
