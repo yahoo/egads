@@ -9,12 +9,15 @@ package com.yahoo.egads.control;
 import java.util.ArrayList;
 
 import com.yahoo.egads.data.TimeSeries;
+import java.util.Properties;
 
 public class TransformInputProcessable implements ProcessableObject {
     private ModelAdapter ma;
+    private Properties config;
 
-    TransformInputProcessable(ModelAdapter ma) {
+    TransformInputProcessable(ModelAdapter ma, Properties config) {
         this.ma = ma;
+        this.config = config;
     }
 
     public void process() throws Exception {

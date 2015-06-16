@@ -20,7 +20,7 @@ Usage
 
 To run a simple example type:
 
-`java -cp target/egads-jar-with-dependencies.jar com.yahoo.egads.Egads src/test/resources/sample_config.ini src/test/resources/sample_input.csv`
+`java -Dlog4j.configurationFile=src/test/resources/log4j2.xml -cp target/egads-jar-with-dependencies.jar com.yahoo.egads.Egads src/test/resources/sample_config.ini src/test/resources/sample_input.csv`
 
 which produces the following picture (Note that you can enable this UI by setting `OUTPUT` config key to `GUI` in sample_config.ini).
 
@@ -125,18 +125,8 @@ INPUT	CSV
 # Options: STD_OUT,
 #          ANOMALY_DB
 #          GUI
+#          PLOT
 OUTPUT  STD_OUT
-
-# If set, to > 0 then models can use it to print
-# debug statements of various severity.
-# Options: 0 - No debug information.
-#          1 - Print timestamp,actual,expected for forecasting models.
-#          2 - Prints debug statements indicating accuracy & memory usage of the forecasting model.
-#              Bias\tMAD\tMAPE\tMSE\tSAE\tMemory\tTrain_and_forecast_time
-#          3 - Prints debug statements for anomaly detection models. Note that no anomaly will be stored or
-#              outputted when this is set to 3, because everything will be printed out with an isAnomaly boolean.
-#          4 - Prints AutoSensitivity Debug Statements.
-DEBUG 0
 
 # THRESHOLD specifies the threshold for the
 # anomaly detection model.

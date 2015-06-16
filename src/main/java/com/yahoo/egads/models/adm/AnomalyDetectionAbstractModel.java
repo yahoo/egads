@@ -42,7 +42,11 @@ public abstract class AnomalyDetectionAbstractModel implements AnomalyDetectionM
     protected String[] arrayF2S (Float[] input) {
     	String ret[] = new String[input.length];
     	for (int ix = 0; ix < input.length; ix++) {
-    		ret[ix] = input[ix].toString();
+                if (input[ix] == null) {
+                  ret[ix] = "Inf";
+                } else {
+    		  ret[ix] = input[ix].toString();
+                }
     	}
     	return ret;
     }

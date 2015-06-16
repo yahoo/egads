@@ -18,7 +18,7 @@ import com.yahoo.egads.utilities.*;
  *     Create ModelAdapter
  *       BuildTSModel()
  *   po.process
- *     TODO: write to naomaly DB (?)
+ *     TODO: write to anomaly DB.
  * 
  */
 
@@ -43,36 +43,6 @@ public class Egads {
             ip = new FileInputProcessor(args[1]);
         } else {
             ip = new StdinProcessor();
-        }
-        
-        // Set output destination if available.
-        if (p.getProperty("OUTPUT") != null) {
-            Storage.outputSrc = p.getProperty("OUTPUT");
-        }
-        
-        // Set debug.
-        if (p.getProperty("DEBUG") != null) {
-            Storage.debug = new Integer(p.getProperty("DEBUG"));
-        }
-        
-        // Set dynamic parameters.
-        if (p.getProperty("DYNAMIC_PARAMETERS") != null) {
-            Storage.dynamicParameters = new Integer(p.getProperty("DYNAMIC_PARAMETERS"));
-        }
-        
-        // Set the assumed amount of anomaly in your data.
-        if (p.getProperty("AUTO_SENSITIVITY_ANOMALY_PCNT") != null) {
-            Storage.amntAutoSensitivity = new Float(p.getProperty("AUTO_SENSITIVITY_ANOMALY_PCNT"));
-        }
-        
-        // Set the standard deviation for auto sensitivity.
-        if (p.getProperty("AUTO_SENSITIVITY_SD") != null) {
-            Storage.sDAutoSensitivity = new Float(p.getProperty("AUTO_SENSITIVITY_SD"));
-        }
-        
-        // Aggregation level.
-        if (p.getProperty("AGGREGATION") != null) {
-            Storage.aggr = new Integer(p.getProperty("AGGREGATION"));
         }
         
         // Process the input the we received (either STDIN or as a file).
