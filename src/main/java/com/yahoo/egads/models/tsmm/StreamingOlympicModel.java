@@ -25,14 +25,20 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
 	private static final long serialVersionUID = 1L;
 
 	private HashMap<Long, Double> model;
-	private int period;
-	private double smoothingFactor;
+	protected int period;
+	protected double smoothingFactor;
     
     public StreamingOlympicModel(Properties config) {
         super(config);
-        smoothingFactor = 0.5;
+        smoothingFactor = 0.4;
         period = 86400 * 7;
         model = new HashMap<Long, Double>();
+    }
+    public StreamingOlympicModel(Properties config, double smoothingFactor, int period) {
+        super(config);
+        this.smoothingFactor = smoothingFactor;
+        this.period = period;
+        this.model = new HashMap<Long, Double>();
     }
 
     public void reset() {
@@ -40,12 +46,18 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     }
     
     private long timeToModelTime (long time) {
+    	if (period == 86400 * 7) {
+    		return weeklyOffset(time);
+    	}
+    	if (period == 86400) {
+    		return dailyOffset(time);
+    	}
     	return time % period;
     }
     
     private void update (TimeSeries.Entry entry) {
     	long modelTime = timeToModelTime(entry.time);
-    	if (model.containsKey(timeToModelTime(modelTime))) {
+    	if (model.containsKey(modelTime)) {
     		model.put(modelTime, model.get(modelTime) * (1 - smoothingFactor) + entry.value * smoothingFactor);
     	} else {
     		model.put(modelTime,  (double)entry.value);
@@ -54,7 +66,7 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     
     private double forecast (TimeSeries.Entry entry) {
     	long modelTime = timeToModelTime(entry.time);
-    	if (model.containsKey(timeToModelTime(modelTime))) {
+    	if (model.containsKey(modelTime)) {
     		return model.get(modelTime);
     	} else {
     		return entry.value;
@@ -73,7 +85,7 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     		update(entry);
     		sumErr += error;
             sumAbsErr += Math.abs(error);
-            sumAbsPercentErr += Math.abs(error / entry.value);
+            sumAbsPercentErr += 100 * Math.abs(error / entry.value);
             sumErrSquared += error * error;
             processedPoints++;
     	}
@@ -86,13 +98,42 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     }
     
     public void train(TimeSeries.DataSequence data) {
+    	StreamingOlympicModel winner = null;
+    	double sf = 0.0;
+    	for (sf = 0.0; sf <= 1; sf += 0.1) {
+    		StreamingOlympicModel m = new StreamingOlympicModel(this.config, sf, this.period);
+    		m.runSeries(data);
+        	logger.debug ("Testing Smoothing Factor " + String.format("%.2f", m.smoothingFactor) + " -> "+ m.errorSummaryString());
+    		if (betterThan(m, winner)) {
+    			winner = m;
+    		}
+    	}
+    	double min = winner.smoothingFactor - 0.09;
+    	if (min < 0) min = 0;
+    	double max = winner.smoothingFactor + 0.09;
+    	if (max >= 1) max = .99;
+    	for (sf = min; sf < max; sf += 0.01) {
+    		StreamingOlympicModel m = new StreamingOlympicModel(this.config, sf, this.period);
+    		m.runSeries(data);
+        	logger.debug ("Testing Smoothing Factor " + String.format("%.2f", m.smoothingFactor) + " -> "+ m.errorSummaryString());
+    		if (betterThan(m, winner)) {
+    			winner = m;
+    		}
+    	}
+    	this.smoothingFactor = winner.smoothingFactor;
     	reset();
-        runSeries(data);
-        
-        logger.debug(getBias() + "\t" + getMAD() + "\t" + getMAPE() + "\t" + getMSE() + "\t" + getSAE() + "\t" + 0 + "\t" + 0);
+    	logger.debug ("Winner: Smoothing Factor = " + String.format("%.2f", sf));
     }
 
-    public void update(TimeSeries.DataSequence data) {
+    public double getSmoothingFactor() {
+		return smoothingFactor;
+	}
+
+	public void setSmoothingFactor(double smoothingFactor) {
+		this.smoothingFactor = smoothingFactor;
+	}
+
+	public void update(TimeSeries.DataSequence data) {
 
     }
 

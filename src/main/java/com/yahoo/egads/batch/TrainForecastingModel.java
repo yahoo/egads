@@ -47,10 +47,10 @@ public class TrainForecastingModel {
 			TimeSeries.DataSequence seq = inputs.get(series);
 			StreamingOlympicModel o = new StreamingOlympicModel(osProps);
 			o.train(seq);
-			System.out.println (series + ":");
-			for (TimeSeries.Entry e : seq) {
-				System.out.println(e.time + ": " + e.value);
-			}
+//			System.out.println (series + ":");
+//			for (TimeSeries.Entry e : seq) {
+//				System.out.println(e.time + ": " + e.value);
+//			}
 			m.storeModel(series, o);
 		}
 	}

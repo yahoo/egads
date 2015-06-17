@@ -6,6 +6,8 @@
 
 package com.yahoo.egads.models.tsmm;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 
 import org.json.JSONObject;
@@ -28,11 +30,31 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     protected double mse;
     protected double sae;
     protected String modelName;
+	protected Properties config;
 
     protected static org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(TimeSeriesModel.class.getName());
 
     protected boolean errorsInit = false;
     protected int dynamicParameters = 0;
+
+    public TimeSeriesAbstractModel(Properties config) {
+    	this.config = config;
+        if (config.getProperty("DYNAMIC_PARAMETERS") != null) {
+            this.dynamicParameters = new Integer(config.getProperty("DYNAMIC_PARAMETERS"));
+        }
+    }
+
+    protected long weeklyOffset (long time) {
+    	Date d = new Date(time * 1000);
+    	long ret = d.getDay() * 86400 + d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds();
+    	return ret;
+    }
+
+    protected long dailyOffset (long time) {
+    	Date d = new Date(time * 1000);
+    	long ret = d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds();
+    	return ret;
+    }
 
     public String getModelName() {
 		return modelName;
@@ -53,13 +75,6 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     }
 
     // Acts as a factory method.
-    public TimeSeriesAbstractModel(Properties config) {
-        if (config.getProperty("DYNAMIC_PARAMETERS") != null) {
-            this.dynamicParameters = new Integer(config.getProperty("DYNAMIC_PARAMETERS"));
-        }
-
-    }
-
     protected static boolean betterThan(TimeSeriesAbstractModel model1, TimeSeriesAbstractModel model2) {
         // Special case. Any model is better than no model!
         if (model2 == null) {
@@ -97,6 +112,8 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
         } else if (model1.getSAE() - model2.getSAE() >= tolerance) {
             score--;
         }
+        
+        logger.debug ("Comparison score: " + score);
 
         if (score == 0) {
             // At this point, we're still unsure which one is best
@@ -105,10 +122,19 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
                             model1.getBias() - model2.getBias() + model1.getMAD() - model2.getMAD() + model1.getMAPE()
                                             - model2.getMAPE() + model1.getMSE() - model2.getMSE() + model1.getSAE()
                                             - model2.getSAE();
+            logger.debug ("Diff: " + diff);
             return (diff < 0);
         }
 
         return (score > 0);
+    }
+        
+    public String errorSummaryString () {
+        return ("B:" + String.format("%.2f", getBias()) + 
+   			 "\tMAD:" + String.format("%.2f", getMAD()) + 
+   			 "\tMAPE:" + String.format("%.2f", getMAPE()) +
+   			 "\tMSE:" + String.format("%.2f", getMSE()) +
+   			 "\tSAE:" + String.format("%.2f", getSAE()));
     }
 
     /*
