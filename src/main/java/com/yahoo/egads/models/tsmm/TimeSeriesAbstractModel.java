@@ -23,7 +23,8 @@ import com.yahoo.egads.data.JsonEncoder;
 
 public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
 
-    // Accuracy stats for this model.
+	private static final long serialVersionUID = 1L;
+	// Accuracy stats for this model.
     protected double bias;
     protected double mad;
     protected double mape;
@@ -73,6 +74,11 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     public void fromJson(JSONObject json_obj) throws Exception {
         JsonEncoder.fromJson(this, json_obj);
     }
+    
+    public double predict (TimeSeries.Entry entry) {
+    	return 0.0;
+    }
+
 
     // Acts as a factory method.
     protected static boolean betterThan(TimeSeriesAbstractModel model1, TimeSeriesAbstractModel model2) {

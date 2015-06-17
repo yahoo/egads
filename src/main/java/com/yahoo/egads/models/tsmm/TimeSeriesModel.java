@@ -20,4 +20,6 @@ public interface TimeSeriesModel extends Model {
 
     // predicts the values of the time series specified by the 'time' fields of the sequence and sets the 'value' fields of the sequence
     public abstract void predict(TimeSeries.DataSequence sequence) throws Exception;
+    
+    public abstract double predict (TimeSeries.Entry entry);
 }

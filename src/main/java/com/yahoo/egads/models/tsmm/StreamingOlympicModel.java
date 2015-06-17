@@ -64,7 +64,7 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     	}
     }
     
-    private double forecast (TimeSeries.Entry entry) {
+    public double predict (TimeSeries.Entry entry) {
     	long modelTime = timeToModelTime(entry.time);
     	if (model.containsKey(modelTime)) {
     		return model.get(modelTime);
@@ -81,7 +81,7 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
         double sumErrSquared = 0.0;
         int processedPoints = 0;
     	for (TimeSeries.Entry entry : data) {
-    		double error = entry.value - forecast(entry);
+    		double error = entry.value - predict(entry);
     		update(entry);
     		sumErr += error;
             sumAbsErr += Math.abs(error);
@@ -115,6 +115,7 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     	for (sf = min; sf <= max; sf += 0.01) {
     		StreamingOlympicModel m = new StreamingOlympicModel(this.config, sf, this.period);
     		m.runSeries(data);
+    		m.runSeries(data);
         	logger.debug ("Testing Smoothing Factor " + String.format("%.2f", m.smoothingFactor) + " -> "+ m.errorSummaryString());
     		if (betterThan(m, winner)) {
     			winner = m;
@@ -122,6 +123,7 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     	}
     	this.smoothingFactor = winner.smoothingFactor;
     	reset();
+    	runSeries(data);
     	logger.debug ("Winner: Smoothing Factor = " + String.format("%.2f", this.smoothingFactor));
     }
 
@@ -156,5 +158,4 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     public void predict(TimeSeries.DataSequence sequence) throws Exception {
     	return;
     }
-
 }

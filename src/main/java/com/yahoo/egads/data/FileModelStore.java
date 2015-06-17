@@ -5,13 +5,16 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 
 public class FileModelStore implements ModelStore {
+	HashMap <String, Model> cache;
 	String path;
 	public FileModelStore (String path) {
 		File dir = new File (path);
 		dir.mkdirs();
 		this.path = path;
+		cache = new HashMap<String, Model>();
 	}
 
 	@Override
@@ -28,18 +31,23 @@ public class FileModelStore implements ModelStore {
 	}
 
 	@Override
-	public Model retrieveModel(String tag) {
+	public Model getModel(String tag) {
 		String filename = tag.replaceAll("[^\\w_-]", "_");
+		if (cache.containsKey(filename)) {
+			return cache.get(filename);
+		}
 		String fqn = path + "/" + filename;
 		Model m = null;
 		try {
 			ObjectInputStream o = new ObjectInputStream(new FileInputStream(fqn));
 			m =  (Model) o.readObject();
 			o.close();
+			cache.put(filename, m);
+			return m;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return m;
+		return null;
 	}
 
 }
