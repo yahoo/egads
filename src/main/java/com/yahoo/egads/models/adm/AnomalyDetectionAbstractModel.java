@@ -20,6 +20,7 @@ public abstract class AnomalyDetectionAbstractModel implements AnomalyDetectionM
     protected float amntAutoSensitivity = (float) 0.05;
     protected String outputDest = "";
 	protected String modelName;
+	protected boolean modified;
 
     protected static org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(AnomalyDetectionModel.class.getName());
 
@@ -67,4 +68,12 @@ public abstract class AnomalyDetectionAbstractModel implements AnomalyDetectionM
         }
       	this.outputDest = config.getProperty("OUTPUT");
     }
+    
+    public boolean isModified () {
+    	return modified;
+    }
+    public void clearModified() {
+    	modified = false;
+    }
+
 }

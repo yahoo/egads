@@ -20,4 +20,7 @@ public interface Model extends JsonAble, Serializable {
     // Gets the model name and type
     public String getModelName();    
     public String getModelType();
+    
+    public abstract boolean isModified ();
+    public abstract void clearModified();
 }

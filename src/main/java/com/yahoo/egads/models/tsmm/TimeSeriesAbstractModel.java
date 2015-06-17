@@ -32,6 +32,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     protected double sae;
     protected String modelName;
 	protected Properties config;
+	protected boolean modified;
 
     protected static org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(TimeSeriesModel.class.getName());
 
@@ -40,6 +41,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
 
     public TimeSeriesAbstractModel(Properties config) {
     	this.config = config;
+    	this.modified = false;
         if (config.getProperty("DYNAMIC_PARAMETERS") != null) {
             this.dynamicParameters = new Integer(config.getProperty("DYNAMIC_PARAMETERS"));
         }
@@ -78,6 +80,16 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     public double predict (TimeSeries.Entry entry) {
     	return 0.0;
     }
+    public void update (TimeSeries.Entry entry) {
+    	return;
+    }
+    public boolean isModified () {
+    	return modified;
+    }
+    public void clearModified() {
+    	modified = false;
+    }
+
 
 
     // Acts as a factory method.

@@ -22,4 +22,7 @@ public interface TimeSeriesModel extends Model {
     public abstract void predict(TimeSeries.DataSequence sequence) throws Exception;
     
     public abstract double predict (TimeSeries.Entry entry);
+    public abstract void update (TimeSeries.Entry entry);
+    public abstract boolean isModified ();
+    public abstract void clearModified();
 }

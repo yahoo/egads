@@ -55,13 +55,14 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     	return time % period;
     }
     
-    private void update (TimeSeries.Entry entry) {
+    public void update (TimeSeries.Entry entry) {
     	long modelTime = timeToModelTime(entry.time);
     	if (model.containsKey(modelTime)) {
     		model.put(modelTime, model.get(modelTime) * (1 - smoothingFactor) + entry.value * smoothingFactor);
     	} else {
     		model.put(modelTime,  (double)entry.value);
     	}
+    	modified = true;
     }
     
     public double predict (TimeSeries.Entry entry) {

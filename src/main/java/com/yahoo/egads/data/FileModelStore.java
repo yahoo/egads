@@ -10,6 +10,8 @@ import java.util.HashMap;
 public class FileModelStore implements ModelStore {
 	HashMap <String, Model> cache;
 	String path;
+    protected static org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(FileModelStore.class.getName());
+
 	public FileModelStore (String path) {
 		File dir = new File (path);
 		dir.mkdirs();
@@ -22,6 +24,7 @@ public class FileModelStore implements ModelStore {
 		String filename = tag.replaceAll("[^\\w_-]", "_");
 		String fqn = path + "/" + filename;
 		try {
+			m.clearModified();
 			ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream (fqn));
 			o.writeObject(m);
 			o.close();
@@ -45,9 +48,17 @@ public class FileModelStore implements ModelStore {
 			cache.put(filename, m);
 			return m;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug("Model not found: " + tag);
 		}
 		return null;
+	}
+	public void writeCachedModels() {
+		for (String key : cache.keySet()) {
+			Model model = cache.get(key);
+			if (model.isModified()) {
+				storeModel(key, model);
+			}
+		}
 	}
 
 }
