@@ -21,6 +21,6 @@ public interface Model extends JsonAble, Serializable {
     public String getModelName();    
     public String getModelType();
     
-    public abstract boolean isModified ();
-    public abstract void clearModified();
+    public boolean isModified ();
+    public void clearModified();
 }

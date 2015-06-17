@@ -14,15 +14,13 @@ import com.yahoo.egads.data.Model;
 public interface TimeSeriesModel extends Model {
     // methods ////////////////////////////////////////////////
 
-    public abstract void train(TimeSeries.DataSequence data) throws Exception;
+    public void train(TimeSeries.DataSequence data) throws Exception;
 
-    public abstract void update(TimeSeries.DataSequence data) throws Exception;
+    public void update(TimeSeries.DataSequence data) throws Exception;
 
     // predicts the values of the time series specified by the 'time' fields of the sequence and sets the 'value' fields of the sequence
-    public abstract void predict(TimeSeries.DataSequence sequence) throws Exception;
+    public void predict(TimeSeries.DataSequence sequence) throws Exception;
     
-    public abstract double predict (TimeSeries.Entry entry);
-    public abstract void update (TimeSeries.Entry entry);
-    public abstract boolean isModified ();
-    public abstract void clearModified();
+    public double predict (TimeSeries.Entry entry);
+    public void update (TimeSeries.Entry entry);
 }

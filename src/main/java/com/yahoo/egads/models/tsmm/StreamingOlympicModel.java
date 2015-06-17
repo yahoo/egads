@@ -116,7 +116,6 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     	for (sf = min; sf <= max; sf += 0.01) {
     		StreamingOlympicModel m = new StreamingOlympicModel(this.config, sf, this.period);
     		m.runSeries(data);
-    		m.runSeries(data);
         	logger.debug ("Testing Smoothing Factor " + String.format("%.2f", m.smoothingFactor) + " -> "+ m.errorSummaryString());
     		if (betterThan(m, winner)) {
     			winner = m;
