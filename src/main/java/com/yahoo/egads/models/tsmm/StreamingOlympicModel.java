@@ -112,7 +112,7 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     	if (min < 0) min = 0;
     	double max = winner.smoothingFactor + 0.09;
     	if (max >= 1) max = .99;
-    	for (sf = min; sf < max; sf += 0.01) {
+    	for (sf = min; sf <= max; sf += 0.01) {
     		StreamingOlympicModel m = new StreamingOlympicModel(this.config, sf, this.period);
     		m.runSeries(data);
         	logger.debug ("Testing Smoothing Factor " + String.format("%.2f", m.smoothingFactor) + " -> "+ m.errorSummaryString());
@@ -122,7 +122,7 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     	}
     	this.smoothingFactor = winner.smoothingFactor;
     	reset();
-    	logger.debug ("Winner: Smoothing Factor = " + String.format("%.2f", sf));
+    	logger.debug ("Winner: Smoothing Factor = " + String.format("%.2f", this.smoothingFactor));
     }
 
     public double getSmoothingFactor() {
