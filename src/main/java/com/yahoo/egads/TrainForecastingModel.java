@@ -1,4 +1,4 @@
-package com.yahoo.egads.batch;
+package com.yahoo.egads;
 
 import java.io.File;
 import java.io.FileNotFoundException;
