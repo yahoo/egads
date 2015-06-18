@@ -15,7 +15,7 @@ import com.yahoo.egads.models.tsmm.StreamingOlympicModel;
 public class TrainForecastingModel {
 	public static void main(String[] args) throws FileNotFoundException {
 		HashMap<String, TimeSeries.DataSequence> inputs = new HashMap<String, TimeSeries.DataSequence>();
-		Scanner sc = new Scanner(new File (args[0]));
+		Scanner sc = new Scanner(System.in);
 		ModelStore m = new FileModelStore ("models");
 		Properties osProps = new Properties();
 		osProps.setProperty("TIME_SHIFTS", "0,1");
