@@ -1,31 +1,26 @@
 package com.yahoo.egads;
 
-import java.io.File;
+import gnu.getopt.Getopt;
+
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.ResultSet;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.Scanner;
-import java.util.HashMap;
 
 import com.yahoo.egads.data.FileModelStore;
-import com.yahoo.egads.data.Model;
 import com.yahoo.egads.data.ModelFactory;
 import com.yahoo.egads.data.ModelStore;
 import com.yahoo.egads.data.TimeSeries;
-import com.yahoo.egads.models.tsmm.StreamingOlympicModel;
-
-import gnu.getopt.*;
+import com.yahoo.egads.models.tsmm.TimeSeriesModel;
 
 public class TrainForecastingModel {
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		HashMap<Integer,String> options = processOptions(args);
 		HashMap<String, TimeSeries.DataSequence> inputs = new HashMap<String, TimeSeries.DataSequence>();
 		Scanner sc = new Scanner(System.in);
 		ModelStore ms = new FileModelStore ("models");
 		Properties osProps = new Properties();
-		osProps.load (new FileInputStream(options.get('p')));
+		osProps.load (new FileInputStream(options.get(new Integer('p'))));
 		while (sc.hasNextLine()) {
 			String line = sc.nextLine();
 			String[] fields = line.split(",");
@@ -50,14 +45,11 @@ public class TrainForecastingModel {
 		ModelFactory mf = new ModelFactory(osProps);
 		for (String series : inputs.keySet()) {
 			TimeSeries.DataSequence seq = inputs.get(series);
-			Model m = mf.getModel(options.get('m'));
-			StreamingOlympicModel o = new StreamingOlympicModel(osProps);
-			o.train(seq);
-//			System.out.println (series + ":");
-//			for (TimeSeries.Entry e : seq) {
-//				System.out.println(e.time + ": " + e.value);
-//			}
-			ms.storeModel(series, o);
+			TimeSeriesModel m = mf.getTSModel(options.get(new Integer('m')));
+			if (m != null) {
+				m.train(seq);
+				ms.storeModel(series, m);
+			}
 		}
 	}
 	
@@ -80,6 +72,8 @@ public class TrainForecastingModel {
 		while ((c = g.getopt()) != -1) {
 			switch (c) {
 			case 'm':
+				result.put(c, g.getOptarg());
+				break;
 			case 'p':
 				result.put(c, g.getOptarg());
 				break;

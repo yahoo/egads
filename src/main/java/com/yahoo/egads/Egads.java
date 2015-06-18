@@ -2,10 +2,13 @@
 
 package com.yahoo.egads;
 
-import java.util.Properties;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import com.yahoo.egads.utilities.*;
+import java.util.Properties;
+
+import com.yahoo.egads.utilities.FileInputProcessor;
+import com.yahoo.egads.utilities.InputProcessor;
+import com.yahoo.egads.utilities.StdinProcessor;
 
 /*
  * Call stack.

@@ -4,10 +4,8 @@ import java.util.Properties;
 import java.util.Scanner;
 
 import com.yahoo.egads.data.FileModelStore;
-import com.yahoo.egads.data.Model;
 import com.yahoo.egads.data.ModelStore;
 import com.yahoo.egads.data.TimeSeries;
-import com.yahoo.egads.data.TimeSeries.Entry;
 import com.yahoo.egads.models.tsmm.StreamingOlympicModel;
 import com.yahoo.egads.models.tsmm.TimeSeriesAbstractModel;
 
