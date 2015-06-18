@@ -21,6 +21,11 @@
     <dependencies>
         <!-- needed by egads -->
         <dependency>
+          <groupId>gnu.getopt</groupId>
+          <artifactId>java-getopt</artifactId>
+          <version>1.0.13</version>
+        </dependency>
+        <dependency>
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-api</artifactId>
           <version>2.3</version>
