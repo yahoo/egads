@@ -76,4 +76,11 @@ public abstract class AnomalyDetectionAbstractModel implements AnomalyDetectionM
     	modified = false;
     }
 
+    public String errorSummaryString() {
+    	return "";
+    }
+    
+    public void clearErrorStats() {
+    }
+
 }

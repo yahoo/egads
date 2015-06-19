@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class FileModelStore implements ModelStore {
@@ -59,6 +60,9 @@ public class FileModelStore implements ModelStore {
 				storeModel(key, model);
 			}
 		}
+	}
+	public Collection<Model> getCachedModels() {
+		return cache.values();
 	}
 
 }

@@ -67,35 +67,27 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     
     public double predict (TimeSeries.Entry entry) {
     	long modelTime = timeToModelTime(entry.time);
+    	double prediction;
     	if (model.containsKey(modelTime)) {
-    		return model.get(modelTime);
+    		prediction = model.get(modelTime);
     	} else {
-    		return entry.value;
+    		prediction = entry.value;
     	}
+    	double error = entry.value - prediction;
+		sumErr += error;
+        sumAbsErr += Math.abs(error);
+        sumAbsPercentErr += 100 * Math.abs(error / entry.value);
+        sumErrSquared += error * error;
+        processedPoints++;
+        return prediction;
     }
     
     private void runSeries (TimeSeries.DataSequence data) {
-        // Reset various helper summations
-        double sumErr = 0.0;
-        double sumAbsErr = 0.0;
-        double sumAbsPercentErr = 0.0;
-        double sumErrSquared = 0.0;
-        int processedPoints = 0;
+    	clearErrorStats();
     	for (TimeSeries.Entry entry : data) {
-    		double error = entry.value - predict(entry);
+    		predict(entry);
     		update(entry);
-    		sumErr += error;
-            sumAbsErr += Math.abs(error);
-            sumAbsPercentErr += 100 * Math.abs(error / entry.value);
-            sumErrSquared += error * error;
-            processedPoints++;
     	}
-        this.bias = sumErr / processedPoints;
-        this.mad = sumAbsErr / processedPoints;
-        this.mape = sumAbsPercentErr / processedPoints;
-        this.mse = sumErrSquared / processedPoints;
-        this.sae = sumAbsErr;
-        errorsInit = true;
     }
     
     public void train(TimeSeries.DataSequence data) {

@@ -23,4 +23,7 @@ public interface Model extends JsonAble, Serializable {
     
     public boolean isModified ();
     public void clearModified();
+    
+    public void clearErrorStats();
+    public String errorSummaryString();
 }

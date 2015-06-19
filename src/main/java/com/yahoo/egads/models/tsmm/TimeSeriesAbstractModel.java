@@ -33,6 +33,11 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     protected String modelName;
 	protected Properties config;
 	protected boolean modified;
+    protected double sumErr;
+    protected double sumAbsErr;
+    protected double sumAbsPercentErr;
+    protected double sumErrSquared;
+    protected int processedPoints;
 
     protected static org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(TimeSeriesModel.class.getName());
 
@@ -44,7 +49,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     	this.modified = false;
         if (config.getProperty("DYNAMIC_PARAMETERS") != null) {
             this.dynamicParameters = new Integer(config.getProperty("DYNAMIC_PARAMETERS"));
-        }
+        }        
     }
 
     protected long weeklyOffset (long time) {
@@ -90,7 +95,19 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     	modified = false;
     }
 
-
+    public void clearErrorStats() {
+        sumErr = 0.0;
+        sumAbsErr = 0.0;
+        sumAbsPercentErr = 0.0;
+        sumErrSquared = 0.0;
+        processedPoints = 0;
+        bias = 0.0;
+        mad = 0.0;
+        mape = 0.0;
+        mse = 0.0;
+        sae = 0.0;
+        errorsInit = false;
+    }
 
     // Acts as a factory method.
     protected static boolean betterThan(TimeSeriesAbstractModel model1, TimeSeriesAbstractModel model2) {
@@ -148,6 +165,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     }
         
     public String errorSummaryString () {
+    	computeForecastErrors();
         return ("B:" + String.format("%.2f", getBias()) + 
    			 "\tMAD:" + String.format("%.2f", getMAD()) + 
    			 "\tMAPE:" + String.format("%.2f", getMAPE()) +
@@ -183,12 +201,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
      * Initializes all errors given the model.
      */
     protected void initForecastErrors(ArrayList<Float> model, TimeSeries.DataSequence data) {
-        // Reset various helper summations
-        double sumErr = 0.0;
-        double sumAbsErr = 0.0;
-        double sumAbsPercentErr = 0.0;
-        double sumErrSquared = 0.0;
-        int processedPoints = 0;
+        clearErrorStats();
 
         int n = data.size();
 
@@ -201,11 +214,26 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
             sumErrSquared += error * error;
             processedPoints++;
         }
-        this.bias = sumErr / processedPoints;
-        this.mad = sumAbsErr / processedPoints;
-        this.mape = sumAbsPercentErr / processedPoints;
-        this.mse = sumErrSquared / processedPoints;
-        this.sae = sumAbsErr;
+        bias = sumErr / processedPoints;
+        mad = sumAbsErr / processedPoints;
+        mape = sumAbsPercentErr / processedPoints;
+        mse = sumErrSquared / processedPoints;
+        sae = sumAbsErr;
+        errorsInit = true;
+    }
+    
+    protected void computeForecastErrors() {
+    	if (processedPoints <= 0) {
+    		return;
+    	}
+    	if (errorsInit) {
+    		return;
+    	}
+        bias = sumErr / processedPoints;
+        mad = sumAbsErr / processedPoints;
+        mape = sumAbsPercentErr / processedPoints;
+        mse = sumErrSquared / processedPoints;
+        sae = sumAbsErr;
         errorsInit = true;
     }
 
