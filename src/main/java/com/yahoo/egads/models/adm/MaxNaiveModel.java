@@ -24,7 +24,7 @@ public class MaxNaiveModel extends AnomalyDetectionAbstractModel {
     // The constructor takes a set of properties
     // needed for the simple model. This includes the sensitivity.
     private Float[] threshold;
-    private int maxHrsAgo;
+    private Float maxHrsAgo;
     // modelName.
     public static String modelName = "MaxNaive-NA";
 
@@ -34,7 +34,7 @@ public class MaxNaiveModel extends AnomalyDetectionAbstractModel {
         if (config.getProperty("MAX_ANOMALY_TIME_AGO") == null) {
             throw new IllegalArgumentException("MAX_ANOMALY_TIME_AGO is NULL");
         }
-        this.maxHrsAgo = new Integer(config.getProperty("MAX_ANOMALY_TIME_AGO"));
+        this.maxHrsAgo = new Float(config.getProperty("MAX_ANOMALY_TIME_AGO"));
         if (config.getProperty("THRESHOLD") == null) {
         	throw new IllegalArgumentException("THRESHOLD is NULL");
         }
@@ -92,7 +92,14 @@ public class MaxNaiveModel extends AnomalyDetectionAbstractModel {
         
         IntervalSequence output = new IntervalSequence();
         int n = observedSeries.size();
-        int cutIndex = (n - maxHrsAgo);
+        Integer cutIndex = null;
+
+        if (maxHrsAgo < 1.0) {
+          int tmpCut = Math.round(maxHrsAgo * ((float) n));
+          cutIndex = Math.max(1, n - tmpCut);
+        } else {
+          cutIndex = Math.round((float) n - maxHrsAgo);
+        }
         
         Float maxNow = max(observedSeries, cutIndex, n);
         Float maxBefore = max(observedSeries, 0, Math.max(0, cutIndex - 1));
