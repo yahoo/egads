@@ -33,11 +33,6 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     protected String modelName;
 	protected Properties config;
 	protected boolean modified;
-    protected double sumErr;
-    protected double sumAbsErr;
-    protected double sumAbsPercentErr;
-    protected double sumErrSquared;
-    protected int processedPoints;
 
     protected static org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(TimeSeriesModel.class.getName());
 
@@ -46,7 +41,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
 
     public TimeSeriesAbstractModel(Properties config) {
     	this.config = config;
-    	this.modified = false;
+    	modified = false;
         if (config.getProperty("DYNAMIC_PARAMETERS") != null) {
             this.dynamicParameters = new Integer(config.getProperty("DYNAMIC_PARAMETERS"));
         }        
@@ -68,8 +63,8 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
 		return modelName;
 	}
 
-    public String getModelType() {
-    	return "Forecast";
+    public ModelType getModelType() {
+    	return Model.ModelType.FORECAST;
     }
     
     @Override
@@ -82,25 +77,8 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
         JsonEncoder.fromJson(this, json_obj);
     }
     
-    public double predict (TimeSeries.Entry entry) {
-    	return 0.0;
-    }
-    public void update (TimeSeries.Entry entry) {
-    	return;
-    }
-    public boolean isModified () {
-    	return modified;
-    }
-    public void clearModified() {
-    	modified = false;
-    }
 
     public void clearErrorStats() {
-        sumErr = 0.0;
-        sumAbsErr = 0.0;
-        sumAbsPercentErr = 0.0;
-        sumErrSquared = 0.0;
-        processedPoints = 0;
         bias = 0.0;
         mad = 0.0;
         mape = 0.0;
@@ -165,7 +143,6 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     }
         
     public String errorSummaryString () {
-    	computeForecastErrors();
         return ("B:" + String.format("%.2f", getBias()) + 
    			 "\tMAD:" + String.format("%.2f", getMAD()) + 
    			 "\tMAPE:" + String.format("%.2f", getMAPE()) +
@@ -204,6 +181,11 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
         clearErrorStats();
 
         int n = data.size();
+        double sumErr = 0.0;
+        double sumAbsErr = 0.0;
+        double sumAbsPercentErr = 0.0;
+        double sumErrSquared = 0.0;
+        int processedPoints = 0;
 
         for (int i = 0; i < n; i++) {
             // Calculate error in forecast, and update sums appropriately
@@ -222,20 +204,6 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
         errorsInit = true;
     }
     
-    protected void computeForecastErrors() {
-    	if (processedPoints <= 0) {
-    		return;
-    	}
-    	if (errorsInit) {
-    		return;
-    	}
-        bias = sumErr / processedPoints;
-        mad = sumAbsErr / processedPoints;
-        mape = sumAbsPercentErr / processedPoints;
-        mse = sumErrSquared / processedPoints;
-        sae = sumAbsErr;
-        errorsInit = true;
-    }
 
     /**
      * Returns the bias - the arithmetic mean of the errors - obtained from applying the current forecasting model to
@@ -306,4 +274,12 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
         }
         return sae;
     }
+    public boolean isModified () {
+    	return modified;
+    }
+	
+    public void clearModified() {
+    	modified = false;
+    }
+
 }

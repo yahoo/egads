@@ -12,6 +12,8 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 
 import com.yahoo.egads.data.JsonEncoder;
+import com.yahoo.egads.data.Model;
+import com.yahoo.egads.data.Model.ModelType;
 import com.yahoo.egads.models.tsmm.TimeSeriesModel;
 
 public abstract class AnomalyDetectionAbstractModel implements AnomalyDetectionModel {
@@ -28,8 +30,8 @@ public abstract class AnomalyDetectionAbstractModel implements AnomalyDetectionM
 		return modelName;
 	}
 
-	public String getModelType() {
-    	return "Anomaly";
+    public ModelType getModelType() {
+    	return Model.ModelType.ANOMALY;
     }
     
     @Override

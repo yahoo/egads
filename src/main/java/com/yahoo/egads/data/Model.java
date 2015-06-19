@@ -13,17 +13,15 @@ package com.yahoo.egads.data;
 import java.io.Serializable;
 
 public interface Model extends JsonAble, Serializable {
+	enum ModelType {FORECAST, ANOMALY};
 	
     // resets the model.
     public void reset();
 
     // Gets the model name and type
     public String getModelName();    
-    public String getModelType();
-    
+    public ModelType getModelType();
     public boolean isModified ();
     public void clearModified();
-    
-    public void clearErrorStats();
     public String errorSummaryString();
 }

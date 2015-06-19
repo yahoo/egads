@@ -19,7 +19,7 @@ import java.util.Collections;
 
 import com.yahoo.egads.utilities.FileUtils;
 
-public class StreamingOlympicModel extends TimeSeriesAbstractModel {
+public class StreamingOlympicModel extends TimeSeriesStreamingModel {
     // methods ////////////////////////////////////////////////
 
 	private static final long serialVersionUID = 1L;
@@ -28,14 +28,14 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
 	protected int period;
 	protected double smoothingFactor;
     
-    public StreamingOlympicModel(Properties config) {
-        super(config);
+    public StreamingOlympicModel() {
+        super();
         smoothingFactor = 0.4;
         period = 86400 * 7;
         model = new HashMap<Long, Double>();
     }
-    public StreamingOlympicModel(Properties config, double smoothingFactor, int period) {
-        super(config);
+    public StreamingOlympicModel(double smoothingFactor, int period) {
+        super();
         this.smoothingFactor = smoothingFactor;
         this.period = period;
         this.model = new HashMap<Long, Double>();
@@ -94,7 +94,7 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     	StreamingOlympicModel winner = null;
     	double sf = 0.0;
     	for (sf = 0.0; sf <= 1; sf += 0.1) {
-    		StreamingOlympicModel m = new StreamingOlympicModel(this.config, sf, this.period);
+    		StreamingOlympicModel m = new StreamingOlympicModel(sf, this.period);
     		m.runSeries(data);
         	logger.debug ("Testing Smoothing Factor " + String.format("%.2f", m.smoothingFactor) + " -> "+ m.errorSummaryString());
     		if (betterThan(m, winner)) {
@@ -106,7 +106,7 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
     	double max = winner.smoothingFactor + 0.09;
     	if (max >= 1) max = .99;
     	for (sf = min; sf <= max; sf += 0.01) {
-    		StreamingOlympicModel m = new StreamingOlympicModel(this.config, sf, this.period);
+    		StreamingOlympicModel m = new StreamingOlympicModel(sf, this.period);
     		m.runSeries(data);
         	logger.debug ("Testing Smoothing Factor " + String.format("%.2f", m.smoothingFactor) + " -> "+ m.errorSummaryString());
     		if (betterThan(m, winner)) {
@@ -135,18 +135,6 @@ public class StreamingOlympicModel extends TimeSeriesAbstractModel {
         return "OlympicModel";
     }
 
-    private Float sum(ArrayList<Float> list) {
-        float sum = 0;
-        for (float i : list) {
-            sum = sum + i;
-        }
-        return sum;
-    }
-    
-    private float computeExpected(int i, int pl) {
-        return (float)0.0;
-    }
-    
     public void predict(TimeSeries.DataSequence sequence) throws Exception {
     	return;
     }

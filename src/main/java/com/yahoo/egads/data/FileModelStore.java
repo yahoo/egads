@@ -14,15 +14,24 @@ public class FileModelStore implements ModelStore {
     protected static org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(FileModelStore.class.getName());
 
 	public FileModelStore (String path) {
-		File dir = new File (path);
-		dir.mkdirs();
 		this.path = path;
 		cache = new HashMap<String, Model>();
+		new File (path).mkdirs();
+	}
+	
+	private String getFilename (String tag, Model.ModelType type) {
+		String filename = tag.replaceAll("[^\\w_-]", "_");
+		if (type == Model.ModelType.ANOMALY) {
+			filename = "anomaly." + filename;
+		} else if (type == Model.ModelType.FORECAST) {
+			filename =  "forecast." + filename;
+		}
+		return filename;
 	}
 
 	@Override
 	public void storeModel(String tag, Model m) {
-		String filename = tag.replaceAll("[^\\w_-]", "_");
+		String filename = getFilename(tag, m.getModelType());
 		String fqn = path + "/" + filename;
 		try {
 			m.clearModified();
@@ -35,8 +44,8 @@ public class FileModelStore implements ModelStore {
 	}
 
 	@Override
-	public Model getModel(String tag) {
-		String filename = tag.replaceAll("[^\\w_-]", "_");
+	public Model getModel(String tag, Model.ModelType type) {
+		String filename = getFilename(tag, type);
 		if (cache.containsKey(filename)) {
 			return cache.get(filename);
 		}
@@ -57,6 +66,8 @@ public class FileModelStore implements ModelStore {
 		for (String key : cache.keySet()) {
 			Model model = cache.get(key);
 			if (model.isModified()) {
+//				The key always has the model type prepended - remove it before storing
+				key = key.replaceFirst("[a-zA-Z]*\\.", "");
 				storeModel(key, model);
 			}
 		}

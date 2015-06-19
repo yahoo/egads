@@ -3,7 +3,6 @@ package com.yahoo.egads;
 import gnu.getopt.Getopt;
 
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.Scanner;
 
 import com.yahoo.egads.data.FileModelStore;
@@ -11,7 +10,7 @@ import com.yahoo.egads.data.Model;
 import com.yahoo.egads.data.ModelStore;
 import com.yahoo.egads.data.TimeSeries;
 import com.yahoo.egads.models.tsmm.StreamingOlympicModel;
-import com.yahoo.egads.models.tsmm.TimeSeriesAbstractModel;
+import com.yahoo.egads.models.tsmm.TimeSeriesStreamingModel;
 
 public class StreamForecast {
 	public static void main(String[] args) {
@@ -29,9 +28,9 @@ public class StreamForecast {
 				series = fields[0];
 				timestamp = Integer.parseInt(fields[1]);
 				measured = Double.parseDouble(fields[2]);
-				TimeSeriesAbstractModel model = (TimeSeriesAbstractModel) ms.getModel(series);
+				TimeSeriesStreamingModel model = (TimeSeriesStreamingModel) ms.getModel(series, Model.ModelType.FORECAST);
 				if (model == null) {
-					model = new StreamingOlympicModel(new Properties());
+					model = new StreamingOlympicModel();
 					ms.storeModel(series, model);
 					System.err.println ("No such model " + series);
 				}
