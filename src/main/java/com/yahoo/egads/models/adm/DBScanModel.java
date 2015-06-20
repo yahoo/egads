@@ -18,7 +18,7 @@ import com.yahoo.egads.data.Anomaly.IntervalSequence;
 import com.yahoo.egads.data.Anomaly.Interval;
 import com.yahoo.egads.data.AnomalyErrorStorage;
 import com.yahoo.egads.data.TimeSeries.DataSequence;
-import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
+import com.yahoo.egads.utilities.DBSCANClusterer;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 
