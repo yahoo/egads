@@ -37,6 +37,7 @@ public class TestAnomalyDetect {
         p.load(is);
         ArrayList<TimeSeries> actual_metric = com.yahoo.egads.utilities.FileUtils
                 .createTimeSeries("src/test/resources/model_input.csv", p);
+        p.setProperty("MAX_ANOMALY_TIME_AGO", "999999999");
         for (int w = 0; w < refWindows.length; w++) {
             for (int d = 0; d < drops.length; d++) {
                  p.setProperty("NUM_WEEKS", refWindows[w]);
@@ -54,8 +55,15 @@ public class TestAnomalyDetect {
                  model.predict(sequence);
                  // Initialize the anomaly detector.
                  ExtremeLowDensityModel bcm = new ExtremeLowDensityModel(p);
+
+                 // Initialize the DBScan anomaly detector.
+                 DBScanModel dbs = new DBScanModel(p);
                  IntervalSequence anomalies = bcm.detect(actual_metric.get(0).data, sequence);
+                 dbs.tune(actual_metric.get(0).data, sequence, null);
+                 IntervalSequence anomaliesdb = dbs.detect(actual_metric.get(0).data, sequence);
+
                  Assert.assertTrue(anomalies.size() > 10);
+                 Assert.assertTrue(anomaliesdb.size() > 10);
             }
         }
     }

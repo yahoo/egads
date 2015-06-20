@@ -132,9 +132,11 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
         IntervalSequence output = new IntervalSequence();
         int n = observedSeries.size();
         long unixTime = System.currentTimeMillis() / 1000L;
-        Float[] thresholdErrors = new Float[2];
-        thresholdErrors[0] = (float) 500.0;
-        thresholdErrors[1] = (float) 2.0;
+        // Get an array of thresholds.
+        Float[] thresholdErrors = new Float[aes.getErrorToIndex().size()];
+        for (Map.Entry<String, Float> entry : this.threshold.entrySet()) {
+            thresholdErrors[aes.getErrorToIndex().get(entry.getKey())] = Math.abs(entry.getValue());
+        }
         
         // Compute the time-series of errors.
         HashMap<String, ArrayList<Float>> allErrors = aes.initAnomalyErrors(observedSeries, expectedSeries);
@@ -150,7 +152,6 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
         }
         
         List<Cluster<IdentifiedDoublePoint>> cluster = dbscan.cluster(points);
-
         for(Cluster<IdentifiedDoublePoint> c: cluster) {
             for (IdentifiedDoublePoint p : c.getPoints()) {
             	int i = p.getId();
