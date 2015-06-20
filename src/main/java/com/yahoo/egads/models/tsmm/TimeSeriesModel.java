@@ -14,7 +14,7 @@ import com.yahoo.egads.data.Model;
 public interface TimeSeriesModel extends Model {
     // methods ////////////////////////////////////////////////
 
-    public abstract void train(TimeSeries.DataSequence data) throws Exception;
+    void train(TimeSeries.DataSequence data) throws Exception;
 
     public abstract void update(TimeSeries.DataSequence data) throws Exception;
 
