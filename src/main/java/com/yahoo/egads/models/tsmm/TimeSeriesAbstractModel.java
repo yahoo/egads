@@ -229,7 +229,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
      * @return the sum of absolute errors (SAE) obtained by applying this forecasting model to the initial data set.
      */
     public double getSAE() {
-        if (errorsInit == false) {
+        if (!errorsInit) {
             return -1;
         }
         return sae;
