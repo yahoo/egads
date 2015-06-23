@@ -42,7 +42,18 @@ public class ProcessableObjectFactory {
     private static ModelAdapter buildTSModel(TimeSeries ts, Properties config) {
         ModelAdapter ma = null;
         try {
-            ma = new ModelAdapter(ts, new Long(config.getProperty("PERIOD")));
+            Long period = (long) -1;
+            if (config.getProperty("PERIOD") != null) {
+              period = new Long(config.getProperty("PERIOD"));
+            }
+            if (period == -1) {
+              if (ts.size() > 1) {
+                period = ts.data.get(1).time - ts.data.get(0).time;
+              } else {
+                period = (long) 1;
+              }
+            }
+            ma = new ModelAdapter(ts, period);
             String modelType = config.getProperty("TS_MODEL");
 
             Class<?> tsModelClass = Class.forName("com.yahoo.egads.models.tsmm." + modelType);
@@ -58,7 +69,18 @@ public class ProcessableObjectFactory {
     private static AnomalyDetector buildAnomalyModel(TimeSeries ts, Properties config) {
         AnomalyDetector ad = null;
         try {
-            ad = new AnomalyDetector(ts, new Long(config.getProperty("PERIOD")));
+            Long period = (long) -1;
+            if (config.getProperty("PERIOD") != null) {
+              period = new Long(config.getProperty("PERIOD"));
+            }
+            if (period == -1) {
+              if (ts.size() > 1) {
+                period = ts.data.get(1).time - ts.data.get(0).time;
+              } else {
+                period = (long) 1;
+              }
+            }
+            ad = new AnomalyDetector(ts, period);
             String modelType = config.getProperty("AD_MODEL");
 
             Class<?> tsModelClass = Class.forName("com.yahoo.egads.models.adm." + modelType);
