@@ -264,6 +264,9 @@ public class Anomaly implements JsonAble {
     // Print array and separate by commas.
     public static String printArray(Float[] arr) {
         StringBuffer str = new StringBuffer();
+        if (arr == null) {
+          return "NA";
+        }
         if (arr.length >= 1) {
             str.append(arr[0]);
         }

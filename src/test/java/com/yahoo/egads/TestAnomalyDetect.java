@@ -50,8 +50,8 @@ public class TestAnomalyDetect {
                  model.train(actual_metric.get(0).data);
                  TimeSeries.DataSequence sequence = new TimeSeries.DataSequence(metrics.get(0).startTime(),
                                                                                 metrics.get(0).lastTime(),
-                                                                                new Long(p.getProperty("PERIOD")));
-                 sequence.setLogicalIndices(metrics.get(0).startTime(), new Long(p.getProperty("PERIOD")));
+                                                                                3600);
+                 sequence.setLogicalIndices(metrics.get(0).startTime(), 3600);
                  model.predict(sequence);
                  // Initialize the anomaly detector.
                  ExtremeLowDensityModel bcm = new ExtremeLowDensityModel(p);

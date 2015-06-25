@@ -15,6 +15,8 @@ import com.yahoo.egads.data.Anomaly.Interval;
 import com.yahoo.egads.data.TimeSeries;
 import com.yahoo.egads.data.TimeSeries.DataSequence;
 import com.yahoo.egads.utilities.AutoSensitivity;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -23,7 +25,8 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
 
     // The constructor takes a set of properties
     // needed for the simple model. This includes the sensitivity.
-    protected Float threshold;
+    private Map<String, Float> threshold;
+    private int maxHrsAgo;
     
     // Model name.
     private String modelName = "SimpleThresholdModel";
@@ -31,11 +34,26 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
     public SimpleThresholdModel(Properties config) {
         super(config);
         
-        if (config.getProperty("THRESHOLD") == null) {
-            this.threshold = null;
-        } else {
-            this.threshold = new Float(config.getProperty("THRESHOLD"));
+        this.threshold = parseMap(config.getProperty("THRESHOLD"));
+        this.maxHrsAgo = new Integer(config.getProperty("MAX_ANOMALY_TIME_AGO"));
+        if (config.getProperty("THRESHOLD") != null && this.threshold.isEmpty() == true) {
+            throw new IllegalArgumentException("THRESHOLD PARSE ERROR");
+        } 
+    }
+
+    // Parses the THRESHOLD config into a map.
+    private Map<String, Float> parseMap(String s) {
+        if (s == null) {
+            return new HashMap<String, Float>();
         }
+        String[] pairs = s.split(",");
+        Map<String, Float> myMap = new HashMap<String, Float>();
+        for (int i = 0; i < pairs.length; i++) {
+            String pair = pairs[i];
+            String[] keyValue = pair.split(":");
+            myMap.put(keyValue[0], Float.valueOf(keyValue[1]));
+        }
+        return myMap;
     }
 
     public void toJson(JSONStringer json_out) {
@@ -62,21 +80,31 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
     @Override
     public void tune(DataSequence observedSeries, DataSequence expectedSeries,
             IntervalSequence anomalySequence) throws Exception {  
-        
-        if (threshold == null) {
-        	threshold = AutoSensitivity.getKSigmaSensitivity(observedSeries.getValues(), sDAutoSensitivity);
-        }
+
+        Float[] thr = AutoSensitivity.getAdaptiveKSigmaSensitivity(observedSeries.getValues(), amntAutoSensitivity); 
+        if (!threshold.containsKey("max")) {
+            threshold.put("max", thr[0]);
+        }  
+        if (!threshold.containsKey("min")) {
+            threshold.put("min", thr[1]);
+        }  
     }
 
     @Override
     public IntervalSequence detect(DataSequence observedSeries,
             DataSequence expectedSeries) throws Exception {
         IntervalSequence output = new IntervalSequence();
-
-        for (TimeSeries.Entry entry : observedSeries) {
-            if (entry.value > threshold) {
-                output.add(new Interval(entry.logicalIndex, entry.logicalIndex,
-                        entry.value - threshold));
+        Float[] thr = new Float[] {threshold.get("max"), threshold.get("min")};
+        long unixTime = System.currentTimeMillis() / 1000L;
+        int n = observedSeries.size();
+        for (int i = 0; i < n; i++) {
+            TimeSeries.Entry entry = observedSeries.get(i);
+            if (((thr[0] != null && entry.value >= thr[0]) || (thr[1] != null && entry.value <= thr[1])) && ((((unixTime - entry.time) / 3600) < maxHrsAgo) || (maxHrsAgo == 0 && i == (n - 1)))) {
+                if (entry.value >= thr[0]) {
+                    output.add(new Interval(entry.time, null, thr, entry.value, thr[0]));
+                } else {
+                    output.add(new Interval(entry.time, null, thr, entry.value, thr[1]));
+                }
             }
         }
 

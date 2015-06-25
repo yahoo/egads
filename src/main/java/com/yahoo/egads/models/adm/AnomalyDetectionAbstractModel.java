@@ -15,7 +15,7 @@ import com.yahoo.egads.data.JsonEncoder;
 
 public abstract class AnomalyDetectionAbstractModel implements AnomalyDetectionModel {
 
-	protected org.apache.logging.log4j.Logger logger;
+    protected org.apache.logging.log4j.Logger logger;
     protected float sDAutoSensitivity = 3;
     protected float amntAutoSensitivity = (float) 0.05;
     protected String outputDest = "";
