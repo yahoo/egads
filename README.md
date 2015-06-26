@@ -237,10 +237,15 @@ If you use EGADS in your projects, please cite:
 BibTeX:
 
 @inproceedings{
+
 	author = {Nikolay Laptev and Saeed Amizadeh and Ian Flint},
+	
 	title = {Generic and Scalable Framework for Automated Time-series Anomaly Detection},
+	
 	booktitle = {Proceedings of KDD 2015},
+	
 	year = {2015}
+	
 }
 
 License
