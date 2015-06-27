@@ -168,10 +168,17 @@ public class NaiveModel extends AnomalyDetectionAbstractModel {
         // Check for anomalies for min/max.
         for (int i = 0; i < 2; i++) {
             Float[] errors = aes.computeErrorMetrics(expected[i], observed[i]);
-            if (isAnomaly(errors, threshold) == true) {
+            boolean actualAnomaly = false;
+            if (i == 0 && observed[i] > expected[i]) {
+              actualAnomaly = true;
+            }
+            if (i == 1 && observed[i] < expected[i]) {
+              actualAnomaly = true;
+            }
+           
+            if (isAnomaly(errors, threshold) == true && actualAnomaly == true) {
                 int j = findIndex(observedSeries, observed[i], cutIndex, n);
-                // not supported by java 1.7.
-                //logger.debug("TS:" + observedSeries.get(j).time + ",E:" + String.join(":", arrayF2S(errors)) + ",TH:" + String.join(",", arrayF2S(thresholdErrors)) + ",OV:" + observedSeries.get(j).value + ",EV:" + expected[i]);
+                logger.debug("TS:" + observedSeries.get(j).time + ",E:" + arrayF2S(errors) + ",TH:" + arrayF2S(thresholdErrors) + ",OV:" + observedSeries.get(j).value + ",EV:" + expected[i]);
                 output.add(new Interval(observedSeries.get(j).time,
                            errors,
                            thresholdErrors,

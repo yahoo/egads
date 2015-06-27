@@ -135,9 +135,8 @@ public class ExtremeLowDensityModel extends AnomalyDetectionAbstractModel {
         long unixTime = System.currentTimeMillis() / 1000L;
        
         for (int i = 0; i < n; i++) {
-            		Float[] errors = aes.computeErrorMetrics(expectedSeries.get(i).value, observedSeries.get(i).value);
-                        // not supported by java 1.7.
-            		//logger.debug("TS:" + observedSeries.get(i).time + ",E:" + String.join(":", arrayF2S(errors)) + ",TE:" + String.join(",", arrayF2S(thresholdErrors)) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
+            Float[] errors = aes.computeErrorMetrics(expectedSeries.get(i).value, observedSeries.get(i).value);
+            logger.debug("TS:" + observedSeries.get(i).time + ",E:" + arrayF2S(errors) + ",TE:" + arrayF2S(thresholdErrors) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
 			if (observedSeries.get(i).value != expectedSeries.get(i).value &&
 						threshSum > (float) 0.0 &&
 						isAnomaly(errors, threshold) == true &&

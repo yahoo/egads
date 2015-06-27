@@ -39,14 +39,22 @@ public abstract class AnomalyDetectionAbstractModel implements AnomalyDetectionM
         JsonEncoder.fromJson(this, json_obj);
     }
     
-    protected String[] arrayF2S (Float[] input) {
-    	String ret[] = new String[input.length];
-    	for (int ix = 0; ix < input.length; ix++) {
-                if (input[ix] == null) {
-                  ret[ix] = "Inf";
-                } else {
-    		  ret[ix] = input[ix].toString();
-                }
+    protected String arrayF2S (Float[] input) {
+    	String ret = new String();
+    	if (input.length == 0) {
+    		return "";
+    	}
+    	if (input[0] == null) {
+    		ret = "Inf";
+    	} else {
+    		ret = input[0].toString();
+    	}
+    	for (int ix = 1; ix < input.length; ix++) {
+            if (input[ix] == null) {
+                ret += ":Inf";
+            } else {
+    		    ret += ":" + input[ix].toString();
+            }
     	}
     	return ret;
     }

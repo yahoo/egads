@@ -156,7 +156,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
             for (IdentifiedDoublePoint p : c.getPoints()) {
             	int i = p.getId();
                 Float[] errors = aes.computeErrorMetrics(expectedSeries.get(p.getId()).value, observedSeries.get(p.getId()).value);
-                // logger.debug("TS:" + observedSeries.get(i).time + ",E:" + String.join(":", arrayF2S(errors)) + ",TE:" + String.join(",", arrayF2S(thresholdErrors)) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
+                logger.debug("TS:" + observedSeries.get(i).time + ",E:" + arrayF2S(errors) + ",TE:" + arrayF2S(thresholdErrors) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
                 if (observedSeries.get(p.getId()).value != expectedSeries.get(p.getId()).value &&
                     ((((unixTime - observedSeries.get(p.getId()).time) / 3600) < maxHrsAgo) ||
                     (maxHrsAgo == 0 && p.getId() == (n - 1)))) {
