@@ -20,11 +20,19 @@ Usage
 
 To run a simple example type:
 
-`java -Dlog4j.configurationFile=src/test/resources/log4j2.xml -cp target/egads-jar-with-dependencies.jar com.yahoo.egads.Egads src/test/resources/sample_config.ini src/test/resources/sample_input.csv`
+`java -Dlog4j.configurationFile=src/test/resources/log4j2.xml -cp lib/OpenForecast-0.5.0.jar:target/egads-jar-with-dependencies.jar com.yahoo.egads.Egads src/test/resources/sample_config.ini src/test/resources/sample_input.csv`
 
 which produces the following picture (Note that you can enable this UI by setting `OUTPUT` config key to `GUI` in sample_config.ini).
 
 ![gui](doc/ui.png "EGADS GUI")
+
+One can also specify config parameters on a command line. For example to do anomaly detection using Olympic Scoring as a time-series model and a density based method as an anomaly detection model use the following. 
+
+`java -Dlog4j.configurationFile=src/test/resources/log4j2.xml -cp lib/OpenForecast-0.5.0.jar:target/egads-jar-with-dependencies.jar com.yahoo.egads.Egads "MAX_ANOMALY_TIME_AGO:999999999;AGGREGATION:1;OP_TYPE:DETECT_ANOMALY;TS_MODEL:OlympicModel;AD_MODEL:ExtremeLowDensityModel;INPUT:CSV;OUTPUT:STD_OUT;BASE_WINDOWS:168;PERIOD:-1;NUM_WEEKS:3;NUM_TO_DROP:0;DYNAMIC_PARAMETERS:0;TIME_SHIFTS:0" src/test/resources/sample_input.csv`
+
+To run anomaly detection using no time-series model with an auto static threshold for anomaly detection, use the following:
+
+`java -Dlog4j.configurationFile=src/test/resources/log4j2.xml -cp lib/OpenForecast-0.5.0.jar:target/egads-jar-with-dependencies.jar com.yahoo.egads.Egads "MAX_ANOMALY_TIME_AGO:999999999;AGGREGATION:1;OP_TYPE:DETECT_ANOMALY;TS_MODEL:NullModel;AD_MODEL:SimpleThresholdModel;SIMPLE_THRESHOLD_TYPE:AdaptiveMaxMinSigmaSensitivity;INPUT:CSV;OUTPUT:STD_OUT;AUTO_SENSITIVITY_ANOMALY_PCNT:0.2;AUTO_SENSITIVITY_SD:2.0" src/test/resources/sample_input.csv`
 
 Overview
 ========
@@ -104,6 +112,7 @@ OP_TYPE	DETECT_ANOMALY
 #          TripleExponentialSmoothingModel
 #          WeightedMovingAverageModel
 # 	   SpectralSmoother
+# 	   NullModel
 TS_MODEL	OlympicModel
 
 # AD_MODEL specifies the anomaly-detection
@@ -111,10 +120,15 @@ TS_MODEL	OlympicModel
 # Options: ExtremeLowDensityModel
 #          AdaptiveKernelDensityChangePointDetector
 #          KSigmaModel
-#          WindowNaive
-#          MaxNaiveModel
+#          NaiveModel
 #          DBScanModel
+#          SimpleThresholdModel
 AD_MODEL	ExtremeLowDensityModel
+
+# Type of the simple threshold model.
+# Options: AdaptiveMaxMinSigmaSensitivity
+#          AdaptiveKSigmaSensitivity
+# SIMPLE_THRESHOLD_TYPE
 
 # Specifies the input src.
 # Options: STDIN
@@ -146,7 +160,7 @@ BASE_WINDOWS  24,168
 
 # Period specifies the periodicity of the
 # time-series (e.g., the difference between successive time-stamps).
-PERIOD  3600
+PERIOD  -1
 
 # NUM_WEEKS specifies the number of weeks
 # to use in OlympicScoring.
@@ -167,7 +181,7 @@ DYNAMIC_PARAMETERS  0
 
 # Denotes the expected % of anomalies
 # in your data.
-AUTO_SENSITIVITY_ANOMALY_PCNT	0.011
+AUTO_SENSITIVITY_ANOMALY_PCNT	0.01
 
 # Refers to the cluster standard deviation.
 AUTO_SENSITIVITY_SD	3.0

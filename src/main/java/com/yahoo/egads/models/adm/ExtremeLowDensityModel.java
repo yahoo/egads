@@ -46,21 +46,6 @@ public class ExtremeLowDensityModel extends AnomalyDetectionAbstractModel {
         } 
     }
     
-    // Parses the THRESHOLD config into a map.
-    private Map<String, Float> parseMap(String s) {
-        if (s == null) {
-            return new HashMap<String, Float>();
-        }
-        String[] pairs = s.split(",");
-        Map<String, Float> myMap = new HashMap<String, Float>();
-        for (int i = 0; i < pairs.length; i++) {
-            String pair = pairs[i];
-            String[] keyValue = pair.split(":");
-            myMap.put(keyValue[0], Float.valueOf(keyValue[1]));
-        }
-        return myMap;
-    }
-
     public void toJson(JSONStringer json_out) {
 
     }
@@ -135,8 +120,8 @@ public class ExtremeLowDensityModel extends AnomalyDetectionAbstractModel {
         long unixTime = System.currentTimeMillis() / 1000L;
        
         for (int i = 0; i < n; i++) {
-            		Float[] errors = aes.computeErrorMetrics(expectedSeries.get(i).value, observedSeries.get(i).value);
-            		logger.debug("TS:" + observedSeries.get(i).time + ",E:" + String.join(":", arrayF2S(errors)) + ",TE:" + String.join(",", arrayF2S(thresholdErrors)) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
+            Float[] errors = aes.computeErrorMetrics(expectedSeries.get(i).value, observedSeries.get(i).value);
+            logger.debug("TS:" + observedSeries.get(i).time + ",E:" + arrayF2S(errors) + ",TE:" + arrayF2S(thresholdErrors) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
 			if (observedSeries.get(i).value != expectedSeries.get(i).value &&
 						threshSum > (float) 0.0 &&
 						isAnomaly(errors, threshold) == true &&

@@ -72,4 +72,99 @@ public class AutoSensitivity {
          Float sd = StatsUtils.getSD(data, mean);
          return (mean + (sd * sDAutoSensitivity));
     }
+
+    // Uses the mean as the base to find the static threshold.
+    public static Float[] getAdaptiveKSigmaSensitivity(Float[] data, float amntAutoSens) {
+         Float mean = StatsUtils.getMean(data);
+         Float sd = StatsUtils.getSD(data, mean);
+         if (sd == (float) 0.0) {
+             sd = (float) 1.0;
+         }
+         Float[] ret = null;
+         float k = (float) 1;
+         float incr = (float) 1;
+         
+         Float max = null;
+         Float min = null;
+         float thresh = mean + Math.abs(sd * k);
+         int howMany = howManyGreater(data, thresh);
+          
+         while (((float) howMany / (float) data.length) > amntAutoSens) {
+             k += incr;
+             thresh = mean + Math.abs(sd * k);
+             howMany = howManyGreater(data, thresh);
+         } 
+         if (((float) howMany / (float) data.length) <= amntAutoSens) {
+             max = thresh;
+         } 
+         k = 1;
+         thresh = mean - Math.abs(sd * k);
+         howMany = howManyLess(data, thresh);
+         while (((float) howMany / (float) data.length) > amntAutoSens) {
+             k += incr;
+             thresh = mean - Math.abs(sd * k);
+             howMany = howManyLess(data, thresh);
+         } 
+         if (((float) howMany / (float) data.length) <= amntAutoSens) {
+           min = thresh;
+         }
+         ret = new Float[]{max, min};
+         return ret; 
+    }
+    
+    // Uses the max/min as the base to find the static threshold.
+    public static Float[] getAdaptiveMaxMinSigmaSensitivity(Float[] data, float amntAutoSens, float k) {
+    	Arrays.sort(data);
+    	Float mean = StatsUtils.getMean(data);
+        Float sd = StatsUtils.getSD(data, mean);
+        if (sd == (float) 0.0) {
+            sd = (float) 1.0;
+        }
+        Float[] ret = null;
+        
+        Float max = null;
+        Float min = null;
+        int i = 0;
+        float thresh = data[i] + Math.abs(sd * k);
+        int howMany = howManyLess(data, thresh);
+         
+        while (((float) howMany / (float) data.length) <= amntAutoSens) {
+        	min = thresh;
+        	i++;
+            thresh = data[i] + Math.abs(sd * k);
+            howMany = howManyLess(data, thresh);
+        } 
+        i = data.length - 1;
+        thresh = data[i] - Math.abs(sd * k);
+        howMany = howManyGreater(data, thresh);
+        while (((float) howMany / (float) data.length) <= amntAutoSens) {
+        	max = thresh;
+            i--;
+            thresh = data[i] - Math.abs(sd * k);
+            howMany = howManyGreater(data, thresh);
+        } 
+
+        ret = new Float[]{max, min};
+        return ret; 
+   }
+
+    private static int howManyGreater(Float[] data, Float value) {
+        int numgreater = 0;
+        for (Float f : data) {
+            if (value <= f) {
+                numgreater++;
+            }
+        }
+        return numgreater;
+    }
+
+    private static int howManyLess(Float[] data, Float value) {
+        int numless = 0;
+        for (Float f : data) {
+            if (value >= f) {
+                numless++;
+            }
+        }
+        return numless;
+    }
 }

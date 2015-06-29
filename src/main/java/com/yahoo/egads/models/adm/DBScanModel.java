@@ -55,21 +55,6 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
             throw new IllegalArgumentException("THRESHOLD PARSE ERROR");
         } 
     }
-    
-    // Parses the THRESHOLD config into a map.
-    private Map<String, Float> parseMap(String s) {
-        if (s == null) {
-            return new HashMap<String, Float>();
-        }
-        String[] pairs = s.split(",");
-        Map<String, Float> myMap = new HashMap<String, Float>();
-        for (int i = 0; i < pairs.length; i++) {
-            String pair = pairs[i];
-            String[] keyValue = pair.split(":");
-            myMap.put(keyValue[0], Float.valueOf(keyValue[1]));
-        }
-        return myMap;
-    }
 
     public void toJson(JSONStringer json_out) {
 
@@ -156,7 +141,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
             for (IdentifiedDoublePoint p : c.getPoints()) {
             	int i = p.getId();
                 Float[] errors = aes.computeErrorMetrics(expectedSeries.get(p.getId()).value, observedSeries.get(p.getId()).value);
-                logger.debug("TS:" + observedSeries.get(i).time + ",E:" + String.join(":", arrayF2S(errors)) + ",TE:" + String.join(",", arrayF2S(thresholdErrors)) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
+                logger.debug("TS:" + observedSeries.get(i).time + ",E:" + arrayF2S(errors) + ",TE:" + arrayF2S(thresholdErrors) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
                 if (observedSeries.get(p.getId()).value != expectedSeries.get(p.getId()).value &&
                     ((((unixTime - observedSeries.get(p.getId()).time) / 3600) < maxHrsAgo) ||
                     (maxHrsAgo == 0 && p.getId() == (n - 1)))) {

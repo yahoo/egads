@@ -10,12 +10,14 @@ import java.util.Properties;
 
 import org.json.JSONObject;
 import org.json.JSONStringer;
+import java.util.Map;
+import java.util.HashMap;
 
 import com.yahoo.egads.data.JsonEncoder;
 
 public abstract class AnomalyDetectionAbstractModel implements AnomalyDetectionModel {
 
-	protected org.apache.logging.log4j.Logger logger;
+    protected org.apache.logging.log4j.Logger logger;
     protected float sDAutoSensitivity = 3;
     protected float amntAutoSensitivity = (float) 0.05;
     protected String outputDest = "";
@@ -39,16 +41,39 @@ public abstract class AnomalyDetectionAbstractModel implements AnomalyDetectionM
         JsonEncoder.fromJson(this, json_obj);
     }
     
-    protected String[] arrayF2S (Float[] input) {
-    	String ret[] = new String[input.length];
-    	for (int ix = 0; ix < input.length; ix++) {
-                if (input[ix] == null) {
-                  ret[ix] = "Inf";
-                } else {
-    		  ret[ix] = input[ix].toString();
-                }
+    protected String arrayF2S (Float[] input) {
+    	String ret = new String();
+    	if (input.length == 0) {
+    		return "";
+    	}
+    	if (input[0] == null) {
+    		ret = "Inf";
+    	} else {
+    		ret = input[0].toString();
+    	}
+    	for (int ix = 1; ix < input.length; ix++) {
+            if (input[ix] == null) {
+                ret += ":Inf";
+            } else {
+    		    ret += ":" + input[ix].toString();
+            }
     	}
     	return ret;
+    }
+    
+    // Parses the THRESHOLD config into a map.
+    protected Map<String, Float> parseMap(String s) {
+        if (s == null) {
+            return new HashMap<String, Float>();
+        }
+        String[] pairs = s.split(",");
+        Map<String, Float> myMap = new HashMap<String, Float>();
+        for (int i = 0; i < pairs.length; i++) {
+            String pair = pairs[i];
+            String[] keyValue = pair.split("#");
+            myMap.put(keyValue[0], Float.valueOf(keyValue[1]));
+        }
+        return myMap;
     }
 
     // Force the user to define this constructor that acts as a

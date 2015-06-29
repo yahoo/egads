@@ -169,7 +169,7 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
                 if (isCP && j < (changePoints.size() - 1)) {
                     j++;
                 }
-                logger.debug("TS:" + observedSeries.get(i).time + ",SC:" + String.join(":", arrayF2S(new Float[] {score[i]})) + ",LV:" + String.join(",", arrayF2S(new Float[] {level[i]})) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
+                logger.debug("TS:" + observedSeries.get(i).time + ",SC:" + String.join(":", arrayF2S(new Float[] {score[i]})) + ",LV:" + arrayF2S(new Float[] {level[i]}) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
 
                 result.add(new Interval(observedSeries.get(i).time, 
                                         new Float[] {score[i]},

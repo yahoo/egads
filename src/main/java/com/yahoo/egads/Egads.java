@@ -6,6 +6,7 @@ import java.util.Properties;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import com.yahoo.egads.utilities.*;
+import java.io.File;
 
 /*
  * Call stack.
@@ -32,10 +33,17 @@ public class Egads {
 
         // TODO: This config will be retreieved from ConfigDB later,
         // for now it is assumed it's a static file.
-        String configFile = args[0];
-        InputStream is = new FileInputStream(configFile);
         Properties p = new Properties();
-        p.load(is);
+        String config = args[0];
+        File f = new File(config);
+        boolean isRegularFile = f.exists();
+        
+        if (isRegularFile) {
+            InputStream is = new FileInputStream(config);
+            p.load(is);
+        } else {
+        	FileUtils.initProperties(config, p);
+        }
         
         // Set the input type.
         InputProcessor ip = null;
