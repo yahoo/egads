@@ -10,6 +10,8 @@ import java.util.Properties;
 
 import org.json.JSONObject;
 import org.json.JSONStringer;
+import java.util.Map;
+import java.util.HashMap;
 
 import com.yahoo.egads.data.JsonEncoder;
 
@@ -57,6 +59,21 @@ public abstract class AnomalyDetectionAbstractModel implements AnomalyDetectionM
             }
     	}
     	return ret;
+    }
+    
+    // Parses the THRESHOLD config into a map.
+    protected Map<String, Float> parseMap(String s) {
+        if (s == null) {
+            return new HashMap<String, Float>();
+        }
+        String[] pairs = s.split(",");
+        Map<String, Float> myMap = new HashMap<String, Float>();
+        for (int i = 0; i < pairs.length; i++) {
+            String pair = pairs[i];
+            String[] keyValue = pair.split("#");
+            myMap.put(keyValue[0], Float.valueOf(keyValue[1]));
+        }
+        return myMap;
     }
 
     // Force the user to define this constructor that acts as a

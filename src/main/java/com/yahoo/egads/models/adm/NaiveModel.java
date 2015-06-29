@@ -49,21 +49,6 @@ public class NaiveModel extends AnomalyDetectionAbstractModel {
             throw new IllegalArgumentException("THRESHOLD PARSE ERROR");
         } 
     }
-
-    // Parses the THRESHOLD config into a map.
-    private Map<String, Float> parseMap(String s) {
-        if (s == null) {
-            return new HashMap<String, Float>();
-        }
-        String[] pairs = s.split(",");
-        Map<String, Float> myMap = new HashMap<String, Float>();
-        for (int i = 0; i < pairs.length; i++) {
-            String pair = pairs[i];
-            String[] keyValue = pair.split(":");
-            myMap.put(keyValue[0], Float.valueOf(keyValue[1]));
-        }
-        return myMap;
-    }
     
     public void toJson(JSONStringer json_out) {
 

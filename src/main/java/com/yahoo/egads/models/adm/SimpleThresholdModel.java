@@ -30,6 +30,7 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
     
     // Model name.
     private String modelName = "SimpleThresholdModel";
+    private String simpleThrType = "AdaptiveKSigmaSensitivity";
 
     public SimpleThresholdModel(Properties config) {
         super(config);
@@ -39,21 +40,9 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
         if (config.getProperty("THRESHOLD") != null && this.threshold.isEmpty() == true) {
             throw new IllegalArgumentException("THRESHOLD PARSE ERROR");
         } 
-    }
-
-    // Parses the THRESHOLD config into a map.
-    private Map<String, Float> parseMap(String s) {
-        if (s == null) {
-            return new HashMap<String, Float>();
+        if (config.getProperty("SIMPLE_THRESHOLD_TYPE") != null) {
+            simpleThrType = config.getProperty("SIMPLE_THRESHOLD_TYPE");
         }
-        String[] pairs = s.split(",");
-        Map<String, Float> myMap = new HashMap<String, Float>();
-        for (int i = 0; i < pairs.length; i++) {
-            String pair = pairs[i];
-            String[] keyValue = pair.split(":");
-            myMap.put(keyValue[0], Float.valueOf(keyValue[1]));
-        }
-        return myMap;
     }
 
     public void toJson(JSONStringer json_out) {
@@ -80,8 +69,13 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
     @Override
     public void tune(DataSequence observedSeries, DataSequence expectedSeries,
             IntervalSequence anomalySequence) throws Exception {  
+        Float thr[] = null;
+        if (simpleThrType.equals("AdaptiveKSigmaSensitivity")) {
+            thr = AutoSensitivity.getAdaptiveKSigmaSensitivity(observedSeries.getValues(), amntAutoSensitivity); 
+        } else {
+    	    thr = AutoSensitivity.getAdaptiveMaxMinSigmaSensitivity(observedSeries.getValues(), amntAutoSensitivity, sDAutoSensitivity); 
+        }
 
-        Float[] thr = AutoSensitivity.getAdaptiveKSigmaSensitivity(observedSeries.getValues(), amntAutoSensitivity); 
         if (!threshold.containsKey("max")) {
             threshold.put("max", thr[0]);
         }  
@@ -100,7 +94,7 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
         for (int i = 0; i < n; i++) {
             TimeSeries.Entry entry = observedSeries.get(i);
             if (((thr[0] != null && entry.value >= thr[0]) || (thr[1] != null && entry.value <= thr[1])) && ((((unixTime - entry.time) / 3600) < maxHrsAgo) || (maxHrsAgo == 0 && i == (n - 1)))) {
-                if (entry.value >= thr[0]) {
+                if (thr[0] != null && entry.value >= thr[0]) {
                     output.add(new Interval(entry.time, null, thr, entry.value, thr[0]));
                 } else {
                     output.add(new Interval(entry.time, null, thr, entry.value, thr[1]));

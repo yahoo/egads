@@ -139,4 +139,16 @@ public class FileUtils {
         }
         return list;
       }
+    
+    // Initializes properties from a string (key:value, separated by ";").
+    public static void initProperties(String config, Properties p) {
+    	String delims1 = ";";
+    	String delims2 = ":";
+ 
+		StringTokenizer st1 = new StringTokenizer(config, delims1);
+		while (st1.hasMoreElements()) {
+			String[] st2 = (st1.nextToken()).split(delims2);
+			p.setProperty(st2[0], st2[1]);
+		}
+    }
 }
