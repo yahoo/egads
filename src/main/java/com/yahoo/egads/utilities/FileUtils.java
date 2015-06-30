@@ -31,6 +31,10 @@ public class FileUtils {
         Long interval = null;
         Long prev = null;
         Integer aggr = 1;
+        boolean fillMissing = false;
+        if (config.getProperty("FILL_MISSING") != null && config.getProperty("FILL_MISSING").equals("1")) {
+        	fillMissing = true;
+        }
         if (config.getProperty("AGGREGATION") != null) {
             aggr = new Integer(config.getProperty("AGGREGATION"));
         }
@@ -70,7 +74,7 @@ public class FileUtils {
                         }
                     } else {
                         // A naive missing data handler.
-                        if (interval != null && prev != null && interval > 0) {
+                        if (interval != null && prev != null && interval > 0 && fillMissing == true) {
                             if ((curTimestamp - prev) != interval) {
                                 int missingValues = (int) ((curTimestamp - prev) / interval);
                                 

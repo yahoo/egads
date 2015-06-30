@@ -55,19 +55,4 @@ public class Variance {
                 + sum + "/" + count + ")^2";
     }
 
-    // test ////////////////////////////////////////////////
-
-    //         public static void 
-    //         main(String[] args) {
-    //             Variance variance = new Variance ();
-    //             variance.increment(1);
-    //             variance.increment(2);
-    //             variance.increment(3);
-    //             variance.increment(3);
-    //             variance.increment(3);
-    //             variance.increment(4);
-    //             variance.increment(5);
-    //             System.out.print("\n variance = " + variance);
-    //         }
-
 }

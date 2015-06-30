@@ -190,12 +190,17 @@ public class ModelAdapter { // Encapsulates a metric and the models operating on
         ArrayList<TimeSeries.DataSequence> result = new ArrayList<TimeSeries.DataSequence>();
 
         for (TimeSeriesModel model : models) {
-            TimeSeries.DataSequence sequence = new TimeSeries.DataSequence(from, to, period);
-            sequence.setLogicalIndices(firstTimeStamp, period);
-            model.predict(sequence);
+        	TimeSeries.DataSequence sequence = null;
+        	if (period != -1) {
+        		sequence = new TimeSeries.DataSequence(from, to, period);
+        		sequence.setLogicalIndices(firstTimeStamp, period);
+        	} else {
+        		sequence = new TimeSeries.DataSequence(metric.data.getTimes(), metric.data.getValues());
+        	}
+
+        	model.predict(sequence);
             result.add(sequence);
         }
-
         return result;
     }
 }

@@ -146,7 +146,7 @@ OUTPUT  STD_OUT
 # anomaly detection model.
 # Comment to auto-detect all thresholds.
 # Options: mapee,mae,smape,mape,mase.
-# THRESHOLD mape:10,mase:15
+# THRESHOLD mape#10,mase#15
 
 #####################################
 ### Olympic Forecast Model Config ###
@@ -160,7 +160,11 @@ BASE_WINDOWS  24,168
 
 # Period specifies the periodicity of the
 # time-series (e.g., the difference between successive time-stamps).
-PERIOD  -1
+# Options: (numeric)
+#          0 - auto detect.
+#          -1 - disable.
+PERIOD	-1
+
 
 # NUM_WEEKS specifies the number of weeks
 # to use in OlympicScoring.
