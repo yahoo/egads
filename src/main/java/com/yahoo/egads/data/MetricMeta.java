@@ -89,19 +89,4 @@ public class MetricMeta implements JsonAble {
         return o1.equals(o2);
     }
 
-    //         public static void 
-    //         main(String[] args) 
-    //         {
-    //             MetricMeta metric = new MetricMeta ("m1");
-    //             metric.detectAnomalies = true;
-    //             metric.source = "somewhere";
-    //             System.out.print("\n metric = " + metric);
-    // 
-    //             MetricMeta metric2 = new MetricMeta ("m1");
-    //             metric2.detectAnomalies = true;
-    //             metric2.source = "somewhere";
-    //             
-    //             System.out.print("\n metric.equals(metric2)=" + metric.equals(metric2));
-    //         }
-
 }

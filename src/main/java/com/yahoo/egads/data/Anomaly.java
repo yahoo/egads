@@ -308,12 +308,4 @@ public class Anomaly implements JsonAble {
         }
         return true;
     }
-
-    // public static void
-    // main(String[] args) throws Exception {
-    // Anomaly anomaly = new Anomaly("ANOMALY_ID", null);
-    // anomaly.addInterval(1, 11, 1.11f);
-    // System.out.print("\n anomaly = " + anomaly);
-    // }
-
 }

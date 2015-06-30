@@ -58,7 +58,6 @@ public class TestAutoForecast {
          }
          float precision = (float) 0.000001;
          float errorSum = (float) 0.0;
-         System.out.println();
          for (int i = 0; i < n; i++) {
         	 errorSum += Math.abs(computed.get(i).value - actual.get(i).value);
          }

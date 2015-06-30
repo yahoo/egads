@@ -46,7 +46,7 @@ public class ProcessableObjectFactory {
             if (config.getProperty("PERIOD") != null) {
               period = new Long(config.getProperty("PERIOD"));
             }
-            if (period == -1) {
+            if (period == 0) {
               if (ts.size() > 1) {
                 period = ts.data.get(1).time - ts.data.get(0).time;
               } else {
@@ -73,7 +73,7 @@ public class ProcessableObjectFactory {
             if (config.getProperty("PERIOD") != null) {
               period = new Long(config.getProperty("PERIOD"));
             }
-            if (period == -1) {
+            if (period == 0) {
               if (ts.size() > 1) {
                 period = ts.data.get(1).time - ts.data.get(0).time;
               } else {
