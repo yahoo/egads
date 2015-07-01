@@ -165,9 +165,9 @@ public class NaiveModel extends AnomalyDetectionAbstractModel {
                     actualAnomaly = true;
                     anomalyIndex = minIndex;
                 }
-           
+                
                 if (isAnomaly(errors, threshold) == true && actualAnomaly == true && anomaly == 1 && 
-                		((((unixTime - observedSeries.get(i).time) / 3600) < maxHrsAgo) ||
+                		((((unixTime - observedSeries.get(k).time) / 3600) < maxHrsAgo) ||
         						(maxHrsAgo == 0 && i == (n - 1)))) {
                 	anomaly = 0;
                     logger.debug("TS:" + observedSeries.get(k).time + ",E:" + arrayF2S(errors) + ",TH:" + arrayF2S(thresholdErrors) + ",OV:" + observedSeries.get(k).value + ",EV:" + expected[i]);
