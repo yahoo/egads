@@ -75,13 +75,12 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
         } else {
     	    thr = AutoSensitivity.getAdaptiveMaxMinSigmaSensitivity(observedSeries.getValues(), amntAutoSensitivity, sDAutoSensitivity); 
         }
-
         if (!threshold.containsKey("max")) {
             threshold.put("max", thr[0]);
         }  
         if (!threshold.containsKey("min")) {
             threshold.put("min", thr[1]);
-        }  
+        }
     }
 
     @Override
@@ -93,11 +92,12 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
         int n = observedSeries.size();
         for (int i = 0; i < n; i++) {
             TimeSeries.Entry entry = observedSeries.get(i);
+            
             if (((thr[0] != null && entry.value >= thr[0]) || (thr[1] != null && entry.value <= thr[1])) && ((((unixTime - entry.time) / 3600) < maxHrsAgo) || (maxHrsAgo == 0 && i == (n - 1)))) {
                 if (thr[0] != null && entry.value >= thr[0]) {
-                    output.add(new Interval(entry.time, null, thr, entry.value, thr[0]));
+                    output.add(new Interval(entry.time, i, null, thr, entry.value, thr[0]));
                 } else {
-                    output.add(new Interval(entry.time, null, thr, entry.value, thr[1]));
+                    output.add(new Interval(entry.time, i, null, thr, entry.value, thr[1]));
                 }
             }
         }

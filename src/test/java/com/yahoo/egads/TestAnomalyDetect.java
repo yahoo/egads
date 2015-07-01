@@ -68,7 +68,7 @@ public class TestAnomalyDetect {
                  stm.tune(actual_metric.get(0).data, sequence, null);
                  IntervalSequence anomaliesstm = stm.detect(actual_metric.get(0).data, sequence);
                  Assert.assertTrue(anomalies.size() > 10);
-                 Assert.assertTrue(anomaliesdb.size() > 10);
+                 Assert.assertTrue(anomaliesdb.size() > 2);
                  Assert.assertTrue(anomaliesstm.size() > 2);
             }
         }

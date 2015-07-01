@@ -88,7 +88,7 @@ public class AutoSensitivity {
          Float min = null;
          float thresh = mean + Math.abs(sd * k);
          int howMany = howManyGreater(data, thresh);
-          
+
          while (((float) howMany / (float) data.length) > amntAutoSens) {
              k += incr;
              thresh = mean + Math.abs(sd * k);
@@ -100,6 +100,7 @@ public class AutoSensitivity {
          k = 1;
          thresh = mean - Math.abs(sd * k);
          howMany = howManyLess(data, thresh);
+        
          while (((float) howMany / (float) data.length) > amntAutoSens) {
              k += incr;
              thresh = mean - Math.abs(sd * k);
@@ -127,7 +128,6 @@ public class AutoSensitivity {
         int i = 0;
         float thresh = data[i] + Math.abs(sd * k);
         int howMany = howManyLess(data, thresh);
-         
         while (((float) howMany / (float) data.length) <= amntAutoSens) {
         	min = thresh;
         	i++;

@@ -127,6 +127,7 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
                 ((((unixTime - observedSeries.get(i).time) / 3600) < maxHrsAgo) ||
                 (maxHrsAgo == 0 && i == (n - 1)))) {
                 output.add(new Interval(observedSeries.get(i).time,
+                		                i,
                                         errors,
                                         thresholdErrors,
                                         observedSeries.get(i).value,

@@ -77,7 +77,7 @@ public class AnomalyErrorStorage {
     public Float[] computeErrorMetrics(float expected, float actual) {
         float div = expected;
         if (expected == (float) 0.0) {
-          div = (float) 1.0;
+          div = (float) 0.0000000001;
         }
         
         // Mean Absolute Error.

@@ -158,7 +158,7 @@ public class GUIUtils extends ApplicationFrame {
         for (Anomaly a : anomalyList) {
             IntervalSequence is = a.intervals;
             for (Interval i : is) {
-                ValueMarker marker = new ValueMarker(i.logicalStartIndex);
+            	ValueMarker marker = new ValueMarker(i.index);
                 marker.setPaint(Color.black);
                 plot.addDomainMarker(marker);
             }

@@ -31,6 +31,7 @@ public class Anomaly implements JsonAble {
         public long logicalStartIndex = -1;
         public long logicalEndIndex = -1;
         public float value = 0;
+        public Integer index = -1;
         
         // Not set to final so that the json encode tests pass.
         public Float[] anomalyScore;
@@ -48,10 +49,12 @@ public class Anomaly implements JsonAble {
             this.expectedVal = null;
             this.utime = null;
             this.isAnomaly = null;
+            this.index = null;
         }
                 
         // Point anomaly special case interval.
         public Interval(long utime,
+        		        int index,
                         Float[] score,
                         Float[] thresholds,
                         float actual,
@@ -64,10 +67,12 @@ public class Anomaly implements JsonAble {
             this.expectedVal = expected;
             this.isAnomaly = null;
             this.startTime = utime;
+            this.index = index;
         }
         
         // Point anomaly special case interval with debug.
         public Interval(long utime,
+        		        int index,
                         Float[] score,
                         Float[] thresholds,
                         float actual,
@@ -81,6 +86,7 @@ public class Anomaly implements JsonAble {
             this.expectedVal = expected;
             this.isAnomaly = isAnomaly;
             this.startTime = utime;
+            this.index = index;
         }
 
         public Interval(long logicalStartIndex,
@@ -97,6 +103,7 @@ public class Anomaly implements JsonAble {
             this.expectedVal = null;
             this.utime = null;
             this.isAnomaly = null;
+            this.index = null;
         }
 
         public void toJson(JSONStringer json_out) throws Exception {

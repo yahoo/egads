@@ -26,6 +26,10 @@ public class TestMissingData {
         InputStream is = new FileInputStream(configFile);
         Properties p = new Properties();
         p.load(is);
+        // Auto detect.
+        p.setProperty("PERIOD", "0");
+        p.setProperty("FILL_MISSING", "1");
+        
         ArrayList<TimeSeries> metrics = com.yahoo.egads.utilities.FileUtils
                  .createTimeSeries(csv_file, p);
         Assert.assertEquals(metrics.get(0).data.size(), 1433);

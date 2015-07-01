@@ -45,7 +45,7 @@ public class NullModel extends TimeSeriesAbstractModel {
     public void predict(TimeSeries.DataSequence sequence) throws Exception {
         int n = data.size();
         for (int i = 0; i < n; i++) {
-            sequence.set(i, (new Entry(data.get(i).time, data.get(i).value)));
+            sequence.set(i, (new Entry(data.get(i).time, (long) 0.0)));
             logger.info(data.get(i).time + "," + data.get(i).value + "," + data.get(i).value);
         }
     }

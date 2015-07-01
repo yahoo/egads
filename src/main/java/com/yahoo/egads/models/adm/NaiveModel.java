@@ -29,7 +29,8 @@ public class NaiveModel extends AnomalyDetectionAbstractModel {
     // The constructor takes a set of properties
     // needed for the simple model. This includes the sensitivity.
     private Map<String, Float> threshold;
-    private Float windowSize;
+    private int maxHrsAgo;
+    private Float window_size;
     // modelName.
     public static String modelName = "NaiveModel";
     public AnomalyErrorStorage aes = new AnomalyErrorStorage();
@@ -40,7 +41,11 @@ public class NaiveModel extends AnomalyDetectionAbstractModel {
         if (config.getProperty("MAX_ANOMALY_TIME_AGO") == null) {
             throw new IllegalArgumentException("MAX_ANOMALY_TIME_AGO is NULL");
         }
-        this.windowSize = new Float(config.getProperty("MAX_ANOMALY_TIME_AGO"));
+        this.maxHrsAgo = new Integer(config.getProperty("MAX_ANOMALY_TIME_AGO"));
+        if (config.getProperty("WINDOW_SIZE") == null) {
+            throw new IllegalArgumentException("WINDOW_SIZE is NULL");
+        }
+        this.window_size = new Float(config.getProperty("WINDOW_SIZE"));
         if (config.getProperty("THRESHOLD") == null) {
         	throw new IllegalArgumentException("THRESHOLD is NULL");
         }
@@ -70,39 +75,6 @@ public class NaiveModel extends AnomalyDetectionAbstractModel {
     @Override
     public void reset() {
         // At this point, reset does nothing.
-    }
-
-    private Float max(DataSequence d, int from, int to) {
-        Float max = null;
-        
-        for (int i = from; i < to; i++) {
-            if (max == null || d.get(i).value > max) {
-                max = d.get(i).value;
-            }
-        }
-        return max;
-    }
-
-    private Float min(DataSequence d, int from, int to) {
-        Float min = null;
-        
-        for (int i = from; i < to; i++) {
-            if (min == null || d.get(i).value < min) {
-                min = d.get(i).value;
-            }
-        }
-        return min;
-    }
-
-    private int findIndex(DataSequence data, Float value, int from, int to) {
-        float epsilon = (float) 0.00000001;
-        int index = -1;
-        for (int i = from; i < to; i++) {
-            if (Math.abs(data.get(i).value - value) < epsilon) {
-                index = i;
-            }
-        }
-        return index;
     }
     
     @Override
@@ -137,41 +109,78 @@ public class NaiveModel extends AnomalyDetectionAbstractModel {
         IntervalSequence output = new IntervalSequence();
         int n = observedSeries.size();
         Integer cutIndex = null;
-
+        
         // Handle fractional windows which are interpreted as
         // % of the entire TimeSeries size.
-        if (windowSize < 1.0) {
-          int tmpCut = Math.round(windowSize * ((float) n));
-          cutIndex = Math.max(1, n - tmpCut);
+        if (window_size < 1.0) {
+            cutIndex = Math.round(window_size * ((float) n));
         } else {
-          cutIndex = Math.round((float) n - windowSize);
+        	cutIndex = Math.round(window_size);
+        }
+        
+        if (cutIndex + 1 > n) {
+            return output;
         }
 
-        Float[] observed = new Float[] {max(observedSeries, cutIndex, n), min(observedSeries, cutIndex, n)};
-        Float[] expected = new Float[] {max(observedSeries, 0, Math.max(0, cutIndex - 1)), min(observedSeries, 0, Math.max(0, cutIndex - 1))};
-
-        // Check for anomalies for min/max.
-        for (int i = 0; i < 2; i++) {
-            Float[] errors = aes.computeErrorMetrics(expected[i], observed[i]);
-            boolean actualAnomaly = false;
-            if (i == 0 && observed[i] > expected[i]) {
-              actualAnomaly = true;
-            }
-            if (i == 1 && observed[i] < expected[i]) {
-              actualAnomaly = true;
-            }
+        Float[] observed = new Float[] {observedSeries.get(0).value, observedSeries.get(0).value};
+        Float[] expected = new Float[] {expectedSeries.get(0).value, expectedSeries.get(0).value};
+        
+        int maxIndex = 0;
+        int minIndex = 0;
+        
+        int anomaly = 0;
+        long unixTime = System.currentTimeMillis() / 1000L;
+        
+        for (int k = 0; k < n; k++) {
+        	
+        	if (observed[0] < observedSeries.get(k).value) {
+        		observed[0] = observedSeries.get(k).value;
+        		maxIndex = k;
+        		anomaly = 1;
+        	}
+        	
+        	if (observed[1] > observedSeries.get(k).value) {
+        		observed[1] = observedSeries.get(k).value;
+        		minIndex = k;
+        		anomaly = 1;
+        	}
+        	
+        	if (k < cutIndex) {
+        		continue;
+        	}
+        	
+        	expected[0] = Math.max(expected[0], observedSeries.get(k - cutIndex).value);
+        	expected[1] = Math.min(expected[1], observedSeries.get(k - cutIndex).value);        	
+        	        	
+            // Check for anomalies for min/max.
+        	int anomalyIndex = 0;
+            for (int i = 0; i < 2; i++) {
+                Float[] errors = aes.computeErrorMetrics(expected[i], observed[i]);
+                boolean actualAnomaly = false;
+                if (i == 0 && observed[i] > expected[i]) {
+                    actualAnomaly = true;
+                    anomalyIndex = maxIndex;
+                }
+                if (i == 1 && observed[i] < expected[i]) {
+                    actualAnomaly = true;
+                    anomalyIndex = minIndex;
+                }
            
-            if (isAnomaly(errors, threshold) == true && actualAnomaly == true) {
-                int j = findIndex(observedSeries, observed[i], cutIndex, n);
-                logger.debug("TS:" + observedSeries.get(j).time + ",E:" + arrayF2S(errors) + ",TH:" + arrayF2S(thresholdErrors) + ",OV:" + observedSeries.get(j).value + ",EV:" + expected[i]);
-                output.add(new Interval(observedSeries.get(j).time,
-                           errors,
-                           thresholdErrors,
-                           observed[i],
-                           expected[i],
-                           isAnomaly(errors, threshold)));
-            }
-        }  
+                if (isAnomaly(errors, threshold) == true && actualAnomaly == true && anomaly == 1 && 
+                		((((unixTime - observedSeries.get(i).time) / 3600) < maxHrsAgo) ||
+        						(maxHrsAgo == 0 && i == (n - 1)))) {
+                	anomaly = 0;
+                    logger.debug("TS:" + observedSeries.get(k).time + ",E:" + arrayF2S(errors) + ",TH:" + arrayF2S(thresholdErrors) + ",OV:" + observedSeries.get(k).value + ",EV:" + expected[i]);
+                    output.add(new Interval(observedSeries.get(k).time,
+                    		   anomalyIndex,
+                               errors,
+                               thresholdErrors,
+                               observed[i],
+                               expected[i],
+                               isAnomaly(errors, threshold)));
+                }
+            }  
+        }
         return output;
     }
 }
