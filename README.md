@@ -191,12 +191,11 @@ AUTO_SENSITIVITY_ANOMALY_PCNT	0.01
 AUTO_SENSITIVITY_SD	3.0
 
 ############################
-### MaxNaiveModel Config ###
+### NaiveModel Config ###
 ############################
 
-# How many times does the max of n .. max_anoamly_time
-# has to be greater than the 0 ... max_anomaly_time - 1.
-MAX_NAIVE_PARAM	2.0
+# Window size where the spike is to be found.
+WINDOW_SIZE	0.1
 
 #######################################################
 ### AdaptiveKernelDensityChangePointDetector Config ###

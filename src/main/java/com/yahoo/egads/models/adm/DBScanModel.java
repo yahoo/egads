@@ -146,6 +146,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
                     ((((unixTime - observedSeries.get(p.getId()).time) / 3600) < maxHrsAgo) ||
                     (maxHrsAgo == 0 && p.getId() == (n - 1)))) {
                     output.add(new Interval(observedSeries.get(p.getId()).time,
+                    		                p.getId(), 
                                             errors,
                                             thresholdErrors,
                                             observedSeries.get(p.getId()).value,
