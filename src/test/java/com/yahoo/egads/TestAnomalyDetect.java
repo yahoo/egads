@@ -37,11 +37,12 @@ public class TestAnomalyDetect {
         p.load(is);
         ArrayList<TimeSeries> actual_metric = com.yahoo.egads.utilities.FileUtils
                 .createTimeSeries("src/test/resources/model_input.csv", p);
+        p.setProperty("MAX_ANOMALY_TIME_AGO", "999999999");
         for (int w = 0; w < refWindows.length; w++) {
             for (int d = 0; d < drops.length; d++) {
                  p.setProperty("NUM_WEEKS", refWindows[w]);
                  p.setProperty("NUM_TO_DROP", drops[d]);
-                 p.setProperty("THRESHOLD", "mapee:100,mase:10");
+                 p.setProperty("THRESHOLD", "mapee#100,mase#10");
                  // Parse the input timeseries.
                  ArrayList<TimeSeries> metrics = com.yahoo.egads.utilities.FileUtils
                             .createTimeSeries("src/test/resources/model_output_" + refWindows[w] + "_" + drops[d] + ".csv", p);
@@ -49,13 +50,26 @@ public class TestAnomalyDetect {
                  model.train(actual_metric.get(0).data);
                  TimeSeries.DataSequence sequence = new TimeSeries.DataSequence(metrics.get(0).startTime(),
                                                                                 metrics.get(0).lastTime(),
-                                                                                new Long(p.getProperty("PERIOD")));
-                 sequence.setLogicalIndices(metrics.get(0).startTime(), new Long(p.getProperty("PERIOD")));
+                                                                                3600);
+                 sequence.setLogicalIndices(metrics.get(0).startTime(), 3600);
                  model.predict(sequence);
                  // Initialize the anomaly detector.
                  ExtremeLowDensityModel bcm = new ExtremeLowDensityModel(p);
+
+                 // Initialize the DBScan anomaly detector.
+                 DBScanModel dbs = new DBScanModel(p);
                  IntervalSequence anomalies = bcm.detect(actual_metric.get(0).data, sequence);
+                 dbs.tune(actual_metric.get(0).data, sequence, null);
+                 IntervalSequence anomaliesdb = dbs.detect(actual_metric.get(0).data, sequence);
+
+                 // Initialize the SimpleThreshold anomaly detector.
+                 SimpleThresholdModel stm = new SimpleThresholdModel(p);
+
+                 stm.tune(actual_metric.get(0).data, sequence, null);
+                 IntervalSequence anomaliesstm = stm.detect(actual_metric.get(0).data, sequence);
                  Assert.assertTrue(anomalies.size() > 10);
+                 Assert.assertTrue(anomaliesdb.size() > 2);
+                 Assert.assertTrue(anomaliesstm.size() > 2);
             }
         }
     }

@@ -42,9 +42,9 @@ public class TestAutoForecast {
         model.train(metrics.get(0).data);
         TimeSeries.DataSequence sequence = new TimeSeries.DataSequence(metrics.get(0).startTime(),
         		                                                       metrics.get(0).lastTime(),
-                		                                               new Long(p.getProperty("PERIOD")));
+                		                                               3600);
                  
-       sequence.setLogicalIndices(metrics.get(0).startTime(), new Long(p.getProperty("PERIOD")));
+       sequence.setLogicalIndices(metrics.get(0).startTime(), 3600);
        model.predict(sequence);
        Assert.assertEquals(verifyResults(sequence, metrics.get(0).data), true);
     }
@@ -58,7 +58,6 @@ public class TestAutoForecast {
          }
          float precision = (float) 0.000001;
          float errorSum = (float) 0.0;
-         System.out.println();
          for (int i = 0; i < n; i++) {
         	 errorSum += Math.abs(computed.get(i).value - actual.get(i).value);
          }

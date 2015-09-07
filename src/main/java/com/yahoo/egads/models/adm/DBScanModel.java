@@ -22,7 +22,7 @@ import com.yahoo.egads.utilities.DBSCANClusterer;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 
-import com.yahoo.egads.utilities.DoublePoint;
+import com.yahoo.egads.utilities.IdentifiedDoublePoint;
 
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.json.JSONObject;
@@ -37,7 +37,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
     // modelName.
     public String modelName = "DBScanModel";
     public AnomalyErrorStorage aes = new AnomalyErrorStorage();
-    private DBSCANClusterer<DoublePoint> dbscan = null;
+    private DBSCANClusterer<IdentifiedDoublePoint> dbscan = null;
     private int minPoints = 2;
     private double eps = 500;
     
@@ -54,21 +54,6 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
         if (config.getProperty("THRESHOLD") != null && this.threshold.isEmpty() == true) {
             throw new IllegalArgumentException("THRESHOLD PARSE ERROR");
         } 
-    }
-    
-    // Parses the THRESHOLD config into a map.
-    private Map<String, Float> parseMap(String s) {
-        if (s == null) {
-            return new HashMap<String, Float>();
-        }
-        String[] pairs = s.split(",");
-        Map<String, Float> myMap = new HashMap<String, Float>();
-        for (int i = 0; i < pairs.length; i++) {
-            String pair = pairs[i];
-            String[] keyValue = pair.split(":");
-            myMap.put(keyValue[0], Float.valueOf(keyValue[1]));
-        }
-        return myMap;
     }
 
     public void toJson(JSONStringer json_out) {
@@ -99,7 +84,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
                      IntervalSequence anomalySequence) throws Exception {
         // Compute the time-series of errors.
         HashMap<String, ArrayList<Float>> allErrors = aes.initAnomalyErrors(observedSeries, expectedSeries);
-        List<DoublePoint> points = new ArrayList<DoublePoint>();
+        List<IdentifiedDoublePoint> points = new ArrayList<IdentifiedDoublePoint>();
         EuclideanDistance ed = new EuclideanDistance();
         int n = observedSeries.size();
         
@@ -109,7 +94,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
             for (int e = 0; e < (aes.getIndexToError().keySet()).size(); e++) {
                  d[e] = allErrors.get(aes.getIndexToError().get(e)).get(i);
             }
-            points.add(new DoublePoint(d, i));
+            points.add(new IdentifiedDoublePoint(d, i));
         }
         
         double sum = 0.0;
@@ -122,7 +107,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
         }
         eps = ((double) this.sDAutoSensitivity) * (sum / count);   
         minPoints = ((int) Math.ceil(((double) this.amntAutoSensitivity) * ((double) n)));     
-        dbscan = new DBSCANClusterer<DoublePoint>(eps, minPoints);
+        dbscan = new DBSCANClusterer<IdentifiedDoublePoint>(eps, minPoints);
     }
   
     @Override
@@ -132,13 +117,15 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
         IntervalSequence output = new IntervalSequence();
         int n = observedSeries.size();
         long unixTime = System.currentTimeMillis() / 1000L;
-        Float[] thresholdErrors = new Float[2];
-        thresholdErrors[0] = (float) 500.0;
-        thresholdErrors[1] = (float) 2.0;
+        // Get an array of thresholds.
+        Float[] thresholdErrors = new Float[aes.getErrorToIndex().size()];
+        for (Map.Entry<String, Float> entry : this.threshold.entrySet()) {
+            thresholdErrors[aes.getErrorToIndex().get(entry.getKey())] = Math.abs(entry.getValue());
+        }
         
         // Compute the time-series of errors.
         HashMap<String, ArrayList<Float>> allErrors = aes.initAnomalyErrors(observedSeries, expectedSeries);
-        List<DoublePoint> points = new ArrayList<DoublePoint>();
+        List<IdentifiedDoublePoint> points = new ArrayList<IdentifiedDoublePoint>();
         
         for (int i = 0; i < n; i++) {
             double[] d = new double[(aes.getIndexToError().keySet()).size()];
@@ -146,20 +133,20 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
             for (int e = 0; e < (aes.getIndexToError().keySet()).size(); e++) {
                  d[e] = allErrors.get(aes.getIndexToError().get(e)).get(i);
             }
-            points.add(new DoublePoint(d, i));
+            points.add(new IdentifiedDoublePoint(d, i));
         }
         
-        List<Cluster<DoublePoint>> cluster = dbscan.cluster(points);
-
-        for(Cluster<DoublePoint> c: cluster) {
-            for (DoublePoint p : c.getPoints()) {
+        List<Cluster<IdentifiedDoublePoint>> cluster = dbscan.cluster(points);
+        for(Cluster<IdentifiedDoublePoint> c: cluster) {
+            for (IdentifiedDoublePoint p : c.getPoints()) {
             	int i = p.getId();
                 Float[] errors = aes.computeErrorMetrics(expectedSeries.get(p.getId()).value, observedSeries.get(p.getId()).value);
-                logger.debug("TS:" + observedSeries.get(i).time + ",E:" + String.join(":", arrayF2S(errors)) + ",TE:" + String.join(",", arrayF2S(thresholdErrors)) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
+                logger.debug("TS:" + observedSeries.get(i).time + ",E:" + arrayF2S(errors) + ",TE:" + arrayF2S(thresholdErrors) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
                 if (observedSeries.get(p.getId()).value != expectedSeries.get(p.getId()).value &&
                     ((((unixTime - observedSeries.get(p.getId()).time) / 3600) < maxHrsAgo) ||
                     (maxHrsAgo == 0 && p.getId() == (n - 1)))) {
                     output.add(new Interval(observedSeries.get(p.getId()).time,
+                    		                p.getId(), 
                                             errors,
                                             thresholdErrors,
                                             observedSeries.get(p.getId()).value,

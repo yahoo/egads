@@ -67,13 +67,11 @@ public class StdinProcessor implements InputProcessor {
          ts.meta.fileName = tokenNum;
          ts.meta.name = tokenNum;
          String[] tuples = s.split("\\),");
-         Long i = new Long(1);
          for (String tuple : tuples) {
              tuple = tuple.replaceAll("[{}\\(\\)]", "");
              String[] vals = tuple.split(","); 
              Float val = new Float(vals[1]);
-             ts.append(i, val);
-             i++;
+             ts.append(new Long(vals[0]), val);
          }
          return ts;
     }

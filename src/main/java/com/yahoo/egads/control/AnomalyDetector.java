@@ -163,7 +163,7 @@ public class AnomalyDetector {
     }
 
     public ArrayList<Anomaly> detect(TimeSeries observedSeries,
-            TimeSeries.DataSequence expectedSeries) throws Exception {
+                                     TimeSeries.DataSequence expectedSeries) throws Exception {
         for (Boolean b : isTuned) {
             if (!b) {
                 throw new Exception(

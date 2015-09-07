@@ -31,6 +31,10 @@ public class FileUtils {
         Long interval = null;
         Long prev = null;
         Integer aggr = 1;
+        boolean fillMissing = false;
+        if (config.getProperty("FILL_MISSING") != null && config.getProperty("FILL_MISSING").equals("1")) {
+        	fillMissing = true;
+        }
         if (config.getProperty("AGGREGATION") != null) {
             aggr = new Integer(config.getProperty("AGGREGATION"));
         }
@@ -70,7 +74,7 @@ public class FileUtils {
                         }
                     } else {
                         // A naive missing data handler.
-                        if (interval != null && prev != null && interval > 0) {
+                        if (interval != null && prev != null && interval > 0 && fillMissing == true) {
                             if ((curTimestamp - prev) != interval) {
                                 int missingValues = (int) ((curTimestamp - prev) / interval);
                                 
@@ -139,4 +143,16 @@ public class FileUtils {
         }
         return list;
       }
+    
+    // Initializes properties from a string (key:value, separated by ";").
+    public static void initProperties(String config, Properties p) {
+    	String delims1 = ";";
+    	String delims2 = ":";
+ 
+		StringTokenizer st1 = new StringTokenizer(config, delims1);
+		while (st1.hasMoreElements()) {
+			String[] st2 = (st1.nextToken()).split(delims2);
+			p.setProperty(st2[0], st2[1]);
+		}
+    }
 }

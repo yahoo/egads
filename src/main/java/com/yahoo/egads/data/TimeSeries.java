@@ -90,18 +90,18 @@ public class TimeSeries implements JsonAble, Serializable {
             }
         }
         
-                public DataSequence(float value) {
+        public DataSequence(float value) {
 
             super();
             this.add(new Entry(0, value));
         }
 
-        public DataSequence(long[] times, float[] values) throws Exception {
+        public DataSequence(Long[] times, Float[] values) throws Exception {
             super();
             if (times.length != values.length) {
                 throw new Exception("Length mismatch!");
             }
-
+             
             for (int i = 0; i < values.length; ++i) {
                 if (i > 0 && times[i] < times[i - 1]) {
                     throw new Exception("time=" + times[i] + " at index=" + i + " out of order");
@@ -128,6 +128,14 @@ public class TimeSeries implements JsonAble, Serializable {
               }
              return fArray;
         }
+        
+        public Long[] getTimes() {
+            Long[] lArray = new Long[this.size()];
+            for (int i = 0; i < this.size(); i++) {
+                lArray[i] = (long) this.get(i).time;
+             }
+            return lArray;
+       }
         
         public void setTimeStamps(long firstTimeStamp, long period) {
             for (TimeSeries.Entry entry : this) {

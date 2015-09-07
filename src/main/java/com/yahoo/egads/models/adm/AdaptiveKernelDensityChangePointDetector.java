@@ -169,9 +169,10 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
                 if (isCP && j < (changePoints.size() - 1)) {
                     j++;
                 }
-                logger.debug("TS:" + observedSeries.get(i).time + ",SC:" + String.join(":", arrayF2S(new Float[] {score[i]})) + ",LV:" + String.join(",", arrayF2S(new Float[] {level[i]})) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
+                logger.debug("TS:" + observedSeries.get(i).time + ",SC:" + String.join(":", arrayF2S(new Float[] {score[i]})) + ",LV:" + arrayF2S(new Float[] {level[i]}) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
 
                 result.add(new Interval(observedSeries.get(i).time, 
+                		                i,
                                         new Float[] {score[i]},
                                         new Float[] {level[i]},
                                         observedSeries.get(i).value,
@@ -181,7 +182,7 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
         } else {
             for (int index : changePoints) {
                 if (((unixTime - observedSeries.get(index).time) / 3600) < maxHrsAgo) {
-                    result.add(new Interval(observedSeries.get(index).time, new Float[] {score[index]},
+                    result.add(new Interval(observedSeries.get(index).time, index, new Float[] {score[index]},
                                     new Float[] {level[index]}, observedSeries.get(index).value,
                                     expectedSeries.get(index).value));
                 }
@@ -200,14 +201,13 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
 
         float maxScore = Float.NEGATIVE_INFINITY;
         int maxIndex = -1;
-        float delta = 0.01F;
+        float delta = 0.00000001F;
         int counter = 0;
 
         for (int i = 0; i < n; ++i, ++counter) {
             float[] temp = computeKLScore(residuals[i], preWindowSize, postWindowSize, confidence);
             score[i] = temp[0];
             level[i] = temp[1];
-
             if (score[i] > delta) {
                 if (score[i] > maxScore) {
                     maxScore = score[i];
