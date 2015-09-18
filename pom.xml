@@ -36,11 +36,9 @@
           <scope>test</scope>
         </dependency>
         <dependency>
-          <groupId>openforecast</groupId>
+          <groupId>com.github.lbordowitz.openforecast</groupId>
           <artifactId>openforecast</artifactId>
-          <version>1.0.16</version>
-          <scope>system</scope>
-          <systemPath>${basedir}/lib/OpenForecast-0.5.0.jar</systemPath>
+          <version>0.5.0</version>
         </dependency>
         <dependency>
           <groupId>jfree</groupId>
