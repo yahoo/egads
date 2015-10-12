@@ -15,6 +15,11 @@ that are applicable to a wide-range of use cases. To compile the library into a 
 
 `mvn clean compile assembly:single`
 
+You may have to set you `JAVA_HOME` variable to the appropriate JVM. To do this run:
+
+    export JAVA_HOME=/usr/lib/jvm/{JVM directory for desired version}
+    echo $JAVA_HOME
+
 Usage
 ==========================
 
