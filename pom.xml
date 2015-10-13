@@ -18,6 +18,18 @@
     </dependencies>
   </dependencyManagement>
 
+  <repositories>
+    <repository>
+      <id>mvn_repo</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+
+
     <dependencies>
         <!-- needed by egads -->
         <dependency>
