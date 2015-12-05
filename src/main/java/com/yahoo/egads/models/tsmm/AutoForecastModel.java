@@ -75,31 +75,31 @@ public class AutoForecastModel extends TimeSeriesAbstractModel {
             myModel = olympModel;
         }
         if (betterThan(movingAvg, myModel)) {
-            myModel = olympModel;
+            myModel = movingAvg;
         }
         if (betterThan(mlReg, myModel)) {
-            myModel = olympModel;
+            myModel = mlReg;
         }
         if (betterThan(naive, myModel)) {
-            myModel = olympModel;
+            myModel = naive;
         }
         if (betterThan(poly, myModel)) {
-            myModel = olympModel;
+            myModel = poly;
         }
         if (betterThan(regr, myModel)) {
-            myModel = olympModel;
+            myModel = regr;
         }
         if (betterThan(simpleExp, myModel)) {
-            myModel = olympModel;
+            myModel = simpleExp;
         }
         if (betterThan(tripleExp, myModel)) {
-            myModel = olympModel;
+            myModel = tripleExp;
         }
         if (betterThan(weightAvg, myModel)) {
-            myModel = olympModel;
+            myModel = weightAvg;
         }
         if (betterThan(doubleExp, myModel)) {
-            myModel = olympModel;
+            myModel = doubleExp;
         }
         
         initForecastErrors(myModel, data);
