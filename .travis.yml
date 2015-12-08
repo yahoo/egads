@@ -1,2 +1,3 @@
-# To support CI.
 language: java
+jdk:
+  - oraclejdk8
