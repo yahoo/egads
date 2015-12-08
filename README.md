@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/yahoo/egads.svg?branch=master)](https://travis-ci.org/yahoo/egads)
+
 EGADS Java Library
 ==========================================================
 
