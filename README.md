@@ -5,8 +5,8 @@ EGADS Java Library
 
 EGADS (Extensible Generic Anomaly Detection System) is an open-source Java package to automatically detect anomalies in large scale time-series data.
 EGADS is meant to be a library that contains a number of anomaly detection techniques applicable to many use-cases in a single package with the only dependency being Java.
-EGADS works by first building a time-series model which is used to compute the expected value at time t. Then a number of errors E are computed by comparing the expected
-value with the actual value at time t. EGADS automatically determines thresholds on E and outputs the most probable anomalies. EGADS library can be used in a wide
+EGADS works by first building a time-series model which is used to compute the expected value at time *t*. Then a number of errors *E* are computed by comparing the expected
+value with the actual value at time *t*. EGADS automatically determines thresholds on *E* and outputs the most probable anomalies. EGADS library can be used in a wide
 variety of contexts to detect outliers and change points in time-series that can have a various seasonal, trend and noise components.
 
 How to get started
@@ -15,31 +15,41 @@ How to get started
 EGADS was designed as a self contained library that has a collection of time-series and anomaly detection models
 that are applicable to a wide-range of use cases. To compile the library into a single jar, clone the repo and type the following:
 
-`mvn clean compile assembly:single`
+```shell
+mvn clean compile assembly:single
+```
 
 You may have to set you `JAVA_HOME` variable to the appropriate JVM. To do this run:
 
-    export JAVA_HOME=/usr/lib/jvm/{JVM directory for desired version}
-    echo $JAVA_HOME
+```shell
+export JAVA_HOME=/usr/lib/jvm/{JVM directory for desired version}
+echo $JAVA_HOME
+```
 
 Usage
 ==========================
 
 To run a simple example type:
 
-`java -Dlog4j.configurationFile=src/test/resources/log4j2.xml -cp lib/OpenForecast-0.5.0.jar:target/egads-jar-with-dependencies.jar com.yahoo.egads.Egads src/test/resources/sample_config.ini src/test/resources/sample_input.csv`
+```shell
+java -Dlog4j.configurationFile=src/test/resources/log4j2.xml -cp lib/OpenForecast-0.5.0.jar:target/egads-jar-with-dependencies.jar com.yahoo.egads.Egads src/test/resources/sample_config.ini src/test/resources/sample_input.csv
+```
 
-which produces the following picture (Note that you can enable this UI by setting `OUTPUT` config key to `GUI` in sample_config.ini).
+which produces the following picture (Note that you can enable this UI by setting `OUTPUT` config key to `GUI` in `sample_config.ini`).
 
 ![gui](doc/ui.png "EGADS GUI")
 
 One can also specify config parameters on a command line. For example to do anomaly detection using Olympic Scoring as a time-series model and a density based method as an anomaly detection model use the following.
 
-`java -Dlog4j.configurationFile=src/test/resources/log4j2.xml -cp lib/OpenForecast-0.5.0.jar:target/egads-jar-with-dependencies.jar com.yahoo.egads.Egads "MAX_ANOMALY_TIME_AGO:999999999;AGGREGATION:1;OP_TYPE:DETECT_ANOMALY;TS_MODEL:OlympicModel;AD_MODEL:ExtremeLowDensityModel;INPUT:CSV;OUTPUT:STD_OUT;BASE_WINDOWS:168;PERIOD:-1;NUM_WEEKS:3;NUM_TO_DROP:0;DYNAMIC_PARAMETERS:0;TIME_SHIFTS:0" src/test/resources/sample_input.csv`
+```shell
+java -Dlog4j.configurationFile=src/test/resources/log4j2.xml -cp lib/OpenForecast-0.5.0.jar:target/egads-jar-with-dependencies.jar com.yahoo.egads.Egads "MAX_ANOMALY_TIME_AGO:999999999;AGGREGATION:1;OP_TYPE:DETECT_ANOMALY;TS_MODEL:OlympicModel;AD_MODEL:ExtremeLowDensityModel;INPUT:CSV;OUTPUT:STD_OUT;BASE_WINDOWS:168;PERIOD:-1;NUM_WEEKS:3;NUM_TO_DROP:0;DYNAMIC_PARAMETERS:0;TIME_SHIFTS:0" src/test/resources/sample_input.csv
+```
 
 To run anomaly detection using no time-series model with an auto static threshold for anomaly detection, use the following:
 
-`java -Dlog4j.configurationFile=src/test/resources/log4j2.xml -cp lib/OpenForecast-0.5.0.jar:target/egads-jar-with-dependencies.jar com.yahoo.egads.Egads "MAX_ANOMALY_TIME_AGO:999999999;AGGREGATION:1;OP_TYPE:DETECT_ANOMALY;TS_MODEL:NullModel;AD_MODEL:SimpleThresholdModel;SIMPLE_THRESHOLD_TYPE:AdaptiveMaxMinSigmaSensitivity;INPUT:CSV;OUTPUT:STD_OUT;AUTO_SENSITIVITY_ANOMALY_PCNT:0.2;AUTO_SENSITIVITY_SD:2.0" src/test/resources/sample_input.csv`
+```shell
+java -Dlog4j.configurationFile=src/test/resources/log4j2.xml -cp lib/OpenForecast-0.5.0.jar:target/egads-jar-with-dependencies.jar com.yahoo.egads.Egads "MAX_ANOMALY_TIME_AGO:999999999;AGGREGATION:1;OP_TYPE:DETECT_ANOMALY;TS_MODEL:NullModel;AD_MODEL:SimpleThresholdModel;SIMPLE_THRESHOLD_TYPE:AdaptiveMaxMinSigmaSensitivity;INPUT:CSV;OUTPUT:STD_OUT;AUTO_SENSITIVITY_ANOMALY_PCNT:0.2;AUTO_SENSITIVITY_SD:2.0" src/test/resources/sample_input.csv
+```
 
 Overview
 ========
@@ -71,7 +81,7 @@ EGADS was built as a framework to be easily integrated into an existing monitori
 our internal Yahoo Monitoring Service (YMS) processes millions of data-points every second. Therefore, having a scalable,
 accurate and automated anomaly detection for YMS is critical. For this reason, EGADS can be compiled into a single light-weight jar and deployed easily at scale.
 
-The TMM and ADM can be found under main/java/com/yahoo/egads/models.
+The TMM and ADM can be found under `main/java/com/yahoo/egads/models`.
 
 The example of the models supported by TMM and ADM can be found in in the two table below. We expect this collection of models to grow
 as more contribution is put forward by the community.
@@ -89,7 +99,7 @@ Configuration
 
 Below are the various configuration parameters supported by EGADS.
 
-````
+```
 # Only show anomalies no older than this.
 # If this is set to 0, then only output an anomaly
 # if it occurs on the last time-stamp.
@@ -231,7 +241,7 @@ WINDOW_SIZE 192
 FILTERING_METHOD GAP_RATIO
 
 FILTERING_PARAM 0.01
-````
+```
 
 Contributions
 ================
@@ -260,14 +270,16 @@ If you use EGADS in your projects, please cite:
 
 BibTeX:
 
-	@inproceedings{laptev2015generic,
-  		title={Generic and Scalable Framework for Automated Time-series Anomaly Detection},
-  		author={Laptev, Nikolay and Amizadeh, Saeed and Flint, Ian},
-  		booktitle={Proceedings of the 21th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining},
-  		pages={1939--1947},
-  		year={2015},
-  		organization={ACM}
-	}
+```tex
+@inproceedings{laptev2015generic,
+		title={Generic and Scalable Framework for Automated Time-series Anomaly Detection},
+		author={Laptev, Nikolay and Amizadeh, Saeed and Flint, Ian},
+		booktitle={Proceedings of the 21th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining},
+		pages={1939--1947},
+		year={2015},
+		organization={ACM}
+}
+```
 
 License
 =======
