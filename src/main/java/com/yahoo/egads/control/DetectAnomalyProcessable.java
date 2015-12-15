@@ -28,7 +28,7 @@ public class DetectAnomalyProcessable implements ProcessableObject {
 
     public void process() throws Exception {
 
-        // Reseting the models
+        // Resetting the models
         ma.reset();
 
         // Training the model with the whole metric
@@ -52,7 +52,7 @@ public class DetectAnomalyProcessable implements ProcessableObject {
             // Writing the anomalies to AnomalyDB
             if (config.getProperty("OUTPUT") != null && config.getProperty("OUTPUT").equals("ANOMALY_DB")) {
                 for (Anomaly anomaly : anomalyList) {
-                    // TODO: Batch Anoamly Process.
+                    // TODO: Batch Anomaly Process.
                 }
             } else if (config.getProperty("OUTPUT") != null && config.getProperty("OUTPUT").equals("GUI")) { 
                 GUIUtils.plotResults(ma.metric.data, ds, anomalyList, config);

@@ -32,7 +32,7 @@ public class Anomaly implements JsonAble {
         public long logicalEndIndex = -1;
         public float value = 0;
         public Integer index = -1;
-        
+
         // Not set to final so that the json encode tests pass.
         public Float[] anomalyScore;
         public Float[] thresholdScore;
@@ -51,7 +51,7 @@ public class Anomaly implements JsonAble {
             this.isAnomaly = null;
             this.index = null;
         }
-                
+
         // Point anomaly special case interval.
         public Interval(long utime,
         		        int index,
@@ -69,7 +69,7 @@ public class Anomaly implements JsonAble {
             this.startTime = utime;
             this.index = index;
         }
-        
+
         // Point anomaly special case interval with debug.
         public Interval(long utime,
         		        int index,
@@ -99,7 +99,7 @@ public class Anomaly implements JsonAble {
             this.actualVal = null;
             this.anomalyScore = null;
             this.thresholdScore = null;
-            
+
             this.expectedVal = null;
             this.utime = null;
             this.isAnomaly = null;
@@ -232,7 +232,7 @@ public class Anomaly implements JsonAble {
         }
         return str.toString();
     }
-    
+
     // Supports the legacy EGADS perl version.
     public String toPerlString() {
         StringBuffer str = new StringBuffer();
@@ -248,7 +248,7 @@ public class Anomaly implements JsonAble {
         }
         return str.toString();
     }
-    
+
     public String toPlotString() {
         StringBuffer str = new StringBuffer();
         for (Interval i : intervals) {
@@ -259,7 +259,7 @@ public class Anomaly implements JsonAble {
         }
         return str.toString();
     }
-    
+
     // Prints anomaly is not null.
     public static String printDebugIsAnomaly(Boolean isAnom) {
         if (isAnom == null) {
@@ -267,7 +267,7 @@ public class Anomaly implements JsonAble {
         }
         return "," + ((isAnom == true) ? "1" : "0");
     }
-    
+
     // Print array and separate by commas.
     public static String printArray(Float[] arr) {
         StringBuffer str = new StringBuffer();
@@ -279,7 +279,7 @@ public class Anomaly implements JsonAble {
         }
 
         // note that i starts at 1, since we already printed the element at index 0
-        for (int i = 1; i < arr.length; i++) { 
+        for (int i = 1; i < arr.length; i++) {
             str.append("," + arr[i]);
         }
         return str.toString();

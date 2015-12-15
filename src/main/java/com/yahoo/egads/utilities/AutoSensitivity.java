@@ -15,7 +15,7 @@ import java.util.Collections;
 
 public class AutoSensitivity {
 	static org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(AutoSensitivity.class.getName());
-    // Computes sensitivity based on the density distirbution.
+    // Computes sensitivity based on the density distribution.
     // Assumes that anomalies constitute at most 5% of the data.
     public static Float getLowDensitySensitivity(Float[] data, float sDAutoSensitivy, float amntAutoSensitivity) {
         Float toReturn = Float.POSITIVE_INFINITY;

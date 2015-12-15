@@ -31,7 +31,7 @@ public class Egads {
             System.exit(1);
         }
 
-        // TODO: This config will be retreieved from ConfigDB later,
+        // TODO: This config will be retrieved from ConfigDB later,
         // for now it is assumed it's a static file.
         Properties p = new Properties();
         String config = args[0];
