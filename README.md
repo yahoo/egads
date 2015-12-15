@@ -23,7 +23,6 @@ You may have to set you `JAVA_HOME` variable to the appropriate JVM. To do this 
 
 ```shell
 export JAVA_HOME=/usr/lib/jvm/{JVM directory for desired version}
-echo $JAVA_HOME
 ```
 
 Usage
