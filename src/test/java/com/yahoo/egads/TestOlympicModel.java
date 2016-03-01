@@ -7,7 +7,9 @@
 package com.yahoo.egads;
 
 import com.yahoo.egads.data.Model;
+import com.yahoo.egads.models.tsmm.TimeSeriesAbstractModel;
 import com.yahoo.egads.models.tsmm.OlympicModel;
+import com.yahoo.egads.models.tsmm.MovingAverageModel;
 import com.yahoo.egads.utilities.*;
 import com.yahoo.egads.data.*;
 import java.util.ArrayList;
@@ -72,5 +74,44 @@ public class TestOlympicModel {
              }
          }
          return true;
+    }
+
+    @Test
+    public void testForecastErrors() throws Exception {
+        String configFile = "src/test/resources/sample_config.ini";
+        InputStream is = new FileInputStream(configFile);
+        Properties p = new Properties();
+        p.load(is);
+        ArrayList<TimeSeries> actual_metric = com.yahoo.egads.utilities.FileUtils
+                .createTimeSeries("src/test/resources/model_input.csv", p);
+        OlympicModel olympicModel = new OlympicModel(p);
+        olympicModel.train(actual_metric.get(0).data);
+
+        Assert.assertEquals(olympicModel.getBias(), -26.315675155416635, 1e-10);
+        Assert.assertEquals(olympicModel.getMAD(), 28.81582062080335, 1e-10);
+        Assert.assertEquals(Double.isNaN(olympicModel.getMAPE()), true);
+        Assert.assertEquals(olympicModel.getMSE(), 32616.547275296416, 1e-7);
+        Assert.assertEquals(olympicModel.getSAE(), 41033.72856402397, 1e-7);
+    }
+
+    @Test
+    public void testBetterThan() throws Exception {
+        String configFile = "src/test/resources/sample_config.ini";
+        InputStream is = new FileInputStream(configFile);
+        Properties p = new Properties();
+        p.load(is);
+        ArrayList<TimeSeries> actual_metric = com.yahoo.egads.utilities.FileUtils
+                .createTimeSeries("src/test/resources/model_input.csv", p);
+        OlympicModel olympicModel = new OlympicModel(p);
+        olympicModel.train(actual_metric.get(0).data);
+
+        MovingAverageModel movingAverageModel = new MovingAverageModel(p);
+        movingAverageModel.train(actual_metric.get(0).data);
+
+        // movingAverageModel is better than olympicModel
+        Assert.assertEquals(TimeSeriesAbstractModel.betterThan(movingAverageModel, olympicModel), true);
+        Assert.assertEquals(TimeSeriesAbstractModel.betterThan(movingAverageModel, movingAverageModel), false);
+        Assert.assertEquals(TimeSeriesAbstractModel.betterThan(olympicModel, movingAverageModel), false);
+        Assert.assertEquals(TimeSeriesAbstractModel.betterThan(olympicModel, olympicModel), false);
     }
 }

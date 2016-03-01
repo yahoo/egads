@@ -21,6 +21,8 @@ import com.yahoo.egads.data.JsonEncoder;
 
 public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
 
+    private static final double TOLERANCE = 0.00000001;
+
     // Accuracy stats for this model.
     protected double bias;
     protected double mad;
@@ -60,51 +62,44 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
 
     }
 
-    protected static boolean betterThan(TimeSeriesAbstractModel model1, TimeSeriesAbstractModel model2) {
+    // 1 when absolute value of error1 is smaller than the absolute value of error2
+    // 0 when absolute value of error1 is equal(upto tolerance) to the absolute value of error2
+    // -1 when absolute value of error1 is greater than the absolute value of error2
+    private static int compareError(double error1, double error2) {
+        // can't compare NaN
+        if (Double.isNaN(error1) || Double.isNaN(error2)) {
+            return 0;
+        }
+        // positive when error1 is better (smaller) then error2
+        double diffAbs = Math.abs(error2) - Math.abs(error1);
+        if (Math.abs(diffAbs) <= TOLERANCE) {
+            return 0;
+        }
+        return diffAbs > 0 ? 1 : -1;
+    }
+
+    // is model1 better than model2
+    public static boolean betterThan(TimeSeriesAbstractModel model1, TimeSeriesAbstractModel model2) {
         // Special case. Any model is better than no model!
         if (model2 == null) {
             return true;
         }
 
-        double tolerance = 0.00000001;
         int score = 0;
-        if (model1.getBias() - model2.getBias() <= tolerance) {
-            score++;
-        } else if (model1.getBias() - model2.getBias() >= tolerance) {
-            score--;
-        }
-
-        if (model1.getMAD() - model2.getMAD() <= tolerance) {
-            score++;
-        } else if (model1.getMAD() - model2.getMAD() >= tolerance) {
-            score--;
-        }
-
-        if (model1.getMAPE() - model2.getMAPE() <= tolerance) {
-            score++;
-        } else if (model1.getMAPE() - model2.getMAPE() >= tolerance) {
-            score--;
-        }
-
-        if (model1.getMSE() - model2.getMSE() <= tolerance) {
-            score++;
-        } else if (model1.getMSE() - model2.getMSE() >= tolerance) {
-            score--;
-        }
-
-        if (model1.getSAE() - model2.getSAE() <= tolerance) {
-            score++;
-        } else if (model1.getSAE() - model2.getSAE() >= tolerance) {
-            score--;
-        }
+        score += compareError(model1.getBias(), model2.getBias());
+        score += compareError(model1.getMAD(), model2.getMAD());
+        score += compareError(model1.getMAPE(), model2.getMAPE());
+        score += compareError(model1.getMSE(), model2.getMSE());
+        score += compareError(model1.getSAE(), model2.getSAE());
 
         if (score == 0) {
             // At this point, we're still unsure which one is best
             // so we'll take another approach
+            double mapeDiff = model1.getMAPE() - model2.getMAPE();
             double diff =
-                            model1.getBias() - model2.getBias() + model1.getMAD() - model2.getMAD() + model1.getMAPE()
-                                            - model2.getMAPE() + model1.getMSE() - model2.getMSE() + model1.getSAE()
-                                            - model2.getSAE();
+                            model1.getBias() - model2.getBias() + model1.getMAD() - model2.getMAD() +
+                            (Double.isNaN(mapeDiff) ? 0 : mapeDiff) +
+                            model1.getMSE() - model2.getMSE() + model1.getSAE() - model2.getSAE();
             return (diff < 0);
         }
 
