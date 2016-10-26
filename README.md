@@ -19,7 +19,7 @@ that are applicable to a wide-range of use cases. To compile the library into a 
 mvn clean compile assembly:single
 ```
 
-You may have to set you `JAVA_HOME` variable to the appropriate JVM. To do this run:
+You may have to set your `JAVA_HOME` variable to the appropriate JVM. To do this run:
 
 ```shell
 export JAVA_HOME=/usr/lib/jvm/{JVM directory for desired version}
