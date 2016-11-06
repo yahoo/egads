@@ -6,7 +6,15 @@
   <artifactId>egads</artifactId>
   <name>EGADS Anomaly Detection System</name>
   <description>EGADS system, consumes time series and outputs anomalies.</description>
-  <version>0.1</version>
+  <version>0.1-SNAPSHOT</version>
+
+  <distributionManagement>
+      <repository>
+          <id>bintray-yahoo-egads</id>
+          <name>yahoo-egads</name>
+          <url>https://api.bintray.com/maven/yahoo/maven/egads/com.yahoo.egads;publish=1</url>
+      </repository>
+  </distributionManagement>
 
   <dependencyManagement>
     <dependencies>
@@ -17,18 +25,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <repositories>
-    <repository>
-      <id>mvn_repo</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
-
 
     <dependencies>
         <!-- needed by egads -->
@@ -80,26 +76,26 @@
     </dependencies>
 
     <build>
-        <finalName>egads</finalName>
-
         <plugins>
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <configuration>
-              <descriptorRefs>
-                <descriptorRef>jar-with-dependencies</descriptorRef>
-              </descriptorRefs>
-            </configuration>
-          </plugin>
-	  <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.0</version>
-            <configuration>
-              <source>1.8</source>
-              <target>1.8</target>
-            </configuration>
-	  </plugin>
+
+           <!--<plugin>
+             <artifactId>maven-assembly-plugin</artifactId>
+             <configuration>
+               <descriptorRefs>
+                 <descriptorRef>jar-with-dependencies</descriptorRef>
+               </descriptorRefs>
+             </configuration>
+           </plugin>-->
+
+	          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.0</version>
+              <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+               </configuration>
+	          </plugin>
         </plugins>
     </build>
 </project>
