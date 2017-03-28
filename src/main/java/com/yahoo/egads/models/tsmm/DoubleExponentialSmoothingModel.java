@@ -46,7 +46,7 @@ public class DoubleExponentialSmoothingModel extends TimeSeriesAbstractModel {
 
     public DoubleExponentialSmoothingModel(Properties config) {
         super(config);
-        modelName = "DoubleExponentialSmothingModel";
+        modelName = "DoubleExponentialSmoothingModel";
     }
 
     public void reset() {
