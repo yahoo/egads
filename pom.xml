@@ -4,9 +4,49 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.yahoo.egads</groupId>
   <artifactId>egads</artifactId>
+  
   <name>EGADS Anomaly Detection System</name>
   <description>EGADS system, consumes time series and outputs anomalies.</description>
-  <version>0.2-SNAPSHOT</version>
+  <version>0.2.0-SNAPSHOT</version>
+  
+  <organization>
+    <name>Yahoo Inc.</name>
+    <url>https://www.yahoo.com/</url>
+  </organization>
+  <inceptionYear>2015</inceptionYear>
+  
+  <developers>
+    <developer>
+      <organization>Yahoo Inc.</organization>
+      <organizationUrl>https://www.yahoo.com/</organizationUrl>
+    </developer>
+  </developers>
+
+  <licenses>
+    <license>
+      <name>GPL V3</name>
+      <url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  
+  <packaging>jar</packaging>
+
+  <scm>
+    <url>https://github.com/yahoo/egads</url>
+    <connection>scm:git:https://github.com/yahoo/egads.git</connection>
+    <tag>HEAD</tag>
+  </scm>
+  
+  <issueManagement>
+    <system>Github</system>
+    <url>https://github.com/yahoo/egads/issues</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>Travis</system>
+    <url>https://travis-ci.org/yahoo/egads</url>
+  </ciManagement>
 
   <distributionManagement>
       <repository>
@@ -28,7 +68,54 @@
         <artifactId>log4j-over-slf4j</artifactId>
         <version>1.7.7</version>
       </dependency>
-      
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>2.3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>2.3</version>
+      </dependency>
+        
+      <dependency>
+        <groupId>com.github.lbordowitz.openforecast</groupId>
+        <artifactId>openforecast</artifactId>
+        <version>0.5.0</version>
+      </dependency>
+      <dependency>
+        <groupId>jfree</groupId>
+        <artifactId>jfreechart</artifactId>
+        <version>1.0.13</version>
+      </dependency>
+      <dependency>
+        <groupId>jfree</groupId>
+        <artifactId>jcommon</artifactId>
+        <version>1.0.16</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>19.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.json</groupId>
+        <artifactId>json</artifactId>
+        <version>20140107</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-math3</artifactId>
+        <version>3.2</version>
+      </dependency>
+    
+      <!-- TEST DEPENDENCIES -->
       <dependency>
         <groupId>org.testng</groupId>
         <artifactId>testng</artifactId>
@@ -39,7 +126,6 @@
   </dependencyManagement>
 
     <dependencies>
-        <!-- needed by egads -->
         <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>slf4j-api</artifactId>
@@ -47,52 +133,39 @@
         <dependency>
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-api</artifactId>
-          <version>2.3</version>
         </dependency>
         <dependency>
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-core</artifactId>
-          <version>2.3</version>
         </dependency>
-        <dependency>
-          <groupId>org.testng</groupId>
-          <artifactId>testng</artifactId>
-          <scope>test</scope>
-        </dependency>
+
         <dependency>
           <groupId>com.github.lbordowitz.openforecast</groupId>
           <artifactId>openforecast</artifactId>
-          <version>0.5.0</version>
         </dependency>
         <dependency>
           <groupId>jfree</groupId>
           <artifactId>jfreechart</artifactId>
-          <version>1.0.13</version>
         </dependency>
         <dependency>
           <groupId>jfree</groupId>
           <artifactId>jcommon</artifactId>
-          <version>1.0.16</version>
         </dependency>
         <dependency>
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
-          <version>19.0</version>
         </dependency>
         <dependency>
           <groupId>org.json</groupId>
           <artifactId>json</artifactId>
-          <version>20140107</version>
         </dependency>
         <dependency>
-       	  <groupId>commons-lang</groupId>
-       	  <artifactId>commons-lang</artifactId>
-       	  <version>2.6</version>
-       	</dependency>
+          <groupId>commons-lang</groupId>
+          <artifactId>commons-lang</artifactId>
+        </dependency>
         <dependency>
-	        <groupId>org.apache.commons</groupId>
+          <groupId>org.apache.commons</groupId>
           <artifactId>commons-math3</artifactId>
-          <version>3.2</version>
         </dependency>
         
         <!-- TEST DEPENDENCIES -->
