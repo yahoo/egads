@@ -7,7 +7,7 @@
   
   <name>EGADS Anomaly Detection System</name>
   <description>EGADS system, consumes time series and outputs anomalies.</description>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.2.2-SNAPSHOT</version>
   
   <organization>
     <name>Yahoo Inc.</name>
@@ -55,6 +55,22 @@
           <url>https://api.bintray.com/maven/yahoo/maven/egads;publish=1</url>
       </repository>
   </distributionManagement>
+  
+  <repositories>
+    <repository>
+      <id>bintray-yahoo-maven</id>
+      <name>bintray</name>
+      <url>http://yahoo.bintray.com/maven</url>
+    </repository>
+  </repositories>
+  
+  <pluginRepositories>
+    <pluginRepository>
+      <id>bintray-yahoo-maven</id>
+      <name>bintray-plugins</name>
+      <url>http://yahoo.bintray.com/maven</url>
+    </pluginRepository>
+  </pluginRepositories>
 
   <dependencyManagement>
     <dependencies>
