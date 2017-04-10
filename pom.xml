@@ -52,7 +52,7 @@
       <repository>
           <id>bintray-yahoo-egads</id>
           <name>yahoo-egads</name>
-          <url>https://api.bintray.com/maven/yahoo/maven/egads/com.yahoo.egads;publish=1</url>
+          <url>https://api.bintray.com/maven/yahoo/maven/egads;publish=1</url>
       </repository>
   </distributionManagement>
 
