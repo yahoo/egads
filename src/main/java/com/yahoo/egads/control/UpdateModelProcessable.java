@@ -27,4 +27,8 @@ public class UpdateModelProcessable implements ProcessableObject {
         this.ma.train();
         this.ma.update(this.newData);
     }
+
+    public Object result() throws Exception {
+        return "Updated";
+    }
 }
