@@ -1,3 +1,9 @@
+/*
+ * Copyright 2015, Yahoo Inc.
+ * Copyrights licensed under the GPL License.
+ * See the accompanying LICENSE file for terms.
+ */
+
 package com.yahoo.egads;
 
 import com.yahoo.egads.control.ProcessableObject;
