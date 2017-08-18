@@ -14,4 +14,7 @@ public interface ProcessableObject {
     // depending on the concrete class implementation.
     public void process() throws Exception;
 
+    // The result() method returns list of anomalies
+    public Object result() throws Exception;
+
 }
