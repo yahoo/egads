@@ -57,7 +57,7 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
     // sum of squared residuals in the buffer
     private float sqrSumBuffer = 0;
     private int maxHrsAgo;
-
+    private long windowStart;
     // KL score
     private float[] score = null;
     // level sets
@@ -76,6 +76,7 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
         super(config);
 
         this.maxHrsAgo = new Integer(config.getProperty("MAX_ANOMALY_TIME_AGO"));
+        this.windowStart = new Long(config.getProperty("DETECTION_WINDOW_START_TIME"));
         if (config.getProperty("PRE_WINDOW_SIZE") == null) {
             throw new IllegalArgumentException("PRE_WINDOW_SIZE is NULL");
         }
@@ -181,7 +182,7 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
             }
         } else {
             for (int index : changePoints) {
-                if (((unixTime - observedSeries.get(index).time) / 3600) < maxHrsAgo) {
+                if (isDetectionWindowPoint(maxHrsAgo, windowStart, observedSeries.get(index).time, observedSeries.get(0).time)) {
                     result.add(new Interval(observedSeries.get(index).time, index, new Float[] {score[index]},
                                     new Float[] {level[index]}, observedSeries.get(index).value,
                                     expectedSeries.get(index).value));

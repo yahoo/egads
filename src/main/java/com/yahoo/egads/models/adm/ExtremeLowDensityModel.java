@@ -27,6 +27,7 @@ public class ExtremeLowDensityModel extends AnomalyDetectionAbstractModel {
     // needed for the simple model. This includes the sensitivity.
     private Map<String, Float> threshold;
     private int maxHrsAgo;
+    private long windowStart;
     // modelName.
     public String modelName = "ExtremeLowDensityModel";
     public AnomalyErrorStorage aes = new AnomalyErrorStorage();
@@ -38,7 +39,9 @@ public class ExtremeLowDensityModel extends AnomalyDetectionAbstractModel {
             throw new IllegalArgumentException("MAX_ANOMALY_TIME_AGO is NULL");
         }
         this.maxHrsAgo = new Integer(config.getProperty("MAX_ANOMALY_TIME_AGO"));
-        
+
+        this.windowStart = new Long(config.getProperty("DETECTION_WINDOW_START_TIME"));
+
         this.threshold = parseMap(config.getProperty("THRESHOLD"));
             
         if (config.getProperty("THRESHOLD") != null && this.threshold.isEmpty() == true) {
@@ -117,7 +120,6 @@ public class ExtremeLowDensityModel extends AnomalyDetectionAbstractModel {
         
         IntervalSequence output = new IntervalSequence();
         int n = observedSeries.size();
-        long unixTime = System.currentTimeMillis() / 1000L;
        
         for (int i = 0; i < n; i++) {
             Float[] errors = aes.computeErrorMetrics(expectedSeries.get(i).value, observedSeries.get(i).value);
@@ -125,7 +127,7 @@ public class ExtremeLowDensityModel extends AnomalyDetectionAbstractModel {
 			if (observedSeries.get(i).value != expectedSeries.get(i).value &&
 						threshSum > (float) 0.0 &&
 						isAnomaly(errors, threshold) == true &&
-						((((unixTime - observedSeries.get(i).time) / 3600) < maxHrsAgo) ||
+                        (isDetectionWindowPoint(maxHrsAgo, windowStart, observedSeries.get(i).time, observedSeries.get(0).time) ||
 						(maxHrsAgo == 0 && i == (n - 1)))) {
 				    output.add(new Interval(observedSeries.get(i).time,
 				    	i,
