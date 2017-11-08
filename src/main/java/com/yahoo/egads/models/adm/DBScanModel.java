@@ -34,6 +34,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
     // needed for the simple model. This includes the sensitivity.
     private Map<String, Float> threshold;
     private int maxHrsAgo;
+    private long windowStart;
     // modelName.
     public String modelName = "DBScanModel";
     public AnomalyErrorStorage aes = new AnomalyErrorStorage();
@@ -48,7 +49,9 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
             throw new IllegalArgumentException("MAX_ANOMALY_TIME_AGO is NULL");
         }
         this.maxHrsAgo = new Integer(config.getProperty("MAX_ANOMALY_TIME_AGO"));
-        
+
+        this.windowStart = new Long(config.getProperty("DETECTION_WINDOW_START_TIME"));
+
         this.threshold = parseMap(config.getProperty("THRESHOLD"));
             
         if (config.getProperty("THRESHOLD") != null && this.threshold.isEmpty() == true) {
@@ -116,7 +119,6 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
         
         IntervalSequence output = new IntervalSequence();
         int n = observedSeries.size();
-        long unixTime = System.currentTimeMillis() / 1000L;
         // Get an array of thresholds.
         Float[] thresholdErrors = new Float[aes.getErrorToIndex().size()];
         for (Map.Entry<String, Float> entry : this.threshold.entrySet()) {
@@ -143,7 +145,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
                 Float[] errors = aes.computeErrorMetrics(expectedSeries.get(p.getId()).value, observedSeries.get(p.getId()).value);
                 logger.debug("TS:" + observedSeries.get(i).time + ",E:" + arrayF2S(errors) + ",TE:" + arrayF2S(thresholdErrors) + ",OV:" + observedSeries.get(i).value + ",EV:" + expectedSeries.get(i).value);
                 if (observedSeries.get(p.getId()).value != expectedSeries.get(p.getId()).value &&
-                    ((((unixTime - observedSeries.get(p.getId()).time) / 3600) < maxHrsAgo) ||
+                    (isDetectionWindowPoint(maxHrsAgo, windowStart, observedSeries.get(p.getId()).time, observedSeries.get(0).time) ||
                     (maxHrsAgo == 0 && p.getId() == (n - 1)))) {
                     output.add(new Interval(observedSeries.get(p.getId()).time,
                     		                p.getId(), 
