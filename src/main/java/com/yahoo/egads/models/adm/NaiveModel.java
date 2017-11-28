@@ -30,6 +30,7 @@ public class NaiveModel extends AnomalyDetectionAbstractModel {
     // needed for the simple model. This includes the sensitivity.
     private Map<String, Float> threshold;
     private int maxHrsAgo;
+    private long windowStart;
     private Float window_size;
     // modelName.
     public static String modelName = "NaiveModel";
@@ -42,6 +43,7 @@ public class NaiveModel extends AnomalyDetectionAbstractModel {
             throw new IllegalArgumentException("MAX_ANOMALY_TIME_AGO is NULL");
         }
         this.maxHrsAgo = new Integer(config.getProperty("MAX_ANOMALY_TIME_AGO"));
+        this.windowStart = new Long(config.getProperty("DETECTION_WINDOW_START_TIME"));
         if (config.getProperty("WINDOW_SIZE") == null) {
             throw new IllegalArgumentException("WINDOW_SIZE is NULL");
         }
@@ -76,7 +78,7 @@ public class NaiveModel extends AnomalyDetectionAbstractModel {
     public void reset() {
         // At this point, reset does nothing.
     }
-    
+
     @Override
     public void tune(DataSequence observedSeries, DataSequence expectedSeries,
             IntervalSequence anomalySequence) throws Exception {
@@ -129,7 +131,6 @@ public class NaiveModel extends AnomalyDetectionAbstractModel {
         int minIndex = 0;
         
         int anomaly = 0;
-        long unixTime = System.currentTimeMillis() / 1000L;
         
         for (int k = 0; k < n; k++) {
         	
@@ -166,8 +167,8 @@ public class NaiveModel extends AnomalyDetectionAbstractModel {
                     anomalyIndex = minIndex;
                 }
                 
-                if (isAnomaly(errors, threshold) == true && actualAnomaly == true && anomaly == 1 && 
-                		((((unixTime - observedSeries.get(anomalyIndex).time) / 3600) < maxHrsAgo) ||
+                if (isAnomaly(errors, threshold) == true && actualAnomaly == true && anomaly == 1 &&
+                    (isDetectionWindowPoint(maxHrsAgo, windowStart, observedSeries.get(anomalyIndex).time, observedSeries.get(0).time) ||
         						(maxHrsAgo == 0 && i == (n - 1)))) {
                 	anomaly = 0;
                     logger.debug("TS:" + observedSeries.get(anomalyIndex).time + ",E:" + arrayF2S(errors) + ",TH:" + arrayF2S(thresholdErrors) + ",OV:" + observedSeries.get(anomalyIndex).value + ",EV:" + expected[i]);

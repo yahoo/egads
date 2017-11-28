@@ -23,6 +23,13 @@ public interface AnomalyDetectionModel extends Model {
             TimeSeries.DataSequence expectedSeries,
             Anomaly.IntervalSequence anomalySequence) throws Exception;
 
+    // method to check whether the anomaly value is inside the
+    // detection window or not
+    public boolean isDetectionWindowPoint(int maxHrsAgo,
+                                          long windowStart,
+                                          long anomalyTime,
+                                          long startTime);
+
     // detect anomalies.
     public Anomaly.IntervalSequence detect(
             TimeSeries.DataSequence observedSeries,
