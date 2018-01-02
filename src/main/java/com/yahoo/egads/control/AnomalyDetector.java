@@ -147,15 +147,14 @@ public class AnomalyDetector {
         }
     }
 
-    public void tune(TimeSeries.DataSequence expectedValues,
-            IntervalSequence anomalySequence) throws Exception {
+    public void tune(TimeSeries.DataSequence expectedValues) throws Exception {
         int i = 0;
 
         metric.data.setLogicalIndices(firstTimeStamp, period);
 
         for (AnomalyDetectionModel model : models) {
             if (!isTuned.get(i)) {
-                model.tune(metric.data, expectedValues, anomalySequence);
+                model.tune(metric.data, expectedValues);
                 isTuned.set(i, true);
             }
             i++;

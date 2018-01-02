@@ -51,7 +51,7 @@ public class DetectAnomalyProcessable implements ProcessableObject {
             ad.reset();
 
             // Unsupervised tuning of the anomaly detectors
-            ad.tune(ds, null);
+            ad.tune(ds);
 
             // Detecting anomalies for each anomaly detection model in anomaly detector
             anomalyList = ad.detect(ad.metric, ds);

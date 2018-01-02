@@ -131,7 +131,7 @@ public class AdaptiveKernelDensityChangePointDetector extends AnomalyDetectionAb
     }
 
     @Override
-    public void tune(DataSequence observedSeries, DataSequence expectedSeries, IntervalSequence anomalySequence)
+    public void tune(DataSequence observedSeries, DataSequence expectedSeries)
                     throws Exception {
 
     }

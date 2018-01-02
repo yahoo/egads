@@ -73,8 +73,7 @@ public class KSigmaModel extends AnomalyDetectionAbstractModel {
     }
 
     @Override
-    public void tune(DataSequence observedSeries, DataSequence expectedSeries,
-            IntervalSequence anomalySequence) throws Exception {
+    public void tune(DataSequence observedSeries, DataSequence expectedSeries) throws Exception {
         HashMap<String, ArrayList<Float>> allErrors = aes.initAnomalyErrors(observedSeries, expectedSeries);
 
         for (int i = 0; i < (aes.getIndexToError().keySet()).size(); i++) {

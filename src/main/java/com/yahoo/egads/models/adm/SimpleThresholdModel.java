@@ -68,8 +68,7 @@ public class SimpleThresholdModel extends AnomalyDetectionAbstractModel {
     }
 
     @Override
-    public void tune(DataSequence observedSeries, DataSequence expectedSeries,
-            IntervalSequence anomalySequence) throws Exception {  
+    public void tune(DataSequence observedSeries, DataSequence expectedSeries) throws Exception {
         Float thr[] = null;
         if (simpleThrType.equals("AdaptiveKSigmaSensitivity")) {
             thr = AutoSensitivity.getAdaptiveKSigmaSensitivity(observedSeries.getValues(), amntAutoSensitivity); 

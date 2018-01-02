@@ -6,18 +6,14 @@
 
 package com.yahoo.egads;
 
-import com.yahoo.egads.data.Model;
 import com.yahoo.egads.models.tsmm.OlympicModel;
 import com.yahoo.egads.models.adm.*;
 import com.yahoo.egads.data.Anomaly.IntervalSequence;
-import com.yahoo.egads.utilities.*;
 import com.yahoo.egads.data.*;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import com.yahoo.egads.control.ProcessableObject;
-import com.yahoo.egads.control.ProcessableObjectFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -59,13 +55,13 @@ public class TestAnomalyDetect {
                  // Initialize the DBScan anomaly detector.
                  DBScanModel dbs = new DBScanModel(p);
                  IntervalSequence anomalies = bcm.detect(actual_metric.get(0).data, sequence);
-                 dbs.tune(actual_metric.get(0).data, sequence, null);
+                 dbs.tune(actual_metric.get(0).data, sequence);
                  IntervalSequence anomaliesdb = dbs.detect(actual_metric.get(0).data, sequence);
 
                  // Initialize the SimpleThreshold anomaly detector.
                  SimpleThresholdModel stm = new SimpleThresholdModel(p);
 
-                 stm.tune(actual_metric.get(0).data, sequence, null);
+                 stm.tune(actual_metric.get(0).data, sequence);
                  IntervalSequence anomaliesstm = stm.detect(actual_metric.get(0).data, sequence);
                  Assert.assertTrue(anomalies.size() > 10);
                  Assert.assertTrue(anomaliesdb.size() > 2);
