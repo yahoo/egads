@@ -83,8 +83,7 @@ public class DBScanModel extends AnomalyDetectionAbstractModel {
 
     @Override
     public void tune(DataSequence observedSeries,
-                     DataSequence expectedSeries,
-                     IntervalSequence anomalySequence) throws Exception {
+                     DataSequence expectedSeries) throws Exception {
         // Compute the time-series of errors.
         HashMap<String, ArrayList<Float>> allErrors = aes.initAnomalyErrors(observedSeries, expectedSeries);
         List<IdentifiedDoublePoint> points = new ArrayList<IdentifiedDoublePoint>();

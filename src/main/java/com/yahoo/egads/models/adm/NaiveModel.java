@@ -80,8 +80,7 @@ public class NaiveModel extends AnomalyDetectionAbstractModel {
     }
 
     @Override
-    public void tune(DataSequence observedSeries, DataSequence expectedSeries,
-            IntervalSequence anomalySequence) throws Exception {
+    public void tune(DataSequence observedSeries, DataSequence expectedSeries) throws Exception {
         // TODO: auto detect thresholds.
     }
     // Returns true this point is identified as a potential anomaly.
