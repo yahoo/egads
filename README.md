@@ -49,6 +49,25 @@ To run anomaly detection using no time-series model with an auto static threshol
 ```shell
 java -Dlog4j.configurationFile=src/test/resources/log4j2.xml -cp target/egads-*-jar-with-dependencies.jar com.yahoo.egads.Egads "MAX_ANOMALY_TIME_AGO:999999999;AGGREGATION:1;OP_TYPE:DETECT_ANOMALY;TS_MODEL:NullModel;AD_MODEL:SimpleThresholdModel;SIMPLE_THRESHOLD_TYPE:AdaptiveMaxMinSigmaSensitivity;INPUT:CSV;OUTPUT:STD_OUT;AUTO_SENSITIVITY_ANOMALY_PCNT:0.2;AUTO_SENSITIVITY_SD:2.0" src/test/resources/sample_input.csv
 ```
+To embed the EGADs library in an application, pull the compiled JAR from JCenter by adding the proper repository. For example in a Maven POM file add:
+
+```
+<repositories>
+  <repository>
+    <id>jcenter</id>
+    <url>https://jcenter.bintray.com/</url>
+  </repository>
+</repositories>
+```
+Then import the dependency, e.g.:
+
+```
+<dependency>
+  <groupId>com.yahoo.egads</groupId>
+  <artifactId>egads</artifactId>
+  <version>0.4.0</version>
+</dependency>
+```
 
 Overview
 ========
