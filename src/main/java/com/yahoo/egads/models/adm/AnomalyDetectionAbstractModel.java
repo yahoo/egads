@@ -20,7 +20,7 @@ import com.yahoo.egads.data.JsonEncoder;
 
 public abstract class AnomalyDetectionAbstractModel implements AnomalyDetectionModel {
 
-  static final Logger logger = LoggerFactory.getLogger(AnomalyDetectionAbstractModel.class);
+    private static final Logger logger = LoggerFactory.getLogger(AnomalyDetectionAbstractModel.class);
     protected float sDAutoSensitivity = 3;
     protected float amntAutoSensitivity = (float) 0.05;
     protected String outputDest = "";

@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class AutoSensitivity {
-  static final Logger logger = LoggerFactory.getLogger(AutoSensitivity.class);
+    private static final Logger logger = LoggerFactory.getLogger(AutoSensitivity.class);
   
     // Computes sensitivity based on the density distribution.
     // Assumes that anomalies constitute at most 5% of the data.
