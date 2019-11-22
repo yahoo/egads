@@ -379,13 +379,12 @@ public class OlympicModel2 extends TimeSeriesAbstractModel {
         }
         final ZonedDateTime base = Instant.ofEpochSecond(start)
                 .atZone(zone);
-
         for (int i = 0; i < pastWindows; i++) {
             final ZonedDateTime seek = base.minus(
                     (windowDistanceInterval * (pastWindows - i)),
                     windowDistanceIntervalUnits);
             final long seek_time = seek.toEpochSecond();
-
+            
             // cut down on iterations by dividing the data idx
             int idx = data.size() / (pastWindows - i);
             if (idx >= data.size()) {

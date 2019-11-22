@@ -10,6 +10,9 @@ import java.util.Properties;
 
 import org.json.JSONObject;
 import org.json.JSONStringer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 import java.util.HashMap;
 
@@ -17,7 +20,7 @@ import com.yahoo.egads.data.JsonEncoder;
 
 public abstract class AnomalyDetectionAbstractModel implements AnomalyDetectionModel {
 
-    protected org.apache.logging.log4j.Logger logger;
+  static final Logger logger = LoggerFactory.getLogger(AnomalyDetectionAbstractModel.class);
     protected float sDAutoSensitivity = 3;
     protected float amntAutoSensitivity = (float) 0.05;
     protected String outputDest = "";
@@ -79,7 +82,6 @@ public abstract class AnomalyDetectionAbstractModel implements AnomalyDetectionM
     // Force the user to define this constructor that acts as a
     // factory method.
     public AnomalyDetectionAbstractModel(Properties config) {
-    	logger = org.apache.logging.log4j.LogManager.getLogger(this.getClass().getName());
         // Set the assumed amount of anomaly in your data.
         if (config.getProperty("AUTO_SENSITIVITY_ANOMALY_PCNT") != null) {
             this.amntAutoSensitivity = new Float(config.getProperty("AUTO_SENSITIVITY_ANOMALY_PCNT"));
