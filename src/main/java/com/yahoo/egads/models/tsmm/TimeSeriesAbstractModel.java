@@ -10,6 +10,8 @@ import java.util.Properties;
 
 import org.json.JSONObject;
 import org.json.JSONStringer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.yahoo.egads.data.*;
 
@@ -31,7 +33,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     protected double sae;
     protected String modelName;
 
-    static org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(TimeSeriesModel.class.getName());
+    static final Logger logger = LoggerFactory.getLogger(TimeSeriesAbstractModel.class);
 
     protected boolean errorsInit = false;
     protected int dynamicParameters = 0;
