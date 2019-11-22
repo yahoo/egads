@@ -33,7 +33,7 @@ public abstract class TimeSeriesAbstractModel implements TimeSeriesModel {
     protected double sae;
     protected String modelName;
 
-    static final Logger logger = LoggerFactory.getLogger(TimeSeriesAbstractModel.class);
+    private static final Logger logger = LoggerFactory.getLogger(TimeSeriesAbstractModel.class);
 
     protected boolean errorsInit = false;
     protected int dynamicParameters = 0;
