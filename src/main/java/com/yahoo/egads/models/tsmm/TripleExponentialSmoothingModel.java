@@ -52,19 +52,19 @@ public class TripleExponentialSmoothingModel extends TimeSeriesAbstractModel {
     public TripleExponentialSmoothingModel(Properties config) {
         super(config);
 
-        String temp = config.getProperty("ALPHA");
+        String temp = config.getProperty("ALPHA", "0.75");
         if (temp == null || temp.isEmpty()) {
             throw new IllegalArgumentException("ALPHA is required, "
                     + "e.g. 0.2 or 0.5");
         }
         alpha = Double.parseDouble(temp);
-        temp = config.getProperty("BETA");
+        temp = config.getProperty("BETA", "0.001");
         if (temp == null || temp.isEmpty()) {
             throw new IllegalArgumentException("BETA is required, "
                     + "e.g. 0.2 or 0.5");
         }
         beta = Double.parseDouble(temp);
-        temp = config.getProperty("GAMMA");
+        temp = config.getProperty("GAMMA", "0.001");
         if (temp == null || temp.isEmpty()) {
             throw new IllegalArgumentException("GAMMA is required, "
                     + "e.g. 0.2 or 0.5");
