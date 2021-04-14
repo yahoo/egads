@@ -7,7 +7,7 @@
   
   <name>EGADS Anomaly Detection System</name>
   <description>EGADS system, consumes time series and outputs anomalies.</description>
-  <version>0.4.1</version>
+  <version>0.4.2</version>
   
   <organization>
     <name>Yahoo Inc.</name>
@@ -31,6 +31,12 @@
   </licenses>
   
   <packaging>jar</packaging>
+
+  <parent>
+      <groupId>org.sonatype.oss</groupId>
+      <artifactId>oss-parent</artifactId>
+      <version>9</version>
+  </parent>
 
   <scm>
     <url>https://github.com/yahoo/egads</url>
@@ -56,22 +62,6 @@
       </repository>
   </distributionManagement>
   
-  <repositories>
-    <repository>
-      <id>bintray-yahoo-maven</id>
-      <name>bintray</name>
-      <url>http://yahoo.bintray.com/maven</url>
-    </repository>
-  </repositories>
-  
-  <pluginRepositories>
-    <pluginRepository>
-      <id>bintray-yahoo-maven</id>
-      <name>bintray-plugins</name>
-      <url>http://yahoo.bintray.com/maven</url>
-    </pluginRepository>
-  </pluginRepositories>
-
   <dependencyManagement>
     <dependencies>
     <dependency>
@@ -239,6 +229,18 @@
                 <target>1.8</target>
                </configuration>
 	          </plugin>
+
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
