@@ -4,5 +4,13 @@ addons:
   hostname: short-hostname
 jdk:
   - oraclejdk8
+install: /bin/true # Skip the mvn install step.
+script: 
+  - export MAVEN_OPTS="-Xmx1024m"; 
+    if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_REQUEST" = "false" ]]; then
+      mvn clean deploy -q --settings settings.xml;
+    else
+      mvn clean test;
+    fi
 notifications:
     email: false
