@@ -7,7 +7,7 @@
   
   <name>EGADS Anomaly Detection System</name>
   <description>EGADS system, consumes time series and outputs anomalies.</description>
-  <version>0.4.2</version>
+  <version>0.4.4-SNAPSHOT</version>
   
   <organization>
     <name>Yahoo Inc.</name>
@@ -229,6 +229,21 @@
                 <target>1.8</target>
                </configuration>
 	          </plugin>
+
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-gpg-plugin</artifactId>
+              <version>1.5</version>
+              <executions>
+                <execution>
+                  <id>sign-artifacts</id>
+                  <phase>verify</phase>
+                  <goals>
+                    <goal>sign</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
