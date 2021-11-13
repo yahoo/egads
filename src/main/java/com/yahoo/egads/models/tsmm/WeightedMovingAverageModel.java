@@ -36,27 +36,38 @@ import java.util.*;
 // A weighted moving average forecast model is based on an artificially constructed time series in which the value
 // for a given time period is replaced by the weighted mean of that value and the values for some number of preceding time periods.
 public class WeightedMovingAverageModel extends TimeSeriesAbstractModel {
-    // methods ////////////////////////////////////////////////
+
+    private static final double[] DEFAULT_WEIGHTS = new double[]{0.75, 0.25};
 
     // The model that will be used for forecasting.
     private ForecastingModel forecaster;
-    
+
     // Stores the historical values.
     private TimeSeries.DataSequence data;
 
+    //Stores the weights
+    private double[] weights;
+
     public WeightedMovingAverageModel(Properties config) {
         super(config);
+        weights = DEFAULT_WEIGHTS.clone();
+        modelName = "WeightedMovingAverageModel";
+    }
+
+    public WeightedMovingAverageModel(Properties config, double[] weights) {
+        super(config);
+        this.weights = weights.clone();
         modelName = "WeightedMovingAverageModel";
     }
 
     public void reset() {
         // At this point, reset does nothing.
     }
-    
+
     public void train(TimeSeries.DataSequence data) {
         this.data = data;
         int n = data.size();
-        DataPoint dp = null;
+        DataPoint dp;
         DataSet observedData = new DataSet();
         for (int i = 0; i < n; i++) {
             dp = new Observation(data.get(i).value);
@@ -66,7 +77,7 @@ public class WeightedMovingAverageModel extends TimeSeriesAbstractModel {
         observedData.setTimeVariable("x"); 
         
         // TODO: Make weights configurable.
-        forecaster = new net.sourceforge.openforecast.models.WeightedMovingAverageModel(new double[]{0.75, 0.25});
+        forecaster = new net.sourceforge.openforecast.models.WeightedMovingAverageModel(weights);
         forecaster.init(observedData);
 
         initForecastErrors(forecaster, data);
@@ -98,7 +109,7 @@ public class WeightedMovingAverageModel extends TimeSeriesAbstractModel {
           Iterator<DataPoint> it = requiredDataPoints.iterator();
           int i = 0;
           while (it.hasNext()) {
-              DataPoint pnt = ((DataPoint) it.next());
+              DataPoint pnt = (it.next());
               logger.info(data.get(i).time + "," + data.get(i).value + "," + pnt.getDependentValue());
               sequence.set(i, (new Entry(data.get(i).time, (float) pnt.getDependentValue())));
               i++;
