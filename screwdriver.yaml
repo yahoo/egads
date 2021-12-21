@@ -1,0 +1,7 @@
+shared:
+  image: maven
+
+jobs:
+  main:
+    steps:
+      - run_arbitrary_script: mvn clean test --quiet
