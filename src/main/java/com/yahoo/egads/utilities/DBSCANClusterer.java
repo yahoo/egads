@@ -40,7 +40,7 @@ import org.apache.commons.math3.ml.clustering.Clusterer;
  * The DBSCAN algorithm forms clusters based on the idea of density connectivity, i.e.
  * a point p is density connected to another point q, if there exists a chain of
  * points p<sub>i</sub>, with i = 1 .. n and p<sub>1</sub> = p and p<sub>n</sub> = q,
- * such that each pair <p<sub>i</sub>, p<sub>i+1</sub>> is directly density-reachable.
+ * such that each pair &lt;p<sub>i</sub>, p<sub>i+1</sub>&gt; is directly density-reachable.
  * A point q is directly density-reachable from point p if it is in the ε-neighborhood
  * of this point.
  * <p>
