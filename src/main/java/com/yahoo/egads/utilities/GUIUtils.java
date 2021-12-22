@@ -196,7 +196,6 @@ public class GUIUtils extends ApplicationFrame {
     
     /**
      * Starting point for the forecasting charting demo application.
-     * @param args ignored.
      */
     public static void plotResults(DataSequence orig, DataSequence predicted, ArrayList<Anomaly> anomalyList, Properties config) {
         GUIUtils gui = new GUIUtils("EGADS GUI", orig, predicted, anomalyList, config);

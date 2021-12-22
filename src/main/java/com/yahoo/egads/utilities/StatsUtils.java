@@ -220,19 +220,21 @@ public class StatsUtils {
      * "http://en.wikipedia.org/wiki/Central_moment">central moments</a>.
      * <p>
      * 
-     * <table cellpadding="5">
+     * <table>
+     * <caption></caption>
      * <tr>
      * <td><b>Central Moment</b></td>
      * <td><b>Use</b></td>
      * </tr>
+     * <tr>
      * <td>second</td>
      * <td>variance</td>
      * </tr>
-     * </tr>
+     * <tr>
      * <td>third</td>
      * <td>to define skewness</td>
      * </tr>
-     * </tr>
+     * <tr>
      * <td>fourth</td>
      * <td>to define kurtosis</td>
      * </tr>
