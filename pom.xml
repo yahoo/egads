@@ -53,14 +53,6 @@
     <system>Travis</system>
     <url>https://travis-ci.org/yahoo/egads</url>
   </ciManagement>
-
-  <distributionManagement>
-      <repository>
-          <id>bintray-yahoo-egads</id>
-          <name>yahoo-egads</name>
-          <url>https://api.bintray.com/maven/yahoo/maven/egads;publish=1</url>
-      </repository>
-  </distributionManagement>
   
   <dependencyManagement>
     <dependencies>
@@ -135,14 +127,6 @@
         <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-api</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-core</artifactId>
         </dependency>
 
         <dependency>
