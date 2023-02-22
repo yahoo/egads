@@ -38,17 +38,17 @@ public class MovingAverageModel extends TimeSeriesAbstractModel {
         super(config);
         modelName = "MovingAverageModel";
         //
-		String moveStep = config.getProperty("MOVE_STEPS");
-		if (moveStep != null) {
-			try {
-				int ms = Integer.parseInt(moveStep);
-				if (ms > period) {
-					this.period = ms;
-				}
-			} catch (NumberFormatException e) {
-				logger.warn("Wrong move step value set for MovingAverageModel: " + moveStep, e);
+	String moveStep = config.getProperty("MOVE_STEPS");
+	if (moveStep != null) {
+		try {
+			int ms = Integer.parseInt(moveStep);
+			if (ms > period) {
+				this.period = ms;
 			}
+		} catch (NumberFormatException e) {
+			logger.warn("Wrong move step value set for MovingAverageModel: " + moveStep, e);
 		}
+	}
     }
 
     public void reset() {
@@ -67,7 +67,7 @@ public class MovingAverageModel extends TimeSeriesAbstractModel {
         }
         observedData.setTimeVariable("x"); 
         
-		forecaster = new net.sourceforge.openforecast.models.MovingAverageModel(this.period);
+	forecaster = new net.sourceforge.openforecast.models.MovingAverageModel(this.period);
         forecaster.init(observedData);
         initForecastErrors(forecaster, data);
         
