@@ -28,12 +28,27 @@ public class MovingAverageModel extends TimeSeriesAbstractModel {
     // The model that will be used for forecasting.
     private ForecastingModel forecaster;
     
+    // The default value
+    private int period = 2;
+    
     // Stores the historical values.
     private TimeSeries.DataSequence data;
 
     public MovingAverageModel(Properties config) {
         super(config);
         modelName = "MovingAverageModel";
+        //
+		String moveStep = config.getProperty("MOVE_STEPS");
+		if (moveStep != null) {
+			try {
+				int ms = Integer.parseInt(moveStep);
+				if (ms > period) {
+					this.period = ms;
+				}
+			} catch (NumberFormatException e) {
+				logger.warn("Wrong move step value set for MovingAverageModel: " + moveStep, e);
+			}
+		}
     }
 
     public void reset() {
@@ -52,8 +67,7 @@ public class MovingAverageModel extends TimeSeriesAbstractModel {
         }
         observedData.setTimeVariable("x"); 
         
-        // TODO: Make window configurable.
-        forecaster = new net.sourceforge.openforecast.models.MovingAverageModel(2);
+		forecaster = new net.sourceforge.openforecast.models.MovingAverageModel(this.period);
         forecaster.init(observedData);
         initForecastErrors(forecaster, data);
         
